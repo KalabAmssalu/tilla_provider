@@ -1,0 +1,839 @@
+{
+	"metadata": {
+		"description": "Build More Efficient, Engaging, and Profitable Online Stores: Relivator Enhances your eCommerce with the Power of shadcn/ui, Next.js 15, React 19, and more",
+		"title": {
+			"home": "Home"
+		}
+	},
+	"mode-toggle": {
+		"dark": "Dark",
+		"light": "Light",
+		"system": "System",
+		"toggleTheme": "Toggle Theme"
+	},
+	"LocaleSwitcher": {
+		"changeLanguage": "Change Language",
+		"english": "English",
+		"amharic": "Amharic"
+	},
+	"Login": {
+		"loginTitle": "Provider Login",
+		"loginPrompt": "Enter your email below to login to your account",
+		"email": "Email",
+		"password": "Password",
+		"forgotPassword": "Forgot your password?",
+		"login": "Login"
+	},
+	"searchInfoForm": {
+		"title": "Search Memebers",
+		"description": "Search the memebers from tilla health insurance. Click search button after filling some inputs.",
+		"successMessage": "Your information has been successfully submitted.",
+		"fields": {
+			"first_name": {
+				"label": "First Name ",
+				"placeholder": "Enter your first name",
+				"description": "Your legal first name.",
+				"error": "First name must be at least 2 characters long."
+			},
+			"middle_name": {
+				"label": "Middle Name ",
+				"placeholder": "Enter your middle name",
+				"description": "Your legal middle name.",
+				"error": "Middle name must be at least 2 characters long."
+			},
+			"last_name": {
+				"label": "Last Name ",
+				"placeholder": "Enter your last name",
+				"description": "Your legal last name.",
+				"error": "Last name must be at least 2 characters long."
+			},
+			"first_name_amharic": {
+				"label": "ስም በአማርኛ",
+				"placeholder": "ስም በአማርኛ",
+				"description": "Your legal first name.",
+				"error": "First name must be at least 2 characters long."
+			},
+			"middle_name_amharic": {
+				"label": "የአባት ስም በአማርኛ",
+				"placeholder": "የአባት ስም በአማርኛ",
+				"description": "Your legal middle name.",
+				"error": "Middle name must be at least 2 characters long."
+			},
+			"last_name_amharic": {
+				"label": "የአያት ስም በአማርኛ",
+				"placeholder": "የአያት ስም በአማርኛ",
+				"description": "Your legal last name.",
+				"error": "Last name must be at least 2 characters long."
+			},
+			"date_of_birth": {
+				"label": "Date of Birth",
+				"placeholder": "Select your date of birth",
+				"description": "Enter your birth date in the format MM-DD-YYYY.",
+				"error": "Please enter your date of birth in the format MM-DD-YYYY."
+			},
+			"member_id": {
+				"label": "Member ID",
+				"placeholder": "Enter your member ID",
+				"description": "Provide your member ID.",
+				"error": "Member ID must be at least 2 characters long."
+			},
+
+			"phone_number": {
+				"label": "Phone Number",
+				"placeholder": "Enter your phone number",
+				"description": "Provide a valid phone number.",
+				"error": "Phone number must be numeric and at least 10 digits long."
+			},
+			"family_id": {
+				"label": "Family ID",
+				"placeholder": "Enter your family ID",
+				"description": "Provide your family ID.",
+				"error": "Family ID must be at least 2 characters long."
+			},
+
+			"dependent_first_name": {
+				"label": "First Name",
+				"placeholder": "Enter your Family first name",
+				"description": "Your legal Family first name.",
+				"error": "first name must be at least 2 characters long."
+			},
+			"dependent_middle_name": {
+				"label": "Middle Name ",
+				"placeholder": "Enter your middle name",
+				"description": "Your legal middle name.",
+				"error": "middle name must be at least 2 characters long."
+			},
+			"dependent_last_name": {
+				"label": "Last Name ",
+				"placeholder": "Enter your last name",
+				"description": "Your legal last name.",
+				"error": "last name must be at least 2 characters long."
+			},
+			"dependent_first_name_amharic": {
+				"label": "ስም በአማርኛ",
+				"placeholder": "ስም በአማርኛ",
+				"description": "Your legal first name.",
+				"error": "first name must be at least 2 characters long."
+			},
+			"dependent_middle_name_amharic": {
+				"label": "የአባት ስም በአማርኛ",
+				"placeholder": "የአባት ስም በአማርኛ",
+				"description": "Your legal middle name.",
+				"error": "middle name must be at least 2 characters long."
+			},
+			"dependent_last_name_amharic": {
+				"label": "የአያት ስም በአማርኛ",
+
+				"placeholder": "የአባት የተደረገው ስም በአማርኛ",
+				"description": "Your legal last name.",
+				"error": "last name must be at least 2 characters long."
+			},
+			"dependent_date_of_birth": {
+				"label": "Date of Birth",
+				"placeholder": "Select your date of birth",
+				"description": "Enter your birth date in the format MM-DD-YYYY.",
+				"error": "Please enter your date of birth in the format MM-DD-YYYY."
+			}
+		}
+	},
+	"searchClaimInfoForm": {
+		"title": "Search For a Claim",
+		"description": "Search a claim  from tilla health insurance. Click search button after filling some inputs.",
+		"successMessage": "Your information has been successfully submitted.",
+		"fields": {
+			"claim_id": {
+				"label": "Claim Id",
+				"placeholder": "Enter the Claim Id",
+				"description": "Provide the Claim Id.",
+				"error": "Claim Id is required."
+			},
+			"diagnosis_date": {
+				"label": "Diagnosis Date",
+				"placeholder": "Enter the diagnosis date",
+				"description": "Provide the date when the diagnosis was made.",
+				"error": "Diagnosis date is required."
+			},
+			"first_name": {
+				"label": "First Name ",
+				"placeholder": "Enter your first name",
+				"description": "Your legal first name.",
+				"error": "First name must be at least 2 characters long."
+			},
+			"middle_name": {
+				"label": "Middle Name ",
+				"placeholder": "Enter your middle name",
+				"description": "Your legal middle name.",
+				"error": "Middle name must be at least 2 characters long."
+			},
+			"last_name": {
+				"label": "Last Name ",
+				"placeholder": "Enter your last name",
+				"description": "Your legal last name.",
+				"error": "Last name must be at least 2 characters long."
+			},
+			"first_name_amharic": {
+				"label": "ስም በአማርኛ",
+				"placeholder": "ስም በአማርኛ",
+				"description": "Your legal first name.",
+				"error": "First name must be at least 2 characters long."
+			},
+			"middle_name_amharic": {
+				"label": "የአባት ስም በአማርኛ",
+				"placeholder": "የአባት ስም በአማርኛ",
+				"description": "Your legal middle name.",
+				"error": "Middle name must be at least 2 characters long."
+			},
+			"last_name_amharic": {
+				"label": "የአያት ስም በአማርኛ",
+				"placeholder": "የአያት ስም በአማርኛ",
+				"description": "Your legal last name.",
+				"error": "Last name must be at least 2 characters long."
+			},
+			"date_of_birth": {
+				"label": "Date of Birth",
+				"placeholder": "Select your date of birth",
+				"description": "Enter your birth date in the format MM-DD-YYYY.",
+				"error": "Please enter your date of birth in the format MM-DD-YYYY."
+			},
+			"member_id": {
+				"label": "Member ID",
+				"placeholder": "Enter your member ID",
+				"description": "Provide your member ID.",
+				"error": "Member ID must be at least 2 characters long."
+			},
+
+			"phone_number": {
+				"label": "Phone Number",
+				"placeholder": "Enter your phone number",
+				"description": "Provide a valid phone number.",
+				"error": "Phone number must be numeric and at least 10 digits long."
+			},
+			"family_id": {
+				"label": "Family ID",
+				"placeholder": "Enter your family ID",
+				"description": "Provide your family ID.",
+				"error": "Family ID must be at least 2 characters long."
+			},
+
+			"dependent_first_name": {
+				"label": "First Name",
+				"placeholder": "Enter your Family first name",
+				"description": "Your legal Family first name.",
+				"error": "first name must be at least 2 characters long."
+			},
+			"dependent_middle_name": {
+				"label": "Middle Name ",
+				"placeholder": "Enter your middle name",
+				"description": "Your legal middle name.",
+				"error": "middle name must be at least 2 characters long."
+			},
+			"dependent_last_name": {
+				"label": "Last Name ",
+				"placeholder": "Enter your last name",
+				"description": "Your legal last name.",
+				"error": "last name must be at least 2 characters long."
+			},
+			"dependent_first_name_amharic": {
+				"label": "ስም በአማርኛ",
+				"placeholder": "ስም በአማርኛ",
+				"description": "Your legal first name.",
+				"error": "first name must be at least 2 characters long."
+			},
+			"dependent_middle_name_amharic": {
+				"label": "የአባት ስም በአማርኛ",
+				"placeholder": "የአባት ስም በአማርኛ",
+				"description": "Your legal middle name.",
+				"error": "middle name must be at least 2 characters long."
+			},
+			"dependent_last_name_amharic": {
+				"label": "የአያት ስም በአማርኛ",
+
+				"placeholder": "የአባት የተደረገው ስም በአማርኛ",
+				"description": "Your legal last name.",
+				"error": "last name must be at least 2 characters long."
+			},
+			"dependent_date_of_birth": {
+				"label": "Date of Birth",
+				"placeholder": "Select your date of birth",
+				"description": "Enter your birth date in the format MM-DD-YYYY.",
+				"error": "Please enter your date of birth in the format MM-DD-YYYY."
+			}
+		}
+	},
+	"claimForm": {
+		"title": "Claim Registration Form",
+		"description": "Please fill out the form below to claim your free health care.",
+		"fields": {
+			"diagnosis_date": {
+				"label": "Diagnosis Date",
+				"placeholder": "Enter the diagnosis date",
+				"description": "Provide the date when the diagnosis was made.",
+				"error": "Diagnosis date is required."
+			},
+			"diagnosis_code": {
+				"label": "Diagnosis Code",
+				"placeholder": "Enter the diagnosis code",
+				"description": "Provide the code for the diagnosis.",
+				"error": "Diagnosis code is required and must be valid."
+			},
+			"diagnosis_category": {
+				"label": "Diagnosis Category",
+				"placeholder": "Enter the diagnosis category",
+				"description": "Specify the category of the diagnosis.",
+				"error": "Diagnosis category is required."
+			},
+			"diagnosis_description": {
+				"label": "Diagnosis Description",
+				"placeholder": "Enter the diagnosis description",
+				"description": "Provide a detailed description of the diagnosis.",
+				"error": "Diagnosis description is required."
+			},
+			"lonic_code": {
+				"label": "LOINC Code",
+				"placeholder": "Enter the LOINC code",
+				"description": "Provide the LOINC code associated with the diagnosis.",
+				"error": "LOINC code is required."
+			},
+			"lonic_description": {
+				"label": "LOINC Description",
+				"placeholder": "Enter the LOINC description",
+				"description": "Provide a detailed description of the LOINC code.",
+				"error": "LOINC description is required."
+			},
+			"principal_diagnosis_code_poa_code": {
+				"label": "Principal Diagnosis Code POC Code",
+				"placeholder": "Enter the principal diagnosis POC code",
+				"description": "Specify the POC code for the principal diagnosis.",
+				"error": "Principal diagnosis POC code is required."
+			},
+			"other_diagnosis_codes_poa_code": {
+				"label": "Other Diagnosis Codes POC Code",
+				"placeholder": "Enter other diagnosis POC codes",
+				"description": "Provide POC codes for additional diagnoses.",
+				"error": "Other diagnosis POC codes must be valid."
+			},
+			"admitting_diagnosis_code": {
+				"label": "Admitting Diagnosis Description",
+				"placeholder": "Enter the admitting diagnosis Description",
+				"description": "Specify the diagnosis Description upon admission.",
+				"error": "Admitting diagnosis Description is required."
+			},
+			"attending_provider_name_npi_specialty_code": {
+				"label": "Attending Provider Name , or NPI",
+				"placeholder": "Enter the attending provider details",
+				"description": "Provide the name, NPI, and specialty code of the attending provider.",
+				"error": "Attending provider details are required."
+			},
+			"treatment_details": {
+				"label": "Treatment Details",
+				"placeholder": "Enter treatment details",
+				"description": "Provide a detailed description of the treatment.",
+				"error": "Treatment details are required."
+			},
+			"service_start_date": {
+				"label": "Service Start Date",
+				"placeholder": "Enter the service start date",
+				"description": "Specify the date the service started.",
+				"error": "Service start date is required."
+			},
+			"service_end_date": {
+				"label": "Service End Date",
+				"placeholder": "Enter the service end date",
+				"description": "Specify the date the service ended.",
+				"error": "Service end date is required."
+			},
+			"service_charge": {
+				"label": "Service Charge",
+				"placeholder": "Enter the service charge",
+				"description": "Specify the charge for the service.",
+				"error": "Service charge must be a valid amount."
+			},
+			"admission_date": {
+				"label": "Admission Date",
+				"placeholder": "Enter the admission date",
+				"description": "Specify the date of admission.",
+				"error": "Admission date is required."
+			},
+			"discharge_hour": {
+				"label": "Discharge Hour",
+				"placeholder": "Enter the discharge hour",
+				"description": "Specify the hour of discharge.",
+				"error": "Discharge hour is required."
+			},
+			"admission_hour": {
+				"label": "Admission Hour",
+				"placeholder": "Enter the admission hour",
+				"description": "Specify the hour of admission.",
+				"error": "Admission hour is required."
+			},
+			"revenue_center_description": {
+				"label": "Revenue Center Description",
+				"placeholder": "Enter the revenue center description",
+				"description": "The revenue code belongs to the associated provider.",
+				"error": "Revenue center description is required."
+			},
+			"other_provider_ids": {
+				"label": "Other Provider IDs",
+				"placeholder": "Enter other provider IDs",
+				"description": "Provide the IDs of other associated providers.",
+				"error": "Other provider IDs must be valid."
+			},
+			"treatment_authorization_codes": {
+				"label": "Treatment Authorization Codes",
+				"placeholder": "Enter treatment authorization codes",
+				"description": "Provide authorization codes for the treatment.",
+				"error": "Treatment authorization codes are required."
+			},
+			"additional_notes": {
+				"label": "Additional Notes",
+				"placeholder": "Enter additional notes",
+				"description": "Provide any additional information.",
+				"error": "Additional notes must be concise."
+			},
+			"patient_discharge_status": {
+				"label": "Patient Discharge Status",
+				"placeholder": "Enter the patient discharge status",
+				"description": "Specify the discharge status of the patient.",
+				"error": "Patient discharge status is required."
+			},
+			"source_of_admission": {
+				"label": "Source of Admission",
+				"placeholder": "Enter the source of admission",
+				"description": "Provide the source of the patient's admission.",
+				"error": "Source of admission is required."
+			},
+
+			"type_of_admission_visit": {
+				"label": "Type of Admission/Visit",
+				"placeholder": "Enter the type of admission or visit",
+				"description": "Specify the type of admission or visit.",
+				"error": "Type of admission or visit is required."
+			},
+			"patient_control_number": {
+				"label": "Patient Control Number",
+				"placeholder": "Enter the patient control number",
+				"description": "Provide the control number assigned to the patient.",
+				"error": "Patient control number is required."
+			},
+			"patient_reason_for_visit_code": {
+				"label": "Patient Reason for Visit",
+				"placeholder": "Enter the reason for visit ",
+				"description": "Provide the indicating the reason for the visit.",
+				"error": "Reason for visit is required."
+			},
+			"cpt_code": {
+				"label": "CPT Code",
+				"placeholder": "Enter the CPT code",
+				"description": "Provide the Current Procedural Terminology (CPT) code.",
+				"error": "CPT code is required."
+			},
+			"cpt_category": {
+				"label": "CPT Category",
+				"placeholder": "Enter the CPT category",
+				"description": "Specify the category associated with the CPT code.",
+				"error": "CPT category is required."
+			},
+			"cpt_description": {
+				"label": "CPT Description",
+				"placeholder": "Enter the CPT description",
+				"description": "Provide a description for the CPT code.",
+				"error": "CPT description is required."
+			},
+			"external_cause_of_injury_code": {
+				"label": "External Cause of Injury Code",
+				"placeholder": "Enter the external cause of injury code",
+				"description": "Provide the code indicating the external cause of injury.",
+				"error": "External cause of injury code is required."
+			},
+			"principal_procedure_code": {
+				"label": "Principal Procedure Code",
+				"placeholder": "Enter the principal procedure code",
+				"description": "Provide the code for the principal procedure performed.",
+				"error": "Principal procedure code is required."
+			},
+			"other_procedure_code": {
+				"label": "Other Procedure Code",
+				"placeholder": "Enter other procedure codes",
+				"description": "Provide codes for additional procedures performed.",
+				"error": "Other procedure codes must be valid."
+			},
+			"other_procedure_code_description": {
+				"label": "Other Procedure Code Description",
+				"placeholder": "Enter descriptions for other procedure codes",
+				"description": "Provide detailed descriptions for other procedure codes.",
+				"error": "Descriptions for other procedure codes are required."
+			},
+			"operating_physician_name_npi_specialty_code": {
+				"label": "Operating Physician Name or NPI",
+				"placeholder": "Enter the operating physician's Name or NP",
+				"description": "Provide the name, NPI, and specialty code of the operating physician.",
+				"error": "Operating physician details are required."
+			},
+			"other_provider_name_npi_specialty_code": {
+				"label": "Other Provider Name or NPI",
+				"placeholder": "Enter other provider details",
+				"description": "Provide the name, NPI, and specialty code of other providers.",
+				"error": "Other provider details are required."
+			},
+
+			"type_of_bill": {
+				"label": "Type of Bill",
+				"placeholder": "Enter the type of bill",
+				"description": "Specify the type of bill for the services provided.",
+				"error": "Type of bill is required."
+			},
+			"billing_provider_npi": {
+				"label": "Billing Provider NPI",
+				"placeholder": "Enter the billing provider NPI",
+				"description": "Provide the NPI of the billing provider.",
+				"error": "Billing provider NPI is required."
+			},
+			"place_of_service_description": {
+				"label": "Place of Service Description",
+				"placeholder": "Enter the place of service description",
+				"description": "Provide a description for the place of service.",
+				"error": "Place of service description is required."
+			},
+			"place_of_service_code": {
+				"label": "Place of Service Code",
+				"placeholder": "place of service code will be field when you select the description",
+				"description": "Provide the code for the place of service.",
+				"error": "Place of service code must be valid."
+			},
+			"payer_name": {
+				"label": "Payer Name",
+				"placeholder": "Enter the payer name",
+				"description": "Specify the name of the payer.",
+				"error": "Payer name is required."
+			},
+			"release_of_information_certification": {
+				"label": "Release of Information Certification",
+				"placeholder": "Enter the release of information certification",
+				"description": "Provide the certification details for the release of information.",
+				"error": "Release of information certification is required."
+			},
+			"receipts": {
+				"label": "Payment Receipts",
+				"placeholder": "Upload receipts",
+				"description": "Attach receipts as proof of payment or charges.",
+				"error": "Receipts are required."
+			},
+			"medication_prescription": {
+				"label": "Medication Prescription",
+				"placeholder": "Upload medication prescription",
+				"description": "Attach medication prescription as proof of payment or charges.",
+				"error": "Medication prescription is required."
+			},
+			"additional_charge": {
+				"label": "Additional Charge",
+				"placeholder": "Enter additional charges",
+				"description": "Specify any additional charges incurred.",
+				"error": "Additional charges must be valid."
+			},
+			"revenue_code_tin_number": {
+				"label": "Revenue Code TIN Number",
+				"placeholder": "Enter the revenue code TIN number",
+				"description": "Provide the TIN number associated with the revenue code.",
+				"error": "Revenue code TIN number is required."
+			},
+			"non_covered_charges": {
+				"label": "Non-Covered Charges",
+				"placeholder": "Enter non-covered charges",
+				"description": "Specify charges that are not covered.",
+				"error": "Non-covered charges must be valid."
+			},
+			"exam_and_lab": {
+				"label": "Examination and Lab report",
+				"placeholder": "Please upload Examination and lab reports",
+				"description": "Attach the medical Laboratory report",
+				"error": "please provide a valid file"
+			},
+			"medical_imaging": {
+				"label": "Medical Imaging",
+				"placeholder": "Please upload Medical Imaging",
+				"description": "Attach the Medical Imaging eg.(CT Scan, MRI)",
+				"error": "please provide a valid file"
+			}
+		}
+	},
+	"referralForm": {
+		"title": "Referral Form",
+		"description": "Please fill out the form below to refer a memmber.",
+		"fields": {
+			"referral_date": {
+				"label": "Referral Date",
+				"placeholder": "Enter the referral date",
+				"description": "Provide the date when the referral was made.",
+				"error": "Referral date is required."
+			},
+			"referral_number": {
+				"label": "Referral Number",
+				"placeholder": "Enter the Referral Number",
+				"description": "Provide the Referral Number.",
+				"error": "Referral Number is required."
+			},
+			"referral_status": {
+				"label": "Referral Status",
+				"placeholder": "Select the Referral Status",
+				"description": "Please choose  the Referral Status.",
+				"error": "please select the Referral Status. It is required",
+				"options": {
+					"approved": "Approved",
+					"pending": "Pending",
+					"rejected": "Rejected"
+				}
+			},
+			"reason_for_referral": {
+				"label": "Reason for Referral",
+				"placeholder": "Enter the Reason for Referral",
+				"description": "Provide a detailed description of the referral.",
+				"error": "Reason for Referral is required."
+			},
+			"additional_note": {
+				"label": "Additional Note",
+				"placeholder": "Enter additional notes",
+				"description": "Provide any additional information.",
+				"error": "Additional notes must be concise."
+			},
+			"supporting_doc1": {
+				"label": "Supporting Documents",
+				"placeholder": "Upload Supporting Document",
+				"description": "Attach Supporting Document as proof.",
+				"error": "Supporting Document 1 is required."
+			},
+			"supporting_doc2": {
+				"label": "Other Supporting Documents",
+				"placeholder": "Upload Supporting Document",
+				"description": "Attach Supporting Document as proof.",
+				"error": "Supporting Document 2 is required."
+			},
+			"referred_to": {
+				"label": "Referred To",
+				"placeholder": "Select the Referred To Provider",
+				"description": "Provide the Provider the referral is to.",
+				"error": "Referred To Provider is required."
+			}
+		}
+	},
+	"priorAuthForm": {
+		"title": "Prior Authorization Request Form",
+		"description": "Please fill out the form below to request a prior authorization.",
+		"fields": {
+			"claim_id": {
+				"label": "Claim Id",
+				"placeholder": "Enter the Claim Id",
+				"description": "Provide the Claim Id.",
+				"error": "Claim Id is required."
+			},
+			"date_of_service": {
+				"label": "Date of Service",
+				"placeholder": "Enter the Date of Service",
+				"description": "Provide the date when the service was made.",
+				"error": "Date of Service is required."
+			},
+			"requested_service": {
+				"label": "Requested Service",
+				"placeholder": "Enter the Requested Service",
+				"description": "Provide the Requested Service",
+				"error": "Requested Service is required."
+			},
+			"reason_for_request": {
+				"label": "Reason for Request",
+				"placeholder": "Enter the Reason for Request",
+				"description": "Provide a detailed description of the request.",
+				"error": "Reason for Request is required."
+			},
+			"additional_note": {
+				"label": "Additional Note",
+				"placeholder": "Enter additional notes",
+				"description": "Provide any additional information.",
+				"error": "Additional notes must be concise."
+			},
+			"supporting_doc1": {
+				"label": "Supporting Documents",
+				"placeholder": "Upload Supporting Document",
+				"description": "Attach Supporting Document as proof.",
+				"error": "Supporting Document 1 is required."
+			},
+			"supporting_doc2": {
+				"label": "Other Supporting Documents",
+				"placeholder": "Upload Supporting Document",
+				"description": "Attach Supporting Document as proof.",
+				"error": "Supporting Document 2 is required."
+			}
+		}
+	},
+	"appealForm": {
+		"title": "Appeal Form",
+		"description": "Please fill out the form below to appeal your free health care.",
+		"fields": {
+			"claim_id": {
+				"label": "Claim Id",
+				"placeholder": "Enter the Claim Id",
+				"description": "Provide the Claim Id.",
+				"error": "Claim Id is required."
+			},
+			"reason_for_appeal": {
+				"label": "Reason for Appeal",
+				"placeholder": "Enter the Reason for Appeal",
+				"description": "Provide a detailed description of the Appeal.",
+				"error": "Reason for Appeal is required."
+			},
+			"additional_note": {
+				"label": "Additional Note",
+				"placeholder": "Enter additional notes",
+				"description": "Provide any additional information.",
+				"error": "Additional notes must be concise."
+			},
+			"supporting_doc1": {
+				"label": "Supporting Documents",
+				"placeholder": "Upload Supporting Document",
+				"description": "Attach Supporting Document as proof.",
+				"error": "Supporting Document 1 is required."
+			},
+			"supporting_doc2": {
+				"label": "Other Supporting Documents",
+				"placeholder": "Upload Supporting Document",
+				"description": "Attach Supporting Document as proof.",
+				"error": "Supporting Document 2 is required."
+			}
+		}
+	},
+	"appointmentForm": {
+		"title": "Appointment Booking Form",
+		"description": "Please fill out the form below to appeal your free health care.",
+		"fields": {
+			"claim_id": {
+				"label": "Claim Id",
+				"placeholder": "Enter the Claim Id",
+				"description": "Provide the Claim Id.",
+				"error": "Claim Id is required."
+			},
+			"member_question": {
+				"label": "Has the member been enrolled in our health insurance plan before?",
+				"placeholder": "Upload Supporting Document",
+				"description": "Attach Supporting Document as proof.",
+				"error": "Supporting Document 1 is required."
+			},
+			"doctor_name": {
+				"label": "Attending Provider Name , or NPI",
+				"placeholder": "Enter a Provider that will be seeing the member",
+				"description": "Which provider will the member be seeing for the appointment?",
+				"error": "Supporting Document 1 is required."
+			},
+			"service_type": {
+				"label": "Type of Service",
+				"placeholder": "Select the Type of Service",
+				"description": "What type of service is the member requesting? ",
+				"error": "please select Type of Service. It is required",
+				"options": {
+					"consultation": "Consultation",
+					"general_checkup": "General Checkup",
+					"follow_up": "Follow Up Visit",
+					"specialist_appointment": "Specialist Appointment",
+					"tele_health": "Tele Health"
+				}
+			},
+			"appointment_location": {
+				"label": "Preference Inquiry",
+				"placeholder": "Select the prefered Appointment Location.",
+				"description": "How does the member prefer to have your appointment in person or online?",
+				"error": "please select Appointment Location. It is required",
+				"options": {
+					"in_person": "In Person",
+					"tele_health": "Tele Health"
+				}
+			},
+			"reason_for_appointmnet": {
+				"label": "Reason for Appointment",
+				"placeholder": "Enter the Reason for Appointment",
+				"description": "Provide a detailed description of the Appointment.",
+				"error": "Reason for Appointment is required."
+			},
+			"contact_type": {
+				"label": "Preferred Contact Method",
+				"placeholder": "Select the type of Preferred Contact Method",
+				"description": "Please choose the Contact Method.",
+				"error": "please select Contact Method. It is required",
+				"options": {
+					"phone": "Phone",
+					"email": "Email",
+					"text_message": "Text Message",
+					"other": "Other"
+				}
+			},
+			"additional_note": {
+				"label": "Additional Note",
+				"placeholder": "Enter additional notes",
+				"description": "Provide any additional information.",
+				"error": "Additional notes must be concise."
+			},
+			"supporting_doc1": {
+				"label": "Supporting Documents",
+				"placeholder": "Upload Supporting Document",
+				"description": "Attach Supporting Document as proof.",
+				"error": "Supporting Document 1 is required."
+			},
+			"supporting_doc2": {
+				"label": "Other Supporting Documents",
+				"placeholder": "Upload Supporting Document",
+				"description": "Attach Supporting Document as proof.",
+				"error": "Supporting Document 2 is required."
+			}
+		}
+	},
+	"claimStatusForm": {
+		"title": "Claim Status",
+		"description": "Please fill out the form below to check the status of a claim.",
+		"fields": {
+			"member_id": {
+				"label": "Member Id",
+				"placeholder": "Enter the Member Id",
+				"description": "Provide the Member Id.",
+				"error": "Member Id is required."
+			},
+			"billingProvider_id": {
+				"label": "Billing Provider Id",
+				"placeholder": "Enter the Billing Provider Id",
+				"description": "Provide the Billing Provider Id.",
+				"error": "Billing Provider Id is required."
+			},
+			"service_start_date": {
+				"label": "Service Start Date",
+				"placeholder": "Enter the Service Start Date",
+				"description": "Provide the Service Start Date.",
+				"error": "Service Start Date is required."
+			},
+			"claim_id": {
+				"label": "Claim Id",
+				"placeholder": "Enter the Claim Id",
+				"description": "Provide the Claim Id.",
+				"error": "Claim Id is required."
+			},
+			"service_end_date": {
+				"label": "Service End Date",
+				"placeholder": "Enter the Service End Date",
+				"description": "Provide the Service End Date.",
+				"error": "Service End Date is required."
+			},
+			"claim_type": {
+				"label": "Claim Type",
+				"placeholder": "Select the Claim Type",
+				"description": "Provide the Claim Type.",
+				"error": "Claim Type is required."
+			},
+			"claim_status": {
+				"label": "Claim Status",
+				"placeholder": "Select the Claim Status",
+				"description": "Provide the Claim Status.",
+				"error": "Claim Status is required."
+			},
+			"diagnosis_date": {
+				"label": "Diagnosis Date",
+				"placeholder": "Enter the Diagnosis Date",
+				"description": "Provide the Diagnosis Date.",
+				"error": "Diagnosis Date is required."
+			}
+		}
+	}
+}
