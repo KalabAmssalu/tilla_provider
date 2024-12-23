@@ -157,7 +157,11 @@ export default function PriorAuthorizationForm({
 						</div>
 					</fieldset>
 					<CPTSelectionForm onDataChange={handleCPTValueChange} />
-					<DiagnosisSelectionForm onDataChange={handleSelectedDiagnosis} />
+					<DiagnosisSelectionForm
+						control={form.control}
+						setValue={form.setValue}
+						onDataChange={handleSelectedDiagnosis}
+					/>
 					<fieldset className="border p-4 rounded-md bg-muted pb-6">
 						<legend className="text-lg font-semibold">
 							Supporting Documents

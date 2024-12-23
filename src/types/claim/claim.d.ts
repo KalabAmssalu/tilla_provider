@@ -21,11 +21,11 @@ export type ClaimType = {
 	admission_date: string;
 	discharge_hour: {
 		hour: string;
-		minute: string;
+		period?: "AM" | "PM";
 	};
 	admission_hour: {
 		hour: string;
-		minute: string;
+		period?: "AM" | "PM";
 	};
 	revenue_center_description: string;
 	other_provider_ids: string;
@@ -55,11 +55,13 @@ export type ClaimType = {
 	medication_prescription: File[];
 	additional_charge: number; // Consider using number for currency values
 	revenue_code_tin_number: string;
-	non_covered_charges?: string;
+	non_covered_charges?: number;
 	// principal_diagnosis_code_poc_code?: string;
 	// principal_diagnosis_code_poc_description?: string;
 	// principal_diagnosis_code_poc_category?: string;
 	// lonic_category?: string;
 	medical_imaging?: File[];
 	exam_and_lab?: File[];
+	individual_member: number;
+	provider: number;
 };

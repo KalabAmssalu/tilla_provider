@@ -263,6 +263,7 @@
 	"claimForm": {
 		"title": "Claim Registration Form",
 		"description": "Please fill out the form below to claim your free health care.",
+		"fieldRequired": "This field is required",
 		"fields": {
 			"diagnosis_date": {
 				"label": "Diagnosis Date",
@@ -282,6 +283,12 @@
 				"description": "Specify the category of the diagnosis.",
 				"error": "Diagnosis category is required."
 			},
+			"diagnosis_source": {
+				"label": "Diagnosis Source",
+				"placeholder": "Enter the diagnosis source",
+				"description": "Specify the source of the diagnosis.",
+				"error": "Diagnosis source is required."
+			},
 			"diagnosis_description": {
 				"label": "Diagnosis Description",
 				"placeholder": "Enter the diagnosis description",
@@ -293,6 +300,12 @@
 				"placeholder": "Enter the LOINC code",
 				"description": "Provide the LOINC code associated with the diagnosis.",
 				"error": "LOINC code is required."
+			},
+			"lonic_category": {
+				"label": "LOINC Category",
+				"placeholder": "Enter the LOINC category",
+				"description": "Provide the LOINC category associated with the diagnosis.",
+				"error": "LOINC category is required."
 			},
 			"lonic_description": {
 				"label": "LOINC Description",

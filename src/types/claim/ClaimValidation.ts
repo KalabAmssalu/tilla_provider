@@ -81,21 +81,36 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 		]),
 
 		// WHO Diagnosis Information
-		diagnosis_date: z.string().min(1, {
-			message: t("fields.diagnosis_date.error"),
-		}),
-		diagnosis_source: z.string().min(2, {
-			message: t("fields.diagnosis_source.error"),
-		}),
-		diagnosis_category: z.string().min(2, {
-			message: t("fields.diagnosis_category.error"),
-		}),
-		diagnosis_description: z.string().min(2, {
-			message: t("fields.diagnosis_description.error"),
-		}),
-		diagnosis_code: z.string().min(2, {
-			message: t("fields.diagnosis_code.error"),
-		}),
+		diagnosis_date: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.diagnosis_date.error"),
+			}),
+		]),
+		diagnosis_source: z.union([
+			z.literal(""),
+			z.string().min(2, {
+				message: t("fields.diagnosis_source.error"),
+			}),
+		]),
+		diagnosis_category: z.union([
+			z.literal(""),
+			z.string().min(2, {
+				message: t("fields.diagnosis_category.error"),
+			}),
+		]),
+		diagnosis_description: z.union([
+			z.literal(""),
+			z.string().min(2, {
+				message: t("fields.diagnosis_description.error"),
+			}),
+		]),
+		diagnosis_code: z.union([
+			z.literal(""),
+			z.string().min(2, {
+				message: t("fields.diagnosis_code.error"),
+			}),
+		]),
 
 		// Other Diagnosis Information
 		other_diagnosis_codes_poa_code: z.union([
@@ -121,33 +136,33 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 		]),
 
 		// LONIC Information
-		// lonic_category: z.union([z.literal(""), z.string().optional()]),
-		// lonic_code: z.string().min(2, {
-		// 	message: t("fields.lonic_code.error"),
-		// }),
-		// lonic_description: z.string().min(2, {
-		// 	message: t("fields.lonic_description.error"),
-		// }),
+		lonic_category: z.union([z.literal(""), z.string().optional()]),
+		lonic_code: z.string().min(2, {
+			message: t("fields.lonic_code.error"),
+		}),
+		lonic_description: z.string().min(2, {
+			message: t("fields.lonic_description.error"),
+		}),
 
 		// // Procedure Information
-		// cpt_code: z.union([
-		// 	z.literal(""),
-		// 	z.string().min(1, {
-		// 		message: t("fields.cpt_code.error"),
-		// 	}),
-		// ]),
-		// cpt_category: z.union([
-		// 	z.literal(""),
-		// 	z.string().min(1, {
-		// 		message: t("fields.cpt_category.error"),
-		// 	}),
-		// ]),
-		// cpt_description: z.union([
-		// 	z.literal(""),
-		// 	z.string().min(1, {
-		// 		message: t("fields.cpt_description.error"),
-		// 	}),
-		// ]),
+		cpt_code: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.cpt_code.error"),
+			}),
+		]),
+		cpt_category: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.cpt_category.error"),
+			}),
+		]),
+		cpt_description: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.cpt_description.error"),
+			}),
+		]),
 		principal_procedure_code: z.union([
 			z.literal(""),
 			z.string().min(1, {

@@ -1,10 +1,13 @@
 "use client";
 
-import React from "react";
-
 import { Info } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { Control, FieldValues, Path } from "react-hook-form";
+import {
+	type Control,
+	Controller,
+	type FieldValues,
+	type Path,
+} from "react-hook-form";
 
 import { DateSelector } from "@/components/ui/custom/date-selector";
 import {
@@ -21,6 +24,7 @@ import {
 	TooltipProvider,
 	TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { formatToMMDDYYYY } from "@/lib/utils/dateUtils";
 
 interface ReusableDatePickerFieldProps<TFieldValues extends FieldValues> {
 	name: Path<TFieldValues>;
@@ -32,6 +36,9 @@ interface ReusableDatePickerFieldProps<TFieldValues extends FieldValues> {
 	control: Control<TFieldValues>;
 	disabled?: boolean;
 	buttonClassName?: string;
+	min?: number;
+	max?: number;
+	defaultValue?: string;
 }
 
 export function ReusableDatePickerField<TFieldValues extends FieldValues>({
@@ -39,14 +46,16 @@ export function ReusableDatePickerField<TFieldValues extends FieldValues>({
 	labelKey,
 	placeholderKey,
 	descriptionKey,
-	local,
+	local = "",
 	required = false,
 	control,
 	disabled = false,
-	buttonClassName,
+	buttonClassName = "",
+	min = 1900,
+	max = new Date().getFullYear(),
+	defaultValue,
 }: ReusableDatePickerFieldProps<TFieldValues>) {
-	const namespace = local || "";
-	const t = useTranslations(namespace);
+	const t = useTranslations(local);
 
 	return (
 		<FormField
@@ -58,7 +67,7 @@ export function ReusableDatePickerField<TFieldValues extends FieldValues>({
 						{descriptionKey && (
 							<TooltipProvider>
 								<Tooltip>
-									<TooltipTrigger>
+									<TooltipTrigger aria-label={t(descriptionKey)}>
 										<Info size={15} />
 									</TooltipTrigger>
 									<TooltipContent className="bg-secondary">
@@ -73,13 +82,34 @@ export function ReusableDatePickerField<TFieldValues extends FieldValues>({
 						{required && <span className="text-destructive">*</span>}
 					</FormLabel>
 					<FormControl>
-						<DateSelector
-							selectedDate={field.value ? new Date(field.value) : undefined}
-							onDateChange={(date) => {
-								field.onChange(date ? date.toISOString() : "");
-							}}
-							placeholder={placeholderKey ? t(placeholderKey) : undefined}
-							buttonClassName={buttonClassName}
+						<Controller
+							control={control}
+							name={name}
+							rules={{ required: required ? t("fieldRequired") : false }}
+							render={({ field }) => (
+								<DateSelector
+									selectedDate={
+										field.value
+											? new Date(field.value)
+											: defaultValue
+												? new Date(defaultValue)
+												: undefined
+									}
+									onDateChange={(date) => {
+										if (!disabled) {
+											field.onChange(date ? formatToMMDDYYYY(date) : "");
+										}
+									}}
+									yearValidation={{ min, max }}
+									placeholder={
+										placeholderKey
+											? t(placeholderKey)
+											: t("default.placeholder")
+									}
+									buttonClassName={buttonClassName}
+									// disabled={disabled}
+								/>
+							)}
 						/>
 					</FormControl>
 					<FormMessage />

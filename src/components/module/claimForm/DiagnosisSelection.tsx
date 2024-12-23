@@ -1,8 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-import { Controller, useForm } from "react-hook-form";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import debounce from "lodash/debounce";
+import { useTranslations } from "next-intl";
+import {
+	type Control,
+	Controller,
+	type UseFormSetValue,
+	useWatch,
+} from "react-hook-form";
 
 import {
 	useICD10Ethiopia,
@@ -21,23 +29,32 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 type DiagnosisSource = "WHO" | "ETHIOPIA";
 
 interface CategoryDescriptionFormProps {
 	onDataChange: (data: {
 		category: string;
+		source: DiagnosisSource;
 		description: string;
 		code: string;
 		date: string;
 	}) => void;
+	control: Control<any>;
+	setValue: UseFormSetValue<any>;
 }
 
 const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 	onDataChange,
+	control,
+	setValue,
 }) => {
-	const { control, setValue, watch } = useForm();
-	const diagnosisDate = watch("diagnosis_date");
+	const diagnosisDate = useWatch({
+		control,
+		name: "diagnosis_date",
+	});
+	const t = useTranslations("claimForm");
 
 	const [diagnosisSource, setDiagnosisSource] =
 		useState<DiagnosisSource>("WHO");
@@ -53,21 +70,48 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 	>([]);
 	const [code, setCode] = useState<string>("");
 
-	// Use useQuery to fetch WHO and Ethiopia diagnosis data
+	// Add search state
+	const [searchTerm, setSearchTerm] = useState("");
+
+	// Memoize filtered descriptions
+	const filteredDescriptions = useMemo(() => {
+		if (!descriptions.length) return [];
+		return descriptions.filter((desc) =>
+			desc.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+	}, [descriptions, searchTerm]);
+
+	// Debounced search handler
+	const debouncedSearch = useCallback(
+		debounce((term: string) => {
+			setSearchTerm(term);
+		}, 300),
+		[]
+	);
+
+	// Modified query hooks with enabled option
 	const {
 		data: diagnosisCodeDataWHO,
 		isError: isErrorWHO,
 		isLoading: isLoadingWHO,
-	} = useICD10WHO();
+	} = useICD10WHO(diagnosisSource);
+
 	const {
 		data: diagnosisCodeDataEthiopia,
 		isError: isErrorEthiopia,
 		isLoading: isLoadingEthiopia,
-	} = useICD10Ethiopia();
+	} = useICD10Ethiopia(diagnosisSource);
 
-	// Use the hooks at component level
-	const { data: whoRecords } = useICD10WHORecords(selectedCategory);
-	const { data: ethiopiaRecords } = useICD10EthiopiaRecords(selectedCategory);
+	// Modify the records queries to only run when there's a selected category
+	const { data: whoRecords } = useICD10WHORecords(
+		selectedCategory,
+		!!selectedCategory && diagnosisSource === "WHO"
+	);
+
+	const { data: ethiopiaRecords } = useICD10EthiopiaRecords(
+		selectedCategory,
+		!!selectedCategory && diagnosisSource === "ETHIOPIA"
+	);
 
 	// Fetch categories based on diagnosis source
 	useEffect(() => {
@@ -78,15 +122,33 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 		}
 	}, [diagnosisSource, diagnosisCodeDataWHO, diagnosisCodeDataEthiopia]);
 
-	// Fetch records based on selected category and diagnosis source
+	// Modify the records effect to handle data in chunks
 	useEffect(() => {
 		try {
 			const records = diagnosisSource === "WHO" ? whoRecords : ethiopiaRecords;
 
 			if (isICD10RecordArray(records)) {
-				const descriptions = records.map((record) => record.description);
-				setSelectedList(records);
-				setDescriptions(descriptions);
+				// Process data in chunks to prevent UI blocking
+				const chunkSize = 100;
+				let currentIndex = 0;
+
+				const processNextChunk = () => {
+					const chunk = records.slice(currentIndex, currentIndex + chunkSize);
+					const newDescriptions = chunk.map((record) => record.description);
+
+					setDescriptions((prev) => [...prev, ...newDescriptions]);
+					setSelectedList((prev) => [...prev, ...chunk]);
+
+					currentIndex += chunkSize;
+					if (currentIndex < records.length) {
+						setTimeout(processNextChunk, 0);
+					}
+				};
+
+				// Reset states before processing new data
+				setDescriptions([]);
+				setSelectedList([]);
+				processNextChunk();
 			}
 		} catch (error) {
 			console.error("Error processing records:", error);
@@ -118,26 +180,134 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 		setDescriptions([]);
 		setCode("");
 		setValue("description", "");
-		onDataChange({ category, description: "", code: "", date: diagnosisDate });
+		onDataChange({
+			category,
+			source: diagnosisSource,
+			description: "",
+			code: "",
+			date: diagnosisDate,
+		});
 	};
 
-	const handleDescriptionChange = (description: string) => {
-		setSelectedDescription(description);
-		const selectedRecord = selectedList.find(
-			(record) => record.description === description
-		);
+	// Add memoization for handlers
+	const handleDescriptionChange = useCallback(
+		(description: string) => {
+			setSelectedDescription(description);
+			const selectedRecord = selectedList.find(
+				(record) => record.description === description
+			);
 
-		if (selectedRecord) {
-			setCode(selectedRecord.code);
-			onDataChange({
-				category: selectedCategory,
-				description,
-				code: selectedRecord.code,
-				date: diagnosisDate,
-			});
-		} else {
-			setCode("");
-		}
+			if (selectedRecord) {
+				setCode(selectedRecord.code);
+				onDataChange({
+					category: selectedCategory,
+					source: diagnosisSource,
+					description: selectedDescription,
+					code: selectedRecord.code,
+					date: diagnosisDate,
+				});
+			} else {
+				setCode("");
+			}
+		},
+		[
+			selectedList,
+			selectedCategory,
+			diagnosisSource,
+			selectedDescription,
+			diagnosisDate,
+			onDataChange,
+		]
+	);
+
+	// Optimize the search input handler with debouncing
+	const handleSearchChange = useCallback(
+		debounce((value: string, onChange: (value: string) => void) => {
+			onChange(value);
+			debouncedSearch(value);
+		}, 150),
+		[debouncedSearch]
+	);
+
+	// Replace the ReusableSelectField for descriptions with a virtualized select
+	const VirtualizedSelect = () => {
+		const parentRef = React.useRef<HTMLDivElement>(null);
+
+		const rowVirtualizer = useVirtualizer({
+			count: filteredDescriptions.length,
+			getScrollElement: () => parentRef.current,
+			estimateSize: () => 35, // estimated height of each row
+			overscan: 5,
+		});
+
+		return (
+			<FormItem>
+				<FormLabel htmlFor="diagnosis_description">
+					{t("fields.diagnosis_description.label")}
+				</FormLabel>
+				<FormControl>
+					<Controller
+						control={control}
+						name="diagnosis_description"
+						render={({ field }) => (
+							<div className="relative">
+								<Input
+									id="diagnosis_description"
+									type="text"
+									placeholder={t("fields.diagnosis_description.placeholder")}
+									onChange={(e) => {
+										field.onChange(e.target.value);
+										debouncedSearch(e.target.value);
+									}}
+									value={field.value}
+									className="mb-2"
+								/>
+								<div
+									ref={parentRef}
+									className="h-[200px] overflow-auto border rounded-md bg-background"
+								>
+									<div
+										style={{
+											height: `${rowVirtualizer.getTotalSize()}px`,
+											width: "100%",
+											position: "relative",
+										}}
+									>
+										{rowVirtualizer.getVirtualItems().map((virtualRow) => (
+											<div
+												key={virtualRow.index}
+												className={cn(
+													"absolute left-0 w-full px-4 py-2 cursor-pointer hover:bg-accent/50 transition-colors",
+													selectedDescription ===
+														filteredDescriptions[virtualRow.index]
+														? "bg-primary text-white hover:text-black hover:bg-primary/50"
+														: ""
+												)}
+												style={{
+													height: `${virtualRow.size}px`,
+													transform: `translateY(${virtualRow.start}px)`,
+												}}
+												onClick={() =>
+													handleDescriptionChange(
+														filteredDescriptions[virtualRow.index]
+													)
+												}
+											>
+												<div className="flex items-center h-full">
+													<span className="text-sm leading-normal line-clamp-2">
+														{filteredDescriptions[virtualRow.index]}
+													</span>
+												</div>
+											</div>
+										))}
+									</div>
+								</div>
+							</div>
+						)}
+					/>
+				</FormControl>
+			</FormItem>
+		);
 	};
 
 	if (isLoadingWHO || isLoadingEthiopia) {
@@ -152,15 +322,18 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 		<div className="flex flex-col gap-4">
 			<fieldset className="border p-4 rounded-md bg-muted pb-6">
 				<legend className="text-lg font-semibold">Diagnosis Information</legend>
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 ">
 					<ReusableDatePickerField
 						control={control}
 						name="diagnosis_date"
 						local="claimForm"
 						labelKey="fields.diagnosis_date.label"
 						placeholderKey="fields.diagnosis_date.placeholder"
+						descriptionKey="fields.diagnosis_date.description"
+						buttonClassName="custom-button-class"
 						required
 					/>
+
 					<FormItem>
 						<FormLabel>Diagnosis Source</FormLabel>
 						<FormControl>
@@ -181,37 +354,43 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 				</div>
 			</fieldset>
 			<fieldset className="border p-4 rounded-md bg-muted pb-6">
-				<legend className="text-lg font-semibold">Diagnosis ICD-11</legend>
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+				<legend className="text-lg font-semibold">
+					{diagnosisSource === "WHO"
+						? "WHO Diagnosis ICD-10"
+						: "Ethiopia Diagnosis ICD-11"}
+				</legend>
+				<div className="grid grid-cols-1 md:grid-cols-1 gap-4 pt-4">
 					<ReusableSelectField
 						control={control}
-						name="category"
-						labelKey="Category"
+						name="diagnosis_category"
+						local="claimForm"
+						labelKey="fields.diagnosis_category.label"
+						placeholderKey="fields.diagnosis_category.placeholder"
 						options={categories}
 						onValueChange={handleCategoryChange}
 						required
 					/>
-					<ReusableSelectField
-						control={control}
-						name="description"
-						labelKey="Description"
-						options={descriptions}
-						onValueChange={handleDescriptionChange}
-						required
-					/>
 					<div>
-						<label className="block text-sm font-medium text-gray-700">
-							Code
+						<VirtualizedSelect />
+					</div>
+
+					<div>
+						<label
+							htmlFor="diagnosis_code"
+							className="block text-sm font-medium text-gray-700"
+						>
+							{t("fields.diagnosis_code.label")}
 						</label>
 						<Controller
 							control={control}
-							name="code"
+							name="diagnosis_code"
 							render={({ field }) => (
 								<Input
 									{...field}
+									id="diagnosis_code"
 									value={code}
 									readOnly
-									className="cursor-not-allowed "
+									className="cursor-not-allowed"
 								/>
 							)}
 						/>

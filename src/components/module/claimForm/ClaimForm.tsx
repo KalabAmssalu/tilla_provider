@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import debounce from "lodash/debounce";
 import { Eraser, Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
 import { useSetClaim } from "@/actions/Query/claim-Query/request";
 import { ReusableDatePickerField } from "@/components/shared/Form/ReusableDateField";
@@ -32,6 +32,9 @@ import {
 import { type memberType } from "@/types/member/memeberType";
 
 import BillingCard from "./BillingCard";
+import CPTSelectionForm from "./CPTSelection";
+import DiagnosisSelectionForm from "./DiagnosisSelection";
+import LonicSelectionForm from "./LONICSelection";
 
 export default function ClaimForm({
 	selectedMember,
@@ -82,14 +85,14 @@ export default function ClaimForm({
 			// !done
 
 			// * LONIC
-			// lonic_category: "",
-			// lonic_code: "",
-			// lonic_description: "",
+			lonic_category: "",
+			lonic_code: "",
+			lonic_description: "",
 			// !done
 
-			// cpt_code: "",
-			// cpt_category: "",
-			// cpt_description: "",
+			cpt_code: "",
+			cpt_category: "",
+			cpt_description: "",
 
 			principal_procedure_code: "",
 			operating_physician_name_npi_specialty_code: "",
@@ -174,25 +177,39 @@ export default function ClaimForm({
 	};
 	const handleSelectedDiagnosis = (data: {
 		category: string;
+		source: "WHO" | "ETHIOPIA";
 		description: string;
 		code: string;
 		date: string;
 	}) => {
 		form.setValue("diagnosis_category", data.category);
+		form.setValue("diagnosis_source", data.source);
 		form.setValue("diagnosis_description", data.description);
 		form.setValue("diagnosis_code", data.code);
 		form.setValue("diagnosis_date", data.date);
+		console.log("data", data);
 	};
 
-	// const handleCPTValueChange = (data: {
-	// 	category: string;
-	// 	description: string;
-	// 	code: string;
-	// }) => {
-	// 	form.setValue("cpt_category", data.category);
-	// 	form.setValue("cpt_description", data.description);
-	// 	form.setValue("cpt_code", data.code);
-	// };
+	const handleSelectedLonic = (data: {
+		category: string;
+		description: string;
+		code: string;
+	}) => {
+		form.setValue("lonic_category", data.category);
+		form.setValue("lonic_description", data.description);
+		form.setValue("lonic_code", data.code);
+	};
+
+	const handleCPTValueChange = (data: {
+		category: string;
+		description: string;
+		code: string;
+	}) => {
+		form.setValue("cpt_category", data.category);
+		form.setValue("cpt_description", data.description);
+		form.setValue("cpt_code", data.code);
+		console.log("CPT", data);
+	};
 
 	const { watch } = form;
 
@@ -253,16 +270,20 @@ export default function ClaimForm({
 	const [examAndLabFiles, setExamAndLabFiles] = useState<File[]>([]);
 	const [receiptsFile, setReciptsFile] = useState<File[]>([]);
 
+	// Optimize file handlers by debouncing
+	const debouncedFileHandler = useCallback(
+		debounce((files: File[], setter: (files: File[]) => void) => {
+			setter(files);
+		}, 300),
+		[]
+	);
+
 	const handleReleaseOfInformationFilesChange = (files: File[]) => {
-		console.log("Release of Information Files:", files);
-		setReleaseOfInformationFiles(files);
-		// Update state or perform any other actions with the files
+		debouncedFileHandler(files, setReleaseOfInformationFiles);
 	};
 
 	const handleMedicationPrescriptionFilesChange = (files: File[]) => {
-		console.log("Medication Prescription Files:", files);
-		setMedicationPrescriptionFiles(files);
-		// Update state or perform any other actions with the files
+		debouncedFileHandler(files, setMedicationPrescriptionFiles);
 	};
 
 	const handleMedicalImagingFilesChange = (files: File[]) => {
@@ -284,28 +305,34 @@ export default function ClaimForm({
 
 	const { mutate: setClaim } = useSetClaim();
 
-	async function onSubmit(data: Partial<ClaimFormValues>) {
+	async function onSubmit(data: ClaimFormValues) {
 		try {
 			setIsSubmitting(true);
 
-			const submitData = {
+			// Ensure hour objects are properly formatted
+			const formattedData = {
 				...data,
+				discharge_hour:
+					data.discharge_hour === "" ? undefined : data.discharge_hour,
+				admission_hour:
+					data.admission_hour === "" ? undefined : data.admission_hour,
+			};
+
+			const submitData = {
+				...formattedData,
 				release_of_information_certification: releaseOfInformationFiles,
 				medication_prescription: medicationPrescriptionFiles,
 				medical_imaging: medicalImagingFiles,
 				exam_and_lab: examAndLabFiles,
 				receipts: receiptsFile,
+				individual_member: Number(selectedMember.id),
+				provider: dataProvider.user.provider.id,
 			};
 
-			// setClaim(submitData);
-			console.log("Form Data:", data);
-			console.log("Submit Data with files:", submitData);
-
-			// Your existing submission logic here
-			toast.success("Claim Submitted Successfully");
+			console.log("submitted data", submitData);
+			setClaim(submitData);
 		} catch (error) {
 			console.error("Error submitting form:", error);
-			toast.error("Failed to submit claim");
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -473,7 +500,11 @@ export default function ClaimForm({
 						</fieldset>
 						{/* Diagnosis Selection Form */}
 
-						{/* <DiagnosisSelectionForm onDataChange={handleSelectedDiagnosis} />  */}
+						<DiagnosisSelectionForm
+							onDataChange={handleSelectedDiagnosis}
+							control={form.control}
+							setValue={form.setValue}
+						/>
 						{/* Principal Diagnosis Form */}
 						{/* <PrincipalDiagnosisForm onDataChange={handlePrincipalDiagnosis} /> */}
 						<fieldset className="border p-4 rounded-md bg-muted pb-6">
@@ -525,9 +556,9 @@ export default function ClaimForm({
 							</div>
 						</fieldset>
 						{/* LONIC Code Form */}
-						{/* <LONICSelectionForm onDataChange={handlePrincipalDiagnosis} /> */}
+						<LonicSelectionForm onDataChange={handleSelectedLonic} />
 
-						{/* <CPTSelectionForm onDataChange={handleCPTValueChange} /> */}
+						<CPTSelectionForm onDataChange={handleCPTValueChange} />
 
 						<fieldset className="border p-4 rounded-md bg-muted pb-6">
 							<legend className="text-lg font-semibold">
@@ -758,8 +789,19 @@ export default function ClaimForm({
 							<Button type="reset" variant={"outline"}>
 								Clean Form <Eraser className="ml-2" size={16} />
 							</Button>
-							<Button type="submit" className="bg-green-500 ">
-								Submit Claim <Send className="ml-2 " size={16} />
+							<Button
+								type="submit"
+								// onClick={() => form.handleSubmit(onSubmit)}
+								className="bg-green-500"
+								disabled={isSubmitting}
+							>
+								{isSubmitting ? (
+									"Submitting..."
+								) : (
+									<>
+										Submit Claim <Send className="ml-2" size={16} />
+									</>
+								)}
 							</Button>
 						</div>
 					</form>
