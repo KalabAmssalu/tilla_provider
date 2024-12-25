@@ -120,7 +120,8 @@ export const useICD10WHO = (diagnosisSource: string) => {
 		queryFn: async () => {
 			try {
 				const response = await getICD10WHO();
-				return response.data.icd__10_categories;
+
+				return response.data.icd_10_categories;
 			} catch (error: any) {
 				toast.error(`Error fetching members: ${error.message}`);
 				throw error;
