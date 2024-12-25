@@ -7,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 
 import { useSetClaim } from "@/actions/Query/claim-Query/request";
+import memberRecordsPage from "@/app/[locale]/dashboard/reports/member/page";
 import { ReusableDatePickerField } from "@/components/shared/Form/ReusableDateField";
 import ReusableFileUploadField from "@/components/shared/Form/ReusableFileField";
 import ReusableFormField from "@/components/shared/Form/ReusableFormField";
@@ -53,8 +54,8 @@ export default function ClaimForm({
 			attending_provider_name_npi_specialty_code: "",
 			// !done
 
-			other_provider_name_npi_specialty_code: "", // change this to detail not a code
-			other_provider_ids: "",
+			other_provider_name_npi_specialty: "", //dfd
+			other_provider_ids: "", //dfs
 			admission_date: "",
 			admission_hour: {
 				hour: "",
@@ -62,23 +63,19 @@ export default function ClaimForm({
 			},
 			source_of_admission: "",
 			type_of_admission_visit: "",
-			admitting_diagnosis_code: "", // change this to textarea not a code
-			patient_reason_for_visit_code: "", // change this to textarea not a code
+			admitting_diagnosis: "",
+			patient_reason_for_visit: "",
 
 			// * WHO
 			diagnosis_date: "",
-			diagnosis_source: "", // add this field enum (Ethiopia, and WHO)
+			diagnosis_source: "",
 			diagnosis_category: "",
 			diagnosis_description: "",
 			diagnosis_code: "",
 			// !done
 
-			// principal_diagnosis_code_poc_code: "", // add this field change this field with principal_diagnosis_code_poa_code
-			// principal_diagnosis_code_poc_description: "", // add this field
-			// principal_diagnosis_code_poc_category: "", // add this field
-
 			// * OTHER Diagnosis
-			other_diagnosis_codes_poa_code: "", // chang this field with other_diagnosis_codes_poc_code
+			other_diagnosis_codes_poc_code: "",
 			external_cause_of_injury_code: "",
 			treatment_details: "",
 			treatment_authorization_codes: "",
@@ -106,12 +103,6 @@ export default function ClaimForm({
 			},
 			patient_discharge_status: "",
 			additional_notes: "",
-
-			// release_of_information_certification: "",
-			// receipts: "",
-			// medication_prescription: "",
-			// medical_imaging: "",
-			// exam_and_lab: "",
 
 			service_charge: 0,
 			additional_charge: 0,
@@ -198,6 +189,7 @@ export default function ClaimForm({
 		form.setValue("lonic_category", data.category);
 		form.setValue("lonic_description", data.description);
 		form.setValue("lonic_code", data.code);
+		console.log("data", data);
 	};
 
 	const handleCPTValueChange = (data: {
@@ -213,45 +205,41 @@ export default function ClaimForm({
 
 	const { watch } = form;
 
-	const [paymentDuty, setPaymentDuty] = useState(0);
-	const [tillaDuty, setTillaDuty] = useState(0);
-	const [discountAve, setDiscountAve] = useState(0);
-	const [totalCharge, setTotalCharge] = useState(0);
-	const [paymentWithDiscount, setPaymentWithDiscount] = useState(0);
-	const [tillaPaymentDuty, setTillaPaymentDuty] = useState(0);
-	const [providerDiscount, setProviderDiscount] = useState(0);
-	const [totalReduce, setTotalReduce] = useState(0);
-	const [amountToBeClaimed, setAmountToBeClaimed] = useState(0);
-	const [newTotalCharge, setNewTotalCharge] = useState(0);
 	const serviceCharge = Number(watch("service_charge")) || 0;
 	const additionalCharge = Number(watch("additional_charge")) || 0;
 
+	const [paymentDuty, setPaymentDuty] = useState(0);
+	const [tillaDuty, setTillaDuty] = useState(0);
+	const [providerDiscount, setProviderDiscount] = useState(0); // change this to provider_discount_agreement
+	const [providerDiscountAgreement, setProviderDiscountAgreement] = useState(0); // change this to provider_discount_agreement
+	const [totalReduce, setTotalReduce] = useState(0);
+	const [tillaPaymentDuty, setTillaPaymentDuty] = useState(0);
+	const [amountToBeClaimed, setAmountToBeClaimed] = useState(0);
+
 	useEffect(() => {
-		const newPaymentDuty = selectedMember?.member_payment_duty || 0;
-		const newTillaDuty = 100 - newPaymentDuty;
-		const newDiscountAve =
-			dataProvider.user?.provider.provider_discount_agreement || 0;
+		const memberDuty = selectedMember?.member_payment_duty || 0; // member_payment_duty
+		const tillaDuty = 100 - memberDuty; // tilla_duty
+		const discountAgreement =
+			dataProvider.user?.provider.provider_discount_agreement || 0; // provider_discount_agreement
+		const Charge = serviceCharge + additionalCharge; // payment_charge with out discount
+		const providerDiscountAmount = (Charge * discountAgreement) / 100; // after the provider discount the amount to pay
 
-		const newTotalCharge = serviceCharge + additionalCharge;
-		const newPaymentWithDiscount =
-			(newTotalCharge * (100 - newDiscountAve)) / 100;
+		const total_reduce = Charge - providerDiscountAmount; // total payment before the insurance coverage
 
-		const newTillaPaymentDuty = (newPaymentWithDiscount * newTillaDuty) / 100;
-		const newProviderDiscount = (newTotalCharge * newDiscountAve) / 100;
-		const newTotalReduce = -newProviderDiscount + newTillaPaymentDuty;
-
-		const newAmountToBeClaimed = (newPaymentWithDiscount * 45) / 100;
+		const newTillaPaymentDuty = (total_reduce * tillaDuty) / 100;
+		const total_have_to_pay = total_reduce - newTillaPaymentDuty;
 
 		// Update the values
-		setPaymentDuty(newPaymentDuty);
-		setTillaDuty(newTillaDuty);
-		setDiscountAve(newDiscountAve);
-		setTotalCharge(newTotalCharge);
-		setPaymentWithDiscount(newPaymentWithDiscount);
+		setPaymentDuty(memberDuty); // member duty
+		setTillaDuty(tillaDuty); // tilla duty
+		setProviderDiscount(providerDiscountAmount); //provider duty
+
+		setProviderDiscountAgreement(discountAgreement);
+		setTotalReduce(total_reduce);
+
+		// setPaymentWithDiscount(newPaymentWithDiscount);
 		setTillaPaymentDuty(newTillaPaymentDuty);
-		setProviderDiscount(newProviderDiscount);
-		setTotalReduce(newTotalReduce);
-		setAmountToBeClaimed(newAmountToBeClaimed);
+		setAmountToBeClaimed(total_have_to_pay);
 	}, [serviceCharge, additionalCharge]);
 
 	const isDeductable =
@@ -320,13 +308,15 @@ export default function ClaimForm({
 
 			const submitData = {
 				...formattedData,
-				release_of_information_certification: releaseOfInformationFiles,
+				release_of_information_reciept: releaseOfInformationFiles,
 				medication_prescription: medicationPrescriptionFiles,
 				medical_imaging: medicalImagingFiles,
 				exam_and_lab: examAndLabFiles,
 				receipts: receiptsFile,
 				individual_member: Number(selectedMember.id),
 				provider: dataProvider.user.provider.id,
+
+				claim_status: "pending",
 			};
 
 			console.log("submitted data", submitData);
@@ -353,7 +343,7 @@ export default function ClaimForm({
 							<legend className="text-lg font-semibold">
 								Provider Information and Place of Service
 							</legend>
-							<div>
+							{/* <div>
 								{totalReduce} - totalReduce /{isDeductable} - isDeductable /
 								{tillaPaymentDuty} - tillaPaymentDuty /{providerDiscount} -
 								ProviderDiscount /{totalCharge} - totalCharge /
@@ -361,7 +351,7 @@ export default function ClaimForm({
 								paymentDuty /{amountToBeClaimed} - amountToBeClaimed /
 								{selectedMember?.deductible_type} - deductibleType /
 								{newTotalCharge} - newTotalCharge /
-							</div>
+							</div> */}
 							{/* POS Code */}
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 mb-4">
 								<ReusableSelectField
@@ -410,12 +400,12 @@ export default function ClaimForm({
 								/>
 								<ReusableFormField
 									control={form.control}
-									name="other_provider_name_npi_specialty_code"
+									name="other_provider_name_npi_specialty"
 									type="text"
 									local="claimForm"
-									labelKey="fields.other_provider_name_npi_specialty_code.label"
-									placeholderKey="fields.other_provider_name_npi_specialty_code.placeholder"
-									descriptionKey="fields.other_provider_name_npi_specialty_code.description"
+									labelKey="fields.other_provider_name_npi_specialty.label"
+									placeholderKey="fields.other_provider_name_npi_specialty.placeholder"
+									descriptionKey="fields.other_provider_name_npi_specialty.description"
 								/>
 								<ReusableFormField
 									control={form.control}
@@ -479,20 +469,20 @@ export default function ClaimForm({
 								/>
 								<ReusableTeaxtAreaField
 									control={form.control}
-									name="admitting_diagnosis_code"
+									name="admitting_diagnosis"
 									type="text"
 									local="claimForm"
-									labelKey="fields.admitting_diagnosis_code.label"
-									placeholderKey="fields.admitting_diagnosis_code.placeholder"
-									descriptionKey="fields.admitting_diagnosis_code.description"
+									labelKey="fields.admitting_diagnosis.label"
+									placeholderKey="fields.admitting_diagnosis.placeholder"
+									descriptionKey="fields.admitting_diagnosis.description"
 								/>
 								<ReusableTeaxtAreaField
 									control={form.control}
-									name="patient_reason_for_visit_code"
+									name="patient_reason_for_visit"
 									type="text"
-									labelKey="fields.patient_reason_for_visit_code.label"
-									placeholderKey="fields.patient_reason_for_visit_code.placeholder"
-									descriptionKey="fields.patient_reason_for_visit_code.description"
+									labelKey="fields.patient_reason_for_visit.label"
+									placeholderKey="fields.patient_reason_for_visit.placeholder"
+									descriptionKey="fields.patient_reason_for_visit.description"
 									local="claimForm"
 									required={true}
 								/>
@@ -515,11 +505,11 @@ export default function ClaimForm({
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 mb-4 space-y-2">
 								<ReusableTeaxtAreaField
 									control={form.control}
-									name="other_diagnosis_codes_poa_code"
+									name="other_diagnosis_codes_poc_code"
 									type="text"
-									labelKey="fields.other_diagnosis_codes_poa_code.label"
-									placeholderKey="fields.other_diagnosis_codes_poa_code.placeholder"
-									descriptionKey="fields.other_diagnosis_codes_poa_code.description"
+									labelKey="fields.other_diagnosis_codes_poc_code.label"
+									placeholderKey="fields.other_diagnosis_codes_poc_code.placeholder"
+									descriptionKey="fields.other_diagnosis_codes_poc_code.description"
 									local="claimForm"
 									required={true}
 								/>
@@ -809,15 +799,18 @@ export default function ClaimForm({
 			</div>
 			<div className="lg:col-span-1  ">
 				<BillingCard
-					selectedMember={selectedMember}
+					memberDuty={paymentDuty}
+					tillaDuty={tillaDuty}
+					providerDuty={providerDiscount}
+					discountAgree={providerDiscountAgreement}
 					serviceCharge={serviceCharge}
 					AdditionalCharge={additionalCharge}
-					totalCharge={totalCharge}
-					paymentWithDiscount={paymentWithDiscount}
+					totalCharge={totalReduce}
 					tillaPaymentDuty={tillaPaymentDuty}
 					amountToBeClaimed={amountToBeClaimed}
-					discountAve={discountAve}
-					tillaDuty={tillaDuty}
+					isDeductable={
+						selectedMember?.deductible_type === "with_deductible" ? true : false
+					}
 				/>
 			</div>
 		</div>

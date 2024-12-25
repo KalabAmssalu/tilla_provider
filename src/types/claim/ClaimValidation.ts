@@ -32,10 +32,10 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 		}),
 
 		// Additional Provider Details
-		other_provider_name_npi_specialty_code: z.union([
+		other_provider_name_npi_specialty: z.union([
 			z.literal(""),
 			z.string().min(1, {
-				message: t("fields.other_provider_name_npi_specialty_code.error"),
+				message: t("fields.other_provider_name_npi_specialty.error"),
 			}),
 		]),
 		other_provider_ids: z.union([
@@ -70,13 +70,13 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 				message: t("fields.type_of_admission_visit.error"),
 			}),
 		]),
-		admitting_diagnosis_code: z.string().min(2, {
-			message: t("fields.admitting_diagnosis_code.error"),
+		admitting_diagnosis: z.string().min(2, {
+			message: t("fields.admitting_diagnosis.error"),
 		}),
-		patient_reason_for_visit_code: z.union([
+		patient_reason_for_visit: z.union([
 			z.literal(""),
-			z.string().max(2000, {
-				message: t("fields.patient_reason_for_visit_code.error"),
+			z.string().max(10000, {
+				message: t("fields.patient_reason_for_visit.error"),
 			}),
 		]),
 
@@ -113,10 +113,10 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 		]),
 
 		// Other Diagnosis Information
-		other_diagnosis_codes_poa_code: z.union([
+		other_diagnosis_codes_poc_code: z.union([
 			z.literal(""),
 			z.string().min(2, {
-				message: t("fields.other_diagnosis_codes_poa_code.error"),
+				message: t("fields.other_diagnosis_codes_poc_code.error"),
 			}),
 		]),
 		external_cause_of_injury_code: z.union([
@@ -125,9 +125,12 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 				message: t("fields.external_cause_of_injury_code.error"),
 			}),
 		]),
-		treatment_details: z.string().max(2000, {
-			message: t("fields.treatment_details.error"),
-		}),
+		treatment_details: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.treatment_details.error"),
+			}),
+		]),
 		treatment_authorization_codes: z.union([
 			z.literal(""),
 			z.string().min(1, {
@@ -144,7 +147,7 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 			message: t("fields.lonic_description.error"),
 		}),
 
-		// // Procedure Information
+		// Procedure Information
 		cpt_code: z.union([
 			z.literal(""),
 			z.string().min(1, {

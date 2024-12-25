@@ -130,7 +130,7 @@ const CPTSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 			setCode(selectedRecord.code);
 			onDataChange({
 				category: selectedCategory,
-				description: selectedDescription,
+				description,
 				code: selectedRecord.code,
 			});
 		} else {

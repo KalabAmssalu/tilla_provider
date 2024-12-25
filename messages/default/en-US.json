@@ -313,19 +313,14 @@
 				"description": "Provide a detailed description of the LOINC code.",
 				"error": "LOINC description is required."
 			},
-			"principal_diagnosis_code_poa_code": {
-				"label": "Principal Diagnosis Code POC Code",
-				"placeholder": "Enter the principal diagnosis POC code",
-				"description": "Specify the POC code for the principal diagnosis.",
-				"error": "Principal diagnosis POC code is required."
-			},
-			"other_diagnosis_codes_poa_code": {
+
+			"other_diagnosis_codes_poc_code": {
 				"label": "Other Diagnosis Codes POC Code",
 				"placeholder": "Enter other diagnosis POC codes",
 				"description": "Provide POC codes for additional diagnoses.",
 				"error": "Other diagnosis POC codes must be valid."
 			},
-			"admitting_diagnosis_code": {
+			"admitting_diagnosis": {
 				"label": "Admitting Diagnosis Description",
 				"placeholder": "Enter the admitting diagnosis Description",
 				"description": "Specify the diagnosis Description upon admission.",
@@ -428,7 +423,7 @@
 				"description": "Provide the control number assigned to the patient.",
 				"error": "Patient control number is required."
 			},
-			"patient_reason_for_visit_code": {
+			"patient_reason_for_visit": {
 				"label": "Patient Reason for Visit",
 				"placeholder": "Enter the reason for visit ",
 				"description": "Provide the indicating the reason for the visit.",
@@ -482,7 +477,7 @@
 				"description": "Provide the name, NPI, and specialty code of the operating physician.",
 				"error": "Operating physician details are required."
 			},
-			"other_provider_name_npi_specialty_code": {
+			"other_provider_name_npi_specialty": {
 				"label": "Other Provider Name or NPI",
 				"placeholder": "Enter other provider details",
 				"description": "Provide the name, NPI, and specialty code of other providers.",

@@ -189,7 +189,6 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 		});
 	};
 
-	// Add memoization for handlers
 	const handleDescriptionChange = useCallback(
 		(description: string) => {
 			setSelectedDescription(description);
@@ -198,12 +197,14 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 			);
 
 			if (selectedRecord) {
-				setCode(selectedRecord.code);
+				const newCode = selectedRecord.code;
+				setCode(newCode);
+				// Call onDataChange with the updated description and code
 				onDataChange({
 					category: selectedCategory,
 					source: diagnosisSource,
-					description: selectedDescription,
-					code: selectedRecord.code,
+					description, // Use the updated description
+					code: newCode,
 					date: diagnosisDate,
 				});
 			} else {
@@ -214,7 +215,6 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 			selectedList,
 			selectedCategory,
 			diagnosisSource,
-			selectedDescription,
 			diagnosisDate,
 			onDataChange,
 		]
