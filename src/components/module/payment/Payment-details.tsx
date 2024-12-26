@@ -1,15 +1,15 @@
 import { format } from "date-fns";
 
+import { type ClaimPaymentType } from "@/components/screen/claims/PaymentScreen";
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
 } from "@/components/ui/dialog";
-import { type Payment } from "@/types/payment/payment";
 
 interface PaymentDetailsProps {
-	payment: Payment | null;
+	payment: ClaimPaymentType | null;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 }

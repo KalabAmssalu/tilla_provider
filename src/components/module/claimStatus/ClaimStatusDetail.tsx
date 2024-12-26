@@ -145,10 +145,6 @@ export default function ClaimDetailView({
 							<CardContent>
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 									<div>
-										<Label>Treatment Details</Label>
-										<p>{claim.treatment_details}</p>
-									</div>
-									<div>
 										<Label>Treatment Authorization Codes</Label>
 										<p>{claim.treatment_authorization_codes}</p>
 									</div>

@@ -2,24 +2,99 @@
 
 import { type ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
+import {
+	CircleCheck,
+	CircleEllipsis,
+	CircleSlash,
+	ShieldAlert,
+} from "lucide-react";
 
+import { ClaimPaymentType } from "@/components/screen/claims/PaymentScreen";
 import { Badge } from "@/components/ui/badge";
-import { type Payment } from "@/types/payment/payment";
+import { Checkbox } from "@/components/ui/checkbox";
 
-import { DataTableColumnHeader } from "../table/data-table-column-header";
+import { ClaimDisplayType } from "../claimStatus/SearchResult";
+import { DataTableColumnHeader } from "./data-table-column-header";
+import { DataTableRowActions } from "./data-table-row-actions";
 
-export const columns: ColumnDef<Payment>[] = [
+// // Example statuses based on account status
+export const statuses = [
+	{
+		value: "completed",
+		label: "Completed",
+		icon: CircleCheck,
+	},
+	{
+		value: "denied",
+		label: "Denied",
+		icon: CircleSlash,
+	},
+	{
+		value: "disputed",
+		label: "Disputed",
+		icon: ShieldAlert,
+	},
+	{
+		value: "pending",
+		label: "Pending",
+		icon: CircleEllipsis,
+	},
+];
+
+export const columns: ColumnDef<ClaimPaymentType>[] = [
+	{
+		id: "select",
+		header: ({ table }) => (
+			<Checkbox
+				checked={
+					table.getIsAllPageRowsSelected() ||
+					(table.getIsSomePageRowsSelected() && "indeterminate")
+				}
+				onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+				aria-label="Select all"
+				className="translate-y-[2px]"
+			/>
+		),
+		cell: ({ row }) => (
+			<Checkbox
+				checked={row.getIsSelected()}
+				onCheckedChange={(value) => row.toggleSelected(!!value)}
+				aria-label="Select row"
+				className="translate-y-[2px]"
+			/>
+		),
+		enableSorting: false,
+		enableHiding: false,
+	},
 	{
 		accessorKey: "claimId",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Claim ID" />
 		),
+		cell: ({ row }) => {
+			return (
+				<div className="flex space-x-2">
+					<span className="max-w-[100px] truncate font-medium">
+						{row.getValue("claimId")}
+					</span>
+				</div>
+			);
+		},
 	},
 	{
 		accessorKey: "memberId",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Member ID" />
 		),
+		cell: ({ row }) => {
+			return (
+				<div className="flex space-x-2">
+					<span className="max-w-[100px] truncate font-medium">
+						{row.getValue("memberId")}
+					</span>
+				</div>
+			);
+		},
 	},
 	{
 		accessorKey: "dateOfService",
@@ -28,7 +103,8 @@ export const columns: ColumnDef<Payment>[] = [
 		),
 		cell: ({ row }) => {
 			const date = row.getValue("dateOfService") as string;
-			return format(new Date(date), "MM/dd/yyyy");
+			// return format(new Date(date), "MM/dd/yyyy");
+			return date;
 		},
 	},
 	{
@@ -89,7 +165,9 @@ export const columns: ColumnDef<Payment>[] = [
 								? "destructive"
 								: status === "disputed"
 									? "secondary"
-									: "secondary"
+									: status === "pending"
+										? "outline"
+										: "default"
 					}
 				>
 					{status}
@@ -102,5 +180,10 @@ export const columns: ColumnDef<Payment>[] = [
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Payment Method" />
 		),
+	},
+
+	{
+		id: "actions",
+		cell: ({ row }) => <DataTableRowActions row={row} />,
 	},
 ];

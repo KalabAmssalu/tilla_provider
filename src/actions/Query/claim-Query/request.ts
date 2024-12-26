@@ -5,6 +5,8 @@ import {
 	fetchJsonData,
 	getCPT,
 	getCPTRecords,
+	getClaims,
+	getClaimsById,
 	getICD10Ethiopia,
 	getICD10EthiopiaRecords,
 	getICD10WHO,
@@ -202,4 +204,36 @@ export const useSetClaim = () => {
 			},
 		}
 	);
+};
+
+export const useGetClaims = () => {
+	return useQuery<Array<ClaimType>>({
+		queryKey: ["getClaims"],
+		queryFn: async () => {
+			try {
+				const response = await getClaims();
+				return response.data;
+			} catch (error: any) {
+				toast.error(`Error fetching claims: ${error.message}`);
+				throw error;
+			}
+		},
+		retry: false,
+	});
+};
+
+export const useGetCLaimByID = (id: string) => {
+	return useQuery<Array<ClaimType>>({
+		queryKey: ["getClaims"],
+		queryFn: async () => {
+			try {
+				const response = await getClaimsById(id);
+				return response.data;
+			} catch (error: any) {
+				toast.error(`Error fetching claims: ${error.message}`);
+				throw error;
+			}
+		},
+		retry: false,
+	});
 };

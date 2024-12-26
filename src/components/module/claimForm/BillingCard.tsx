@@ -77,6 +77,12 @@ const BillingCard = ({
 						<span className="font-medium text-xl pt-2 text-emerald-600">
 							{amountToBeClaimed.toFixed(2)} ETB
 						</span>
+						{amountToBeClaimed > 0 && (
+							<span className="text-xs text-gray-600">
+								Please ensure that the member pays{" "}
+								{amountToBeClaimed.toFixed(2)} ETB.
+							</span>
+						)}
 					</div>
 				</div>
 			</CardContent>

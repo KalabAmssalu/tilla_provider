@@ -1,23 +1,61 @@
 export const SourceOfAdmissionData = [
 	{
-		Code: "1",
-		Description: "Physician Referral",
+		type: "Physician Referral",
+		description:
+			"Admission arranged by a physician's recommendation or referral.",
 	},
 	{
-		Code: "2",
-		Description: "Clinic Referral",
+		type: "Clinic Referral",
+		description:
+			"Admission based on a referral from a hospital outpatient or freestanding clinic.",
 	},
 	{
-		Code: "3",
-		Description: "HMO Referral",
+		type: "HMO Referral",
+		description:
+			"Admission authorized or referred by a Health Maintenance Organization (HMO).",
 	},
 	{
-		Code: "4",
-		Description: "Self-Referral",
+		type: "Transfer from a Hospital",
+		description: "Admission from another acute care hospital.",
 	},
 	{
-		Code: "5",
-		Description: "Transfer from Another Facility",
+		type: "Transfer from a Skilled Nursing Facility (SNF)",
+		description:
+			"Admission from a skilled nursing or intermediate care facility.",
+	},
+	{
+		type: "Transfer from Another Healthcare Facility",
+		description:
+			"Admission from another type of healthcare facility (e.g., rehab, psych hospital).",
+	},
+	{
+		type: "Emergency Department (ED)",
+		description:
+			"Admission from a hospital's emergency department after evaluation.",
+	},
+	{
+		type: "Court/Law Enforcement",
+		description:
+			"Admission based on legal circumstances or law enforcement referral.",
+	},
+	{
+		type: "Self-Referral",
+		description:
+			"Admission initiated by the patient without a referral from a healthcare professional.",
+	},
+	{
+		type: "Newborn (Routine Delivery)",
+		description: "Admission for a newborn during a routine delivery.",
+	},
+	{
+		type: "Newborn (Transferred from Another Facility)",
+		description:
+			"Admission for a newborn transferred from another facility for additional care.",
+	},
+	{
+		type: "Unknown/Other",
+		description:
+			"When the source of admission does not fit into standard categories or is not specified.",
 	},
 ];
 
@@ -46,7 +84,7 @@ export const TypeOfAdmissionData = [
 
 export function getAllAdmission(): string[] {
 	return SourceOfAdmissionData.map(
-		(admission) => `${admission.Code} - ${admission.Description}`
+		(admission) => `${admission.type} - ${admission.description}`
 	);
 }
 

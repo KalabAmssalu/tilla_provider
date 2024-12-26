@@ -181,3 +181,21 @@ export async function setClaim(data: Partial<ClaimType>) {
 		return { ok: false, message: getErrorMessage(error) };
 	}
 }
+
+export async function getClaims() {
+	try {
+		const response = await axiosInstance.get("claims/get-claims");
+		return response.data;
+	} catch (error) {
+		return { ok: false, message: getErrorMessage(error) };
+	}
+}
+
+export async function getClaimsById(id: string) {
+	try {
+		const response = await axiosInstance.get(`claims/get-claim/${id}`);
+		return response.data;
+	} catch (error) {
+		return { ok: false, message: getErrorMessage(error) };
+	}
+}

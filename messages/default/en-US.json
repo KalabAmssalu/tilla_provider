@@ -313,12 +313,29 @@
 				"description": "Provide a detailed description of the LOINC code.",
 				"error": "LOINC description is required."
 			},
-
-			"other_diagnosis_codes_poc_code": {
-				"label": "Other Diagnosis Codes POC Code",
-				"placeholder": "Enter other diagnosis POC codes",
-				"description": "Provide POC codes for additional diagnoses.",
-				"error": "Other diagnosis POC codes must be valid."
+			"pricipal_procedure_category": {
+				"label": "Pricipal Procedure Category",
+				"placeholder": "Enter the Pricipal Procedure Category",
+				"description": "Provide the Pricipal Procedure Category.",
+				"error": "Pricipal Procedure Category is required."
+			},
+			"pricipal_procedure_code": {
+				"label": "Pricipal Procedure Code",
+				"placeholder": "Enter the Pricipal Procedure Code",
+				"description": "Provide the Pricipal Procedure Code.",
+				"error": "Pricipal Procedure Code is required."
+			},
+			"pricipal_procedure_description": {
+				"label": "Pricipal Procedure Description",
+				"placeholder": "Enter the Pricipal Procedure Description",
+				"description": "Provide the Pricipal Procedure Description.",
+				"error": "Pricipal Procedure Description is required."
+			},
+			"other_diagnosis_codes_poc": {
+				"label": "Other Diagnosis Description",
+				"placeholder": "Enter other diagnosis description",
+				"description": "Provide description for additional diagnoses.",
+				"error": "Other diagnosis description must be valid."
 			},
 			"admitting_diagnosis": {
 				"label": "Admitting Diagnosis Description",
@@ -361,6 +378,12 @@
 				"placeholder": "Enter the admission date",
 				"description": "Specify the date of admission.",
 				"error": "Admission date is required."
+			},
+			"discharge_date": {
+				"label": "Discharge Date",
+				"placeholder": "Enter the discharge date",
+				"description": "Specify the date of discharge.",
+				"error": "Discharge date is required."
 			},
 			"discharge_hour": {
 				"label": "Discharge Hour",
@@ -422,6 +445,30 @@
 				"placeholder": "Enter the patient control number",
 				"description": "Provide the control number assigned to the patient.",
 				"error": "Patient control number is required."
+			},
+			"billing_provider_name": {
+				"label": "Billing Provider Name",
+				"placeholder": "Enter the billing provider name",
+				"description": "Provide the name of the billing provider.",
+				"error": "Billing provider name is required."
+			},
+			"attending_provider_name": {
+				"label": "Attending Provider Name",
+				"placeholder": "Enter the attending provider name",
+				"description": "Provide the name of the attending provider.",
+				"error": "Attending provider name is required."
+			},
+			"attending_provider_npi": {
+				"label": "Attending Provider NPI",
+				"placeholder": "Enter the attending provider NPI",
+				"description": "Provide the NPI of the attending provider.",
+				"error": "Attending provider NPI is required."
+			},
+			"attending_provider_tin_number": {
+				"label": "Attending Provider TIN / Tax ID",
+				"placeholder": "Enter the attending provider TIN / Tax ID",
+				"description": "Provide the TIN / Tax ID of the attending provider.",
+				"error": "Attending provider tin / Tax ID is required"
 			},
 			"patient_reason_for_visit": {
 				"label": "Patient Reason for Visit",

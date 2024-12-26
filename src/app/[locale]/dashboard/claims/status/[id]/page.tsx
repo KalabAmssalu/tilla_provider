@@ -12,9 +12,6 @@ async function getClaimData(id: string): Promise<Partial<ClaimType>> {
 		billing_provider_npi: "1234567890",
 		attending_provider_name_npi_specialty_code:
 			"Dr. John Doe | NPI: 0987654321 | Cardiology",
-
-		other_provider_name_npi_specialty:
-			"Dr. Jane Smith | NPI: 1122334455 | Radiology",
 		other_provider_ids: "56789, 67890",
 		admission_date: "2024-12-20",
 		admission_hour: {
@@ -34,7 +31,6 @@ async function getClaimData(id: string): Promise<Partial<ClaimType>> {
 
 		other_diagnosis_codes_poc_code: "I10, E11.9",
 		external_cause_of_injury_code: "W19",
-		treatment_details: "Angioplasty procedure performed",
 		treatment_authorization_codes: "AUTH12345",
 
 		lonic_category: "Lab Tests",
@@ -46,19 +42,12 @@ async function getClaimData(id: string): Promise<Partial<ClaimType>> {
 		cpt_description: "Percutaneous Coronary Intervention",
 
 		principal_procedure_code: "36.06",
-		other_procedure_code_description: "Coronary Artery Bypass Graft",
-		operating_physician_name_npi_specialty_code:
-			"Dr. Emily Brown | NPI: 2233445566 | Surgery",
-
 		service_start_date: "2024-12-21",
 		service_end_date: "2024-12-23",
 		discharge_hour: {
 			hour: "02:00",
 			period: "PM",
 		},
-		patient_discharge_status: "Discharged to home",
-		additional_notes: "Patient advised to follow up in 2 weeks",
-
 		type_of_bill: "0111",
 		payer_name: "Blue Cross Insurance",
 		revenue_code_tin_number: "TIN123456789",

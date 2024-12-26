@@ -35,7 +35,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 
-export type Payment = {
+export type ClaimDisplayType = {
 	id: string;
 	claim_id: string;
 	recipt_date: string;
@@ -50,7 +50,7 @@ export type Payment = {
 	email: string;
 };
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<ClaimDisplayType>[] = [
 	{
 		id: "select",
 		header: ({ table }) => (
@@ -115,80 +115,11 @@ export const columns: ColumnDef<Payment>[] = [
 	},
 ];
 
-const data: Payment[] = [
-	{
-		id: "m5gr84i9",
-		claim_id: "C12345",
-		recipt_date: "2023-01-01",
-		payer_claim_control_number: "PCCN12345",
-		claim_type: "Type A",
-		service_begin_date: "2023-01-01",
-		service_end_date: "2023-01-10",
-		activity_state: "Active",
-		claim_status: "Approved",
-		amount: 316,
-		status: "success",
-		email: "ken99@yahoo.com",
-	},
-	{
-		id: "3u1reuv4",
-		claim_id: "C12346",
-		recipt_date: "2023-01-02",
-		payer_claim_control_number: "PCCN12346",
-		claim_type: "Type B",
-		service_begin_date: "2023-01-02",
-		service_end_date: "2023-01-11",
-		activity_state: "Inactive",
-		claim_status: "Pending",
-		amount: 242,
-		status: "success",
-		email: "Abe45@gmail.com",
-	},
-	{
-		id: "derv1ws0",
-		claim_id: "C12347",
-		recipt_date: "2023-01-03",
-		payer_claim_control_number: "PCCN12347",
-		claim_type: "Type C",
-		service_begin_date: "2023-01-03",
-		service_end_date: "2023-01-12",
-		activity_state: "Active",
-		claim_status: "Processing",
-		amount: 837,
-		status: "processing",
-		email: "Monserrat44@gmail.com",
-	},
-	{
-		id: "5kma53ae",
-		claim_id: "C12348",
-		recipt_date: "2023-01-04",
-		payer_claim_control_number: "PCCN12348",
-		claim_type: "Type D",
-		service_begin_date: "2023-01-04",
-		service_end_date: "2023-01-13",
-		activity_state: "Inactive",
-		claim_status: "Approved",
-		amount: 874,
-		status: "success",
-		email: "Silas22@gmail.com",
-	},
-	{
-		id: "bhqecj4p",
-		claim_id: "C12349",
-		recipt_date: "2023-01-05",
-		payer_claim_control_number: "PCCN12349",
-		claim_type: "Type E",
-		service_begin_date: "2023-01-05",
-		service_end_date: "2023-01-14",
-		activity_state: "Active",
-		claim_status: "Failed",
-		amount: 721,
-		status: "failed",
-		email: "carmella@hotmail.com",
-	},
-];
-
-export function ClaimStatusSearchResult() {
+export function ClaimStatusSearchResult({
+	data,
+}: {
+	data: ClaimDisplayType[];
+}) {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
 		[]
