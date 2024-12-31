@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useVirtualizer } from "@tanstack/react-virtual";
 import debounce from "lodash/debounce";
+import { ChevronDownIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
 	type Control,
@@ -20,15 +21,10 @@ import {
 } from "@/actions/Query/claim-Query/request";
 import { ReusableDatePickerField } from "@/components/shared/Form/ReusableDateField";
 import ReusableSelectField from "@/components/shared/Form/ReusableSelectField";
+import { Button } from "@/components/ui/button";
 import { FormControl, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn } from "@/lib/utils";
 
 type DiagnosisSource = "WHO" | "ETHIOPIA";
@@ -69,6 +65,7 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 		}>
 	>([]);
 	const [code, setCode] = useState<string>("");
+	const [unhiddenDescription, setUnhiddenDescription] = useState(true);
 
 	// Add search state
 	const [searchTerm, setSearchTerm] = useState("");
@@ -210,6 +207,7 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 			} else {
 				setCode("");
 			}
+			setUnhiddenDescription(false);
 		},
 		[
 			selectedList,
@@ -258,50 +256,62 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 									onChange={(e) => {
 										field.onChange(e.target.value);
 										debouncedSearch(e.target.value);
+										setUnhiddenDescription(false);
 									}}
 									value={field.value}
 									className="mb-2"
 								/>
-								<div
-									ref={parentRef}
-									className="h-[200px] overflow-auto border rounded-md bg-background"
-								>
+								{unhiddenDescription ? (
 									<div
-										style={{
-											height: `${rowVirtualizer.getTotalSize()}px`,
-											width: "100%",
-											position: "relative",
-										}}
+										ref={parentRef}
+										className="h-[200px] overflow-auto border rounded-md bg-background"
 									>
-										{rowVirtualizer.getVirtualItems().map((virtualRow) => (
-											<div
-												key={virtualRow.index}
-												className={cn(
-													"absolute left-0 w-full px-4 py-2 cursor-pointer hover:bg-accent/50 transition-colors",
-													selectedDescription ===
-														filteredDescriptions[virtualRow.index]
-														? "bg-primary text-white hover:text-black hover:bg-primary/50"
-														: ""
-												)}
-												style={{
-													height: `${virtualRow.size}px`,
-													transform: `translateY(${virtualRow.start}px)`,
-												}}
-												onClick={() =>
-													handleDescriptionChange(
-														filteredDescriptions[virtualRow.index]
-													)
-												}
-											>
-												<div className="flex items-center h-full">
-													<span className="text-sm leading-normal line-clamp-2">
-														{filteredDescriptions[virtualRow.index]}
-													</span>
+										<div
+											style={{
+												height: `${rowVirtualizer.getTotalSize()}px`,
+												width: "100%",
+												position: "relative",
+											}}
+										>
+											{rowVirtualizer.getVirtualItems().map((virtualRow) => (
+												<div
+													key={virtualRow.index}
+													className={cn(
+														"absolute left-0 w-full px-4 py-2 cursor-pointer hover:bg-accent/50 transition-colors",
+														selectedDescription ===
+															filteredDescriptions[virtualRow.index]
+															? "bg-primary text-white hover:text-black hover:bg-primary/50"
+															: ""
+													)}
+													style={{
+														height: `${virtualRow.size}px`,
+														transform: `translateY(${virtualRow.start}px)`,
+													}}
+													onClick={() =>
+														handleDescriptionChange(
+															filteredDescriptions[virtualRow.index]
+														)
+													}
+												>
+													<div className="flex items-center h-full">
+														<span className="text-sm leading-normal line-clamp-2">
+															{filteredDescriptions[virtualRow.index]}
+														</span>
+													</div>
 												</div>
-											</div>
-										))}
+											))}
+										</div>
 									</div>
-								</div>
+								) : (
+									<Button
+										className="absolute right-2 top-1/2 hover:bg-secondary rounded-full p-2 -translate-y-1/2 h-auto"
+										size="sm"
+										onClick={() => setUnhiddenDescription(true)}
+										variant="ghost"
+									>
+										<ChevronDownIcon className="h-4 w-4" />
+									</Button>
+								)}
 							</div>
 						)}
 					/>
@@ -334,7 +344,7 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 						required
 					/>
 
-					<FormItem>
+					{/* <FormItem>
 						<FormLabel>Diagnosis Source</FormLabel>
 						<FormControl>
 							<Select
@@ -349,6 +359,31 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 									<SelectItem value="ETHIOPIA">Ethiopia Diagnosis</SelectItem>
 								</SelectContent>
 							</Select>
+						</FormControl>
+					</FormItem> */}
+					<FormItem className="space-y-3">
+						<FormLabel>Diagnosis Source</FormLabel>
+						<FormControl>
+							<RadioGroup
+								onValueChange={handleDiagnosisSourceChange}
+								defaultValue={diagnosisSource}
+								className="flex flex-col space-y-1"
+							>
+								<FormItem className="flex items-center space-x-3 space-y-0">
+									<FormControl>
+										<RadioGroupItem value="WHO" />
+									</FormControl>
+									<FormLabel className="font-normal">WHO Diagnosis</FormLabel>
+								</FormItem>
+								<FormItem className="flex items-center space-x-3 space-y-0">
+									<FormControl>
+										<RadioGroupItem value="ETHIOPIA" />
+									</FormControl>
+									<FormLabel className="font-normal">
+										Ethiopia Diagnosis
+									</FormLabel>
+								</FormItem>
+							</RadioGroup>
 						</FormControl>
 					</FormItem>
 				</div>
@@ -368,7 +403,6 @@ const DiagnosisSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 						placeholderKey="fields.diagnosis_category.placeholder"
 						options={categories}
 						onValueChange={handleCategoryChange}
-						required
 					/>
 					<div>
 						<VirtualizedSelect />

@@ -35,13 +35,13 @@ const BillingCard = ({
 					<div className="flex justify-between">
 						<span className="text-gray-600">Service Charge</span>
 						<span className="font-medium text-sm text-gray-800">
-							+{serviceCharge.toFixed(2)} ETB
+							{serviceCharge.toFixed(2)} ETB
 						</span>
 					</div>
 					<div className="flex justify-between">
 						<span className="text-gray-600">Additional Charge</span>
 						<span className="font-medium text-sm text-gray-800">
-							+{AdditionalCharge.toFixed(2)} ETB
+							{AdditionalCharge.toFixed(2)} ETB
 						</span>
 					</div>
 
@@ -50,7 +50,7 @@ const BillingCard = ({
 							Provider Discount ({discountAgree}%)
 						</span>
 						<span className="font-medium text-sm text-emerald-600">
-							-{providerDuty.toFixed(2)} ETB
+							{providerDuty.toFixed(2)} ETB
 						</span>
 					</div>
 					<div className="flex justify-between">
@@ -65,7 +65,7 @@ const BillingCard = ({
 							Tilla&apos;s Responsibility ({tillaDuty}%)
 						</span>
 						<span className="font-medium text-sm text-emerald-600">
-							-{tillaPaymentDuty.toFixed(2)} ETB
+							{tillaPaymentDuty.toFixed(2)} ETB
 						</span>
 					</div>
 

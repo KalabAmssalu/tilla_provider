@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CheckCircle2, FileSearch, XCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { type ClaimDisplayType } from "@/components/module/claimStatus/SearchResult";
-import { PaymentDetails } from "@/components/module/payment/Payment-details";
+import { useGetMyPaymentSummary } from "@/actions/Query/claim-Query/request";
 import { SummaryCard } from "@/components/module/payment/Summary-card";
 import { columns } from "@/components/module/payment/columns";
 import { ClaimPaymentDataTable } from "@/components/module/payment/data-table";
@@ -31,7 +30,6 @@ import {
 } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { formatToMMDDYYYY } from "@/lib/utils/dateUtils";
-import { type Payment } from "@/types/payment/payment";
 
 export interface ClaimPaymentType {
 	claimId: string;
@@ -96,36 +94,36 @@ const data: ClaimPaymentType[] = [
 	},
 ];
 
-const cardData = [
-	{
-		title: "Received Payments",
-		value: 25000.0, // value for received payments
-		icon: <CheckCircle2 />,
-		iconColor: "text-green-500",
-		received: 25000.0, // including received value directly in the object
-	},
-	{
-		title: "Denied Payments",
-		value: 5000.0, // value for denied payments
-		icon: <XCircle />,
-		iconColor: "text-red-500",
-		denied: 5000.0, // including denied value directly in the object
-	},
-	{
-		title: "Disputed Payments",
-		value: 3000.0, // value for disputed payments
-		icon: <AlertCircle />,
-		iconColor: "text-yellow-500",
-		disputed: 3000.0, // including disputed value directly in the object
-	},
-	{
-		title: "Pending Payments",
-		value: 2000.0, // value for pending payments
-		icon: <AlertCircle />,
-		iconColor: "text-blue-500", // assuming a different color for pending
-		pending: 2000.0, // including pending value directly in the object
-	},
-];
+// const cardData = [
+// 	{
+// 		title: "Received Payments",
+// 		value: 25000.0, // value for received payments
+// 		icon: <CheckCircle2 />,
+// 		iconColor: "text-green-500",
+// 		received: 25000.0, // including received value directly in the object
+// 	},
+// 	{
+// 		title: "Denied Payments",
+// 		value: 5000.0, // value for denied payments
+// 		icon: <XCircle />,
+// 		iconColor: "text-red-500",
+// 		denied: 5000.0, // including denied value directly in the object
+// 	},
+// 	{
+// 		title: "Disputed Payments",
+// 		value: 3000.0, // value for disputed payments
+// 		icon: <AlertCircle />,
+// 		iconColor: "text-yellow-500",
+// 		disputed: 3000.0, // including disputed value directly in the object
+// 	},
+// 	{
+// 		title: "Pending Payments",
+// 		value: 2000.0, // value for pending payments
+// 		icon: <AlertCircle />,
+// 		iconColor: "text-blue-500", // assuming a different color for pending
+// 		pending: 2000.0, // including pending value directly in the object
+// 	},
+// ];
 
 export default function PaymentsPage() {
 	const claimStatusSchema = z.object({
@@ -163,6 +161,34 @@ export default function PaymentsPage() {
 		},
 	});
 
+	const { data: MyclaimPaymentData, isLoading } = useGetMyPaymentSummary();
+	const cardData = [
+		{
+			title: "Received Payments",
+			value: MyclaimPaymentData?.received || 0,
+			icon: <CheckCircle2 />,
+			iconColor: "text-green-500",
+		},
+		{
+			title: "Denied Payments",
+			value: MyclaimPaymentData?.denied || 0,
+			icon: <XCircle />,
+			iconColor: "text-red-500",
+		},
+		{
+			title: "Disputed Payments",
+			value: MyclaimPaymentData?.disputed || 0,
+			icon: <AlertCircle />,
+			iconColor: "text-yellow-500",
+		},
+		{
+			title: "Pending Payments",
+			value: MyclaimPaymentData?.pending || 0,
+			icon: <AlertCircle />,
+			iconColor: "text-blue-500",
+		},
+	];
+
 	function onSubmit(data: ClaimStatusFormValues) {
 		const date = data.dateRange;
 
@@ -180,8 +206,13 @@ export default function PaymentsPage() {
 		console.log("Submitted Data:", savedData);
 	}
 
+	const { data: myPaymentSummary } = useGetMyPaymentSummary();
+	useEffect(() => {
+		console.log("useEffect");
+		console.log("myPaymentSummary", myPaymentSummary);
+	}, []);
 	return (
-		<div>
+		<div className="mb-20">
 			<Card className="mb-4 bg-secondary/40">
 				<CardHeader>
 					<CardTitle className="text-xl font-bold">Payments</CardTitle>
@@ -303,7 +334,7 @@ export default function PaymentsPage() {
 				</CardContent>
 			</Card>
 
-			<div className="grid gap-4 md:grid-cols-4">
+			<div className="grid gap-4 md:grid-cols-4 mb-4">
 				{cardData.map((card, index) => (
 					<SummaryCard
 						key={index}

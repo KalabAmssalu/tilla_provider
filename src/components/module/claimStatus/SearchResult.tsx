@@ -6,6 +6,7 @@ import * as React from "react";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
+	type Row,
 	type SortingState,
 	type VisibilityState,
 	flexRender,
@@ -34,23 +35,9 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { type ClaimType } from "@/types/claim/claim";
 
-export type ClaimDisplayType = {
-	id: string;
-	claim_id: string;
-	recipt_date: string;
-	payer_claim_control_number: string;
-	claim_type: string;
-	service_begin_date: string;
-	service_end_date: string;
-	activity_state: string;
-	claim_status: string;
-	amount: number;
-	status: "pending" | "processing" | "success" | "failed";
-	email: string;
-};
-
-export const columns: ColumnDef<ClaimDisplayType>[] = [
+export const columns: ColumnDef<ClaimType>[] = [
 	{
 		id: "select",
 		header: ({ table }) => (
@@ -74,52 +61,105 @@ export const columns: ColumnDef<ClaimDisplayType>[] = [
 		enableHiding: false,
 	},
 	{
-		accessorKey: "claim_id",
+		accessorKey: "claim_number",
 		header: "Claim ID",
-		cell: ({ row }) => <div>{row.getValue("claim_id")}</div>,
+		cell: ({ row }) => {
+			const claimNumber = row.getValue("claim_number");
+			return <div>{(claimNumber as string) || "N/A"}</div>;
+		},
 	},
 	{
 		accessorKey: "recipt_date",
 		header: "Receipt Date",
-		cell: ({ row }) => <div>{row.getValue("recipt_date")}</div>,
+		cell: ({ row }) => {
+			const receiptDate = row.getValue("recipt_date");
+			return <div>{(receiptDate as string) || "N/A"}</div>;
+		},
 	},
 	{
 		accessorKey: "payer_claim_control_number",
 		header: "Payer Claim Control Number",
-		cell: ({ row }) => <div>{row.getValue("payer_claim_control_number")}</div>,
+		cell: ({ row }) => {
+			const payerClaimControlNumber = row.getValue(
+				"payer_claim_control_number"
+			);
+			return <div>{(payerClaimControlNumber as string) || "N/A"}</div>;
+		},
 	},
 	{
 		accessorKey: "claim_type",
 		header: "Claim Type",
-		cell: ({ row }) => <div>{row.getValue("claim_type")}</div>,
+		cell: ({ row }) => {
+			const claimType = row.getValue("claim_type");
+			return <div>{(claimType as string) || "N/A"}</div>;
+		},
 	},
 	{
-		accessorKey: "service_begin_date",
+		accessorKey: "service_start_date",
 		header: "Service Begin Date",
-		cell: ({ row }) => <div>{row.getValue("service_begin_date")}</div>,
+		cell: ({ row }) => {
+			const serviceStartDate = row.getValue("service_start_date");
+			return <div>{(serviceStartDate as string) || "N/A"}</div>;
+		},
 	},
 	{
 		accessorKey: "service_end_date",
 		header: "Service End Date",
-		cell: ({ row }) => <div>{row.getValue("service_end_date")}</div>,
+		cell: ({ row }) => {
+			const serviceEndDate = row.getValue("service_end_date");
+			return <div>{(serviceEndDate as string) || "N/A"}</div>;
+		},
 	},
 	{
 		accessorKey: "activity_state",
 		header: "Activity State",
-		cell: ({ row }) => <div>{row.getValue("activity_state")}</div>,
+		cell: ({ row }) => {
+			const activityState = row.getValue("activity_state");
+			return <div>{(activityState as string) || "N/A"}</div>;
+		},
 	},
 	{
 		accessorKey: "claim_status",
 		header: "Claim Status",
-		cell: ({ row }) => <div>{row.getValue("claim_status")}</div>,
+		cell: ({ row }) => {
+			const claimStatus = row.getValue("claim_status");
+			return <div>{(claimStatus as string) || "N/A"}</div>;
+		},
+	},
+	{
+		id: "actions",
+		cell: ({ row }) => <DataTableRowActions row={row} />,
 	},
 ];
 
-export function ClaimStatusSearchResult({
-	data,
-}: {
-	data: ClaimDisplayType[];
-}) {
+interface DataTableRowActionsProps<TData extends ClaimType> {
+	// Add constraint here
+	row: Row<TData>;
+}
+
+export function DataTableRowActions<TData extends ClaimType>({
+	// Add constraint here
+	row,
+}: DataTableRowActionsProps<TData>) {
+	const router = useRouter();
+	return (
+		<>
+			<Button
+				size="sm"
+				className="bg-secondary/40 hover:bg-secondary/60 text-black"
+				onClick={() =>
+					router.push(
+						`/dashboard/claims/status/${row.original.claim_number}` as `/${string}`
+					)
+				} // Open the details modal
+			>
+				View Detail
+			</Button>
+		</>
+	);
+}
+
+export function ClaimStatusSearchResult({ data }: { data: ClaimType[] }) {
 	const [sorting, setSorting] = React.useState<SortingState>([]);
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
 		[]
@@ -211,11 +251,6 @@ export function ClaimStatusSearchResult({
 								<TableRow
 									key={row.id}
 									data-state={row.getIsSelected() && "selected"}
-									onClick={() =>
-										router.push(
-											`/dashboard/claims/status/${row.original.id}` as `/${string}`
-										)
-									}
 									className="cursor-pointer"
 								>
 									{row.getVisibleCells().map((cell) => (

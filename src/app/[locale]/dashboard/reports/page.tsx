@@ -1,23 +1,33 @@
-import { type Metadata } from "next";
-import { redirect } from "next/navigation";
+import MemberReport from "@/components/screen/reports/MemberReport";
+import {
+	Card,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { getTranslations } from "next-intl/server";
+type Props = {};
 
-import { siteConfig } from "@/app";
+const page = (props: Props) => {
+	return (
+		<div className="container mt-4 flex flex-col gap-4">
+			<Tabs defaultValue="member" className="w-full">
+				<TabsList className="w-full ">
+					<TabsTrigger value="member" className="w-[400px]">
+						Member and Claims Report{" "}
+					</TabsTrigger>
+					<TabsTrigger value="financial" className="w-[400px]">
+						Financial Report
+					</TabsTrigger>
+				</TabsList>
+				<TabsContent value="member">
+					<MemberReport />
+				</TabsContent>
+				<TabsContent value="financial">Change your password here.</TabsContent>
+			</Tabs>
+		</div>
+	);
+};
 
-export async function generateMetadata() {
-	// useTranslations works both on the server and client;
-	// we only need the getTranslations on async functions.
-	const t = await getTranslations();
-
-	const metadata: Metadata = {
-		title: `${t("metadata.title.home")} - ${siteConfig.appNameDesc}`,
-	};
-
-	return metadata;
-}
-
-export default function claimPage() {
-	// const t = useTranslations();
-	return redirect("/dashboard/reports/member");
-}
+export default page;

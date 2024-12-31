@@ -1,7 +1,6 @@
 "use client";
 
 import { type ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
 import {
 	CircleCheck,
 	CircleEllipsis,
@@ -9,11 +8,10 @@ import {
 	ShieldAlert,
 } from "lucide-react";
 
-import { ClaimPaymentType } from "@/components/screen/claims/PaymentScreen";
+import { type ClaimPaymentType } from "@/components/screen/claims/PaymentScreen";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 
-import { ClaimDisplayType } from "../claimStatus/SearchResult";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 

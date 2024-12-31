@@ -4,10 +4,12 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useVirtualizer } from "@tanstack/react-virtual";
 import debounce from "lodash/debounce";
+import { ChevronDownIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Controller, useForm } from "react-hook-form";
 
 import ReusableSelectField from "@/components/shared/Form/ReusableSelectField";
+import { Button } from "@/components/ui/button";
 import { FormControl, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { principalProcedure } from "@/constants/data/principalProcedure";
@@ -38,7 +40,7 @@ const PrincipalProcedureSelection: React.FC<CategoryDescriptionFormProps> = ({
 	>([]);
 	const [code, setCode] = useState<string>("");
 	const [searchTerm, setSearchTerm] = useState("");
-
+	const [unhiddenDescription, setUnhiddenDescription] = useState(true);
 	// Function to get descriptions and codes by category
 	const getDescriptionsAndCodesByCategory = (categoryName: string) => {
 		return principalProcedure
@@ -73,6 +75,7 @@ const PrincipalProcedureSelection: React.FC<CategoryDescriptionFormProps> = ({
 
 	useEffect(() => {
 		if (selectedCategory) {
+			setUnhiddenDescription(true);
 			const descriptionsAndCodes =
 				getDescriptionsAndCodesByCategory(selectedCategory);
 			setDescriptions(descriptionsAndCodes);
@@ -91,6 +94,7 @@ const PrincipalProcedureSelection: React.FC<CategoryDescriptionFormProps> = ({
 
 	const handleDescriptionChange = (description: string) => {
 		setSelectedDescription(description);
+
 		const selectedRecord = selectedList.find(
 			(record) => record.Description === description
 		);
@@ -105,6 +109,7 @@ const PrincipalProcedureSelection: React.FC<CategoryDescriptionFormProps> = ({
 		} else {
 			setCode("");
 		}
+		setUnhiddenDescription(false);
 	};
 
 	const VirtualizedSelect = () => {
@@ -120,7 +125,7 @@ const PrincipalProcedureSelection: React.FC<CategoryDescriptionFormProps> = ({
 		return (
 			<FormItem>
 				<FormLabel>
-					{t("fields.pricipal_procedure_description.label")}
+					{t("fields.principal_procedure_description.label")}
 				</FormLabel>
 				<FormControl>
 					<div className="relative">
@@ -128,64 +133,78 @@ const PrincipalProcedureSelection: React.FC<CategoryDescriptionFormProps> = ({
 							control={control}
 							name="diagnosis_description"
 							render={({ field }) => (
-								<>
+								<div>
 									<Input
 										{...field}
 										type="text"
 										placeholder={t(
-											"fields.pricipal_procedure_description.placeholder"
+											"fields.principal_procedure_description.placeholder"
 										)}
 										onChange={(e) => {
 											field.onChange(e.target.value);
 											debouncedSearch(e.target.value);
+											setUnhiddenDescription(false);
 										}}
 										value={selectedDescription} // Use selectedDescription here
 										className="mb-2"
 									/>
-									<div
-										ref={parentRef}
-										className="h-[200px] overflow-auto border rounded-md bg-background"
-									>
+									{unhiddenDescription ? (
 										<div
-											style={{
-												height: `${rowVirtualizer.getTotalSize()}px`,
-												width: "100%",
-												position: "relative",
-											}}
+											ref={parentRef}
+											className="h-[200px] overflow-auto border rounded-md bg-background"
 										>
-											{rowVirtualizer.getVirtualItems().map((virtualRow) => (
-												<div
-													key={virtualRow.index}
-													className={cn(
-														"absolute left-0 w-full px-4 py-2 cursor-pointer hover:bg-accent/50 transition-colors",
-														selectedDescription ===
-															filteredDescriptions[virtualRow.index].Description
-															? "bg-primary text-white hover:text-black hover:bg-primary/50"
-															: ""
-													)}
-													style={{
-														height: `${virtualRow.size}px`,
-														transform: `translateY(${virtualRow.start}px)`,
-													}}
-													onClick={() =>
-														handleDescriptionChange(
-															filteredDescriptions[virtualRow.index].Description
-														)
-													}
-												>
-													<div className="flex items-center h-full">
-														<span className="text-sm leading-normal line-clamp-2">
-															{
+											<div
+												style={{
+													height: `${rowVirtualizer.getTotalSize()}px`,
+													width: "100%",
+													position: "relative",
+												}}
+											>
+												{rowVirtualizer.getVirtualItems().map((virtualRow) => (
+													<div
+														key={virtualRow.index}
+														className={cn(
+															"absolute left-0 w-full px-4 py-2 cursor-pointer hover:bg-accent/50 transition-colors",
+															selectedDescription ===
 																filteredDescriptions[virtualRow.index]
 																	.Description
-															}
-														</span>
+																? "bg-primary text-white hover:text-black hover:bg-primary/50"
+																: ""
+														)}
+														style={{
+															height: `${virtualRow.size}px`,
+															transform: `translateY(${virtualRow.start}px)`,
+														}}
+														onClick={() =>
+															handleDescriptionChange(
+																filteredDescriptions[virtualRow.index]
+																	.Description
+															)
+														}
+													>
+														<div className="flex items-center h-full">
+															<span className="text-sm leading-normal line-clamp-2">
+																{
+																	filteredDescriptions[virtualRow.index]
+																		.Description
+																}
+															</span>
+														</div>
 													</div>
-												</div>
-											))}
+												))}
+											</div>
 										</div>
-									</div>
-								</>
+									) : (
+										<Button
+											className="absolute right-2 top-1/2 hover:bg-secondary rounded-full p-2 -translate-y-1/2 h-auto"
+											size="sm"
+											onClick={() => setUnhiddenDescription(true)}
+											variant="ghost"
+										>
+											<ChevronDownIcon className="h-4 w-4" />
+										</Button>
+									)}
+								</div>
 							)}
 						/>
 					</div>
@@ -205,11 +224,10 @@ const PrincipalProcedureSelection: React.FC<CategoryDescriptionFormProps> = ({
 						control={control}
 						name="category"
 						local="claimForm"
-						labelKey="fields.pricipal_procedure_category.label"
-						placeholderKey="fields.pricipal_procedure_category.placeholder"
+						labelKey="fields.principal_procedure_category.label"
+						placeholderKey="fields.principal_procedure_category.placeholder"
 						options={categories}
 						onValueChange={handleCategoryChange}
-						required
 					/>
 					<div>
 						<VirtualizedSelect />
@@ -220,7 +238,7 @@ const PrincipalProcedureSelection: React.FC<CategoryDescriptionFormProps> = ({
 							htmlFor="code"
 							className="block text-sm font-medium text-gray-700"
 						>
-							{t("fields.pricipal_procedure_code.label")}
+							{t("fields.principal_procedure_code.label")}
 						</label>
 						<Controller
 							control={control}

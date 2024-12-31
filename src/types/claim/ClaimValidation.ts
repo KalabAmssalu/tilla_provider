@@ -9,6 +9,24 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 				message: t("fields.billing_provider_name.error"),
 			}),
 		]),
+
+		billing_provider_npi: z.union([
+			z.literal(""),
+			z
+				.string()
+				.min(1, {
+					message: t("fields.billing_provider_npi.error"),
+				})
+				.max(15, {
+					message: t("fields.billing_provider_npi.error"),
+				}),
+		]),
+		revenue_code_tin_number: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.revenue_code_tin_number.error"),
+			}),
+		]),
 		attending_provider_name: z.union([
 			z.literal(""),
 			z.string().min(1, {
@@ -27,6 +45,26 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 				message: t("fields.attending_provider_tin_number.error"),
 			}),
 		]),
+
+		referral_provider_name: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.referral_provider_name.error"),
+			}),
+		]),
+		referral_provider_npi: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.referral_provider_npi.error"),
+			}),
+		]),
+		referral_provider_tin_number: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.referral_provider_tin_number.error"),
+			}),
+		]),
+
 		// Basic Provider Information
 		place_of_service_description: z.union([
 			z.literal(""),
@@ -40,20 +78,16 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 				message: t("fields.place_of_service_code.error"),
 			}),
 		]),
-		billing_provider_npi: z.union([
-			z.literal(""),
-			z
-				.string()
-				.min(1, {
-					message: t("fields.billing_provider_npi.error"),
-				})
-				.max(15, {
-					message: t("fields.billing_provider_npi.error"),
-				}),
-		]),
-		attending_provider_name_npi_specialty_code: z.string().min(2, {
-			message: t("fields.attending_provider_name_npi_specialty_code.error"),
+		service_start_date: z.string().min(1, {
+			message: t("fields.service_start_date.error"),
 		}),
+		service_end_date: z.string().min(1, {
+			message: t("fields.service_end_date.error"),
+		}),
+
+		// attending_provider_name_npi_specialty_code: z.string().min(2, {
+		// 	message: t("fields.attending_provider_name_npi_specialty_code.error"),
+		// }),
 
 		// Additional Provider Details
 		// other_provider_name_npi_specialty: z.union([
@@ -62,12 +96,12 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 		// 		message: t("fields.other_provider_name_npi_specialty.error"),
 		// 	}),
 		// ]),
-		other_provider_ids: z.union([
-			z.literal(""),
-			z.string().min(1, {
-				message: t("fields.other_provider_ids.error"),
-			}),
-		]),
+		// other_provider_ids: z.union([
+		// 	z.literal(""),
+		// 	z.string().min(1, {
+		// 		message: t("fields.other_provider_ids.error"),
+		// 	}),
+		// ]),
 
 		// Admission Details
 		admission_date: z.string().min(1, {
@@ -94,6 +128,7 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 				message: t("fields.type_of_admission_visit.error"),
 			}),
 		]),
+
 		admitting_diagnosis: z.string().min(2, {
 			message: t("fields.admitting_diagnosis.error"),
 		}),
@@ -101,6 +136,13 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 			z.literal(""),
 			z.string().max(10000, {
 				message: t("fields.patient_reason_for_visit.error"),
+			}),
+		]),
+
+		claim_type: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.claim_type.error"),
 			}),
 		]),
 
@@ -155,41 +197,6 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 		// 		message: t("fields.treatment_details.error"),
 		// 	}),
 		// ]),
-		treatment_authorization_codes: z.union([
-			z.literal(""),
-			z.string().min(1, {
-				message: t("fields.treatment_authorization_codes.error"),
-			}),
-		]),
-
-		// LONIC Information
-		lonic_category: z.union([z.literal(""), z.string().optional()]),
-		lonic_code: z.string().min(2, {
-			message: t("fields.lonic_code.error"),
-		}),
-		lonic_description: z.string().min(2, {
-			message: t("fields.lonic_description.error"),
-		}),
-
-		// Procedure Information
-		cpt_code: z.union([
-			z.literal(""),
-			z.string().min(1, {
-				message: t("fields.cpt_code.error"),
-			}),
-		]),
-		cpt_category: z.union([
-			z.literal(""),
-			z.string().min(1, {
-				message: t("fields.cpt_category.error"),
-			}),
-		]),
-		cpt_description: z.union([
-			z.literal(""),
-			z.string().min(1, {
-				message: t("fields.cpt_description.error"),
-			}),
-		]),
 		principal_procedure_code: z.union([
 			z.literal(""),
 			z.string().min(1, {
@@ -208,6 +215,41 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 				message: t("fields.principal_procedure_description.error"),
 			}),
 		]),
+		cpt_code: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.cpt_code.error"),
+			}),
+		]),
+		cpt_category: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.cpt_category.error"),
+			}),
+		]),
+		cpt_description: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.cpt_description.error"),
+			}),
+		]),
+		// LONIC Information
+		lonic_category: z.union([z.literal(""), z.string().optional()]),
+		lonic_code: z.union([
+			z.literal(""),
+			z.string().min(2, {
+				message: t("fields.lonic_code.error"),
+			}),
+		]),
+		lonic_description: z.union([
+			z.literal(""),
+			z.string().min(2, {
+				message: t("fields.lonic_description.error"),
+			}),
+		]),
+
+		// Procedure Information
+
 		// operating_physician_name_npi_specialty_code: z.union([
 		// 	z.literal(""),
 		// 	z.string().min(1, {
@@ -223,12 +265,7 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 		// ]),
 
 		// Service Details
-		service_start_date: z.string().min(1, {
-			message: t("fields.service_start_date.error"),
-		}),
-		service_end_date: z.string().min(1, {
-			message: t("fields.service_end_date.error"),
-		}),
+
 		discharge_date: z.string().min(1, {
 			message: t("fields.discharge_date.error"),
 		}),
@@ -241,18 +278,19 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 				period: z.enum(["AM", "PM"]).optional(),
 			}),
 		]),
-		// patient_discharge_status: z.union([
-		// 	z.literal(""),
-		// 	z.string().min(1, {
-		// 		message: t("fields.patient_discharge_status.error"),
-		// 	}),
-		// ]),
-		// additional_notes: z
-		// 	.string()
-		// 	.max(2000, {
-		// 		message: t("fields.additional_notes.error"),
-		// 	})
-		// 	.optional(),
+
+		patient_discharge_status: z.union([
+			z.literal(""),
+			z.string().min(1, {
+				message: t("fields.patient_discharge_status.error"),
+			}),
+		]),
+		additional_notes: z
+			.string()
+			.max(10000, {
+				message: t("fields.additional_notes.error"),
+			})
+			.optional(),
 
 		// Billing Information
 		service_charge: z
@@ -284,10 +322,10 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 				message: t("fields.payer_name.error"),
 			}),
 		]),
-		revenue_code_tin_number: z.union([
+		treatment_authorization_codes: z.union([
 			z.literal(""),
 			z.string().min(1, {
-				message: t("fields.revenue_code_tin_number.error"),
+				message: t("fields.treatment_authorization_codes.error"),
 			}),
 		]),
 	});

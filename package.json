@@ -14,7 +14,11 @@
 		"test-all": "yarn run check-types && yarn run check-format && yarn run lint && yarn run build"
 	},
 	"dependencies": {
+		"@emotion/react": "^11.14.0",
+		"@emotion/styled": "^11.14.0",
 		"@hookform/resolvers": "^3.9.0",
+		"@mui/material": "^6.3.0",
+		"@mui/x-data-grid": "^7.23.5",
 		"@radix-ui/react-accordion": "^1.2.0",
 		"@radix-ui/react-alert-dialog": "^1.1.1",
 		"@radix-ui/react-aspect-ratio": "^1.1.0",
@@ -61,6 +65,8 @@
 		"gsap": "^3.12.5",
 		"input-otp": "^1.2.4",
 		"jose": "^5.9.6",
+		"jspdf": "^2.5.2",
+		"jspdf-autotable": "^3.8.4",
 		"lodash": "^4.17.21",
 		"lucide-react": "^0.468.0",
 		"mini-svg-data-uri": "^1.4.4",
@@ -83,6 +89,7 @@
 		"tailwind-merge": "^2.5.2",
 		"tailwindcss-animate": "^1.0.7",
 		"vaul": "^0.9.1",
+		"xlsx": "^0.18.5",
 		"zod": "^3.23.8"
 	},
 	"devDependencies": {

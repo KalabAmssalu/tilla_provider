@@ -21,3 +21,28 @@ export interface ReportTypeInfo {
 	description: string;
 	icon: React.ComponentType;
 }
+
+export interface ReportConfig {
+	id: string;
+	title: string;
+	type: string;
+	category: string;
+	fields: ReportField[];
+}
+
+export interface ReportField {
+	id: string;
+	label: string;
+	type: "string" | "number" | "date" | "boolean";
+	required: boolean;
+}
+
+export interface ReportData {
+	reportName: string;
+	selectedFacilities: string[];
+	selectedReports: string[];
+	dateRange?: {
+		startDate: Date;
+		endDate: Date;
+	};
+}

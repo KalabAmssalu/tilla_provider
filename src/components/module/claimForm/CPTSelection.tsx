@@ -4,11 +4,13 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useVirtualizer } from "@tanstack/react-virtual";
 import debounce from "lodash/debounce";
+import { ChevronDownIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Controller, useForm } from "react-hook-form";
 
 import { useCPT, useCPTRecords } from "@/actions/Query/claim-Query/request";
 import ReusableSelectField from "@/components/shared/Form/ReusableSelectField";
+import { Button } from "@/components/ui/button";
 import { FormControl, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
@@ -51,6 +53,7 @@ const CPTSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 	>([]);
 	const [code, setCode] = useState<string>("");
 	const [searchTerm, setSearchTerm] = useState("");
+	const [unhiddenDescription, setUnhiddenDescription] = useState(true);
 
 	const filteredDescriptions = useMemo(() => {
 		if (!descriptions.length) return [];
@@ -120,23 +123,28 @@ const CPTSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 		onDataChange({ category, description: "", code: "" });
 	};
 
-	const handleDescriptionChange = (description: string) => {
-		setSelectedDescription(description);
-		const selectedRecord = selectedList.find(
-			(record) => record.description === description
-		);
+	const handleDescriptionChange = useCallback(
+		(description: string) => {
+			setSelectedDescription(description);
+			setValue("cpt_description", description);
+			const selectedRecord = selectedList.find(
+				(record) => record.description === description
+			);
 
-		if (selectedRecord) {
-			setCode(selectedRecord.code);
-			onDataChange({
-				category: selectedCategory,
-				description,
-				code: selectedRecord.code,
-			});
-		} else {
-			setCode("");
-		}
-	};
+			if (selectedRecord) {
+				setCode(selectedRecord.code);
+				onDataChange({
+					category: selectedCategory,
+					description,
+					code: selectedRecord.code,
+				});
+			} else {
+				setCode("");
+			}
+			setUnhiddenDescription(false);
+		},
+		[selectedCategory, selectedDescription, selectedList, setValue]
+	);
 
 	const VirtualizedSelect = () => {
 		const parentRef = React.useRef<HTMLDivElement>(null);
@@ -150,56 +158,81 @@ const CPTSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 
 		return (
 			<FormItem>
-				<FormLabel>{t("fields.cpt_description.label")}</FormLabel>
+				<FormLabel htmlFor="cpt_description">
+					{t("fields.cpt_description.label")}
+				</FormLabel>
 				<FormControl>
-					<div className="relative">
-						<Input
-							type="text"
-							placeholder={t("fields.cpt_description.placeholder")}
-							onChange={(e) => debouncedSearch(e.target.value)}
-							className="mb-2"
-						/>
-						<div
-							ref={parentRef}
-							className="h-[200px] overflow-auto border rounded-md bg-background"
-						>
-							<div
-								style={{
-									height: `${rowVirtualizer.getTotalSize()}px`,
-									width: "100%",
-									position: "relative",
-								}}
-							>
-								{rowVirtualizer.getVirtualItems().map((virtualRow) => (
+					<Controller
+						control={control}
+						name="cpt_description"
+						render={({ field }) => (
+							<div className="relative">
+								<Input
+									id="cpt_description"
+									type="text"
+									placeholder={t("fields.cpt_description.placeholder")}
+									onChange={(e) => {
+										field.onChange(e.target.value);
+										debouncedSearch(e.target.value);
+										setUnhiddenDescription(false);
+									}}
+									value={selectedDescription || field.value}
+									className="mb-2"
+								/>
+								{unhiddenDescription ? (
 									<div
-										key={virtualRow.index}
-										className={cn(
-											"absolute left-0 w-full px-4 py-2 cursor-pointer hover:bg-accent/50 transition-colors",
-											selectedDescription ===
-												filteredDescriptions[virtualRow.index]
-												? "bg-primary text-white hover:text-black hover:bg-primary/50"
-												: ""
-										)}
-										style={{
-											height: `${virtualRow.size}px`,
-											transform: `translateY(${virtualRow.start}px)`,
-										}}
-										onClick={() =>
-											handleDescriptionChange(
-												filteredDescriptions[virtualRow.index]
-											)
-										}
+										ref={parentRef}
+										className="h-[200px] overflow-auto border rounded-md bg-background"
 									>
-										<div className="flex items-center h-full">
-											<span className="text-sm leading-normal line-clamp-2">
-												{filteredDescriptions[virtualRow.index]}
-											</span>
+										<div
+											style={{
+												height: `${rowVirtualizer.getTotalSize()}px`,
+												width: "100%",
+												position: "relative",
+											}}
+										>
+											{rowVirtualizer.getVirtualItems().map((virtualRow) => (
+												<div
+													key={virtualRow.index}
+													className={cn(
+														"absolute left-0 w-full px-4 py-2 cursor-pointer hover:bg-accent/50 transition-colors",
+														selectedDescription ===
+															filteredDescriptions[virtualRow.index]
+															? "bg-primary text-white hover:text-black hover:bg-primary/50"
+															: ""
+													)}
+													style={{
+														height: `${virtualRow.size}px`,
+														transform: `translateY(${virtualRow.start}px)`,
+													}}
+													onClick={() =>
+														handleDescriptionChange(
+															filteredDescriptions[virtualRow.index]
+														)
+													}
+												>
+													<div className="flex items-center h-full">
+														<span className="text-sm leading-normal line-clamp-2">
+															{filteredDescriptions[virtualRow.index]}
+														</span>
+													</div>
+												</div>
+											))}
 										</div>
 									</div>
-								))}
+								) : (
+									<Button
+										className="absolute right-2 top-1/2 hover:bg-secondary rounded-full p-2 -translate-y-1/2 h-auto"
+										size="sm"
+										onClick={() => setUnhiddenDescription(true)}
+										variant="ghost"
+									>
+										<ChevronDownIcon className="h-4 w-4" />
+									</Button>
+								)}
 							</div>
-						</div>
-					</div>
+						)}
+					/>
 				</FormControl>
 			</FormItem>
 		);
@@ -226,7 +259,6 @@ const CPTSelectionForm: React.FC<CategoryDescriptionFormProps> = ({
 						placeholderKey="fields.cpt_category.placeholder"
 						options={categories}
 						onValueChange={handleCategoryChange}
-						required
 					/>
 					<div>
 						<VirtualizedSelect />

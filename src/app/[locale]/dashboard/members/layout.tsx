@@ -27,7 +27,7 @@ const navData: { headers: string; icons: LucideIcon; items: NavItem[] } = {
 			url: "/dashboard/members/eligibility",
 		},
 		{
-			title: "Core coordination",
+			title: "Care coordination",
 			url: "/dashboard/members/core",
 		},
 	],

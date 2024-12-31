@@ -313,19 +313,27 @@
 				"description": "Provide a detailed description of the LOINC code.",
 				"error": "LOINC description is required."
 			},
-			"pricipal_procedure_category": {
+			"principal_procedure_category": {
 				"label": "Pricipal Procedure Category",
 				"placeholder": "Enter the Pricipal Procedure Category",
 				"description": "Provide the Pricipal Procedure Category.",
 				"error": "Pricipal Procedure Category is required."
 			},
-			"pricipal_procedure_code": {
-				"label": "Pricipal Procedure Code",
-				"placeholder": "Enter the Pricipal Procedure Code",
-				"description": "Provide the Pricipal Procedure Code.",
-				"error": "Pricipal Procedure Code is required."
+			"claim_type": {
+				"label": "Claim Type",
+				"placeholder": "Select the Claim Type",
+				"description": "Please choose  the Claim Type.",
+				"error": "please select Claim Type. It is required",
+				"options": {
+					"inpatientClaim": "Inpatient Claim ",
+					"emergencyClaim": "Emergency Claim ",
+					"plannedSurgery": "Planned Surgery",
+					"outpatientClaim": "Outpatient Claim ",
+					"cashlessClaim": "Cashless Claims (Direct Billing Claims)",
+					"reimbursementClaim": "Reimbursement Claims"
+				}
 			},
-			"pricipal_procedure_description": {
+			"principal_procedure_description": {
 				"label": "Pricipal Procedure Description",
 				"placeholder": "Enter the Pricipal Procedure Description",
 				"description": "Provide the Pricipal Procedure Description.",
@@ -342,6 +350,12 @@
 				"placeholder": "Enter the admitting diagnosis Description",
 				"description": "Specify the diagnosis Description upon admission.",
 				"error": "Admitting diagnosis Description is required."
+			},
+			"claim_status": {
+				"label": "Claim Status",
+				"placeholder": "Select the Claim Status",
+				"description": "Please choose  the Claim Status.",
+				"error": "please select Claim Status. It is required"
 			},
 			"attending_provider_name_npi_specialty_code": {
 				"label": "Attending Provider Name , or NPI",
@@ -410,10 +424,10 @@
 				"error": "Other provider IDs must be valid."
 			},
 			"treatment_authorization_codes": {
-				"label": "Treatment Authorization Codes",
-				"placeholder": "Enter treatment authorization codes",
-				"description": "Provide authorization codes for the treatment.",
-				"error": "Treatment authorization codes are required."
+				"label": "Prior Authorization  Codes",
+				"placeholder": "Enter Prior Authorization codes",
+				"description": "Provide Prior authorization codes for the treatment.",
+				"error": "Prior authorization codes are required."
 			},
 			"additional_notes": {
 				"label": "Additional Notes",
@@ -586,7 +600,7 @@
 				"error": "Additional charges must be valid."
 			},
 			"revenue_code_tin_number": {
-				"label": "Revenue Code TIN Number",
+				"label": "Billing Provider TIN / Tax ID",
 				"placeholder": "Enter the revenue code TIN number",
 				"description": "Provide the TIN number associated with the revenue code.",
 				"error": "Revenue code TIN number is required."
@@ -608,12 +622,31 @@
 				"placeholder": "Please upload Medical Imaging",
 				"description": "Attach the Medical Imaging eg.(CT Scan, MRI)",
 				"error": "please provide a valid file"
+			},
+			"referral_provider_name": {
+				"label": "Referral Provider Name",
+				"placeholder": "Enter the referral provider name",
+				"description": "Provide the name of the referral provider.",
+				"error": "Referral Provider Name is required."
+			},
+			"referral_provider_npi": {
+				"label": "Referral Provider NPI",
+				"placeholder": "Enter the referral provider NPI",
+				"description": "Provide the NPI of the referral provider.",
+				"error": "Referral Provider NPI is required."
+			},
+			"referral_provider_tin_number": {
+				"label": "Referral Provider TIN / Tax ID",
+				"placeholder": "Enter the referral provider TIN / Tax ID",
+				"description": "Provide the TIN / Tax ID of the referral provider.",
+				"error": "Referral Provider TIN / Tax ID is required"
 			}
 		}
 	},
 	"referralForm": {
 		"title": "Referral Form",
 		"description": "Please fill out the form below to refer a memmber.",
+		"fieldRequired": "This field is required",
 		"fields": {
 			"referral_date": {
 				"label": "Referral Date",
@@ -840,12 +873,25 @@
 	"claimStatusForm": {
 		"title": "Claim Status",
 		"description": "Please fill out the form below to check the status of a claim.",
+		"fieldRequired": "This field is required",
 		"fields": {
 			"member_id": {
 				"label": "Member Id",
 				"placeholder": "Enter the Member Id",
 				"description": "Provide the Member Id.",
 				"error": "Member Id is required."
+			},
+			"from": {
+				"label": "Claim Status date started From",
+				"placeholder": "Enter the From",
+				"description": "Provide the From.",
+				"error": "From is required."
+			},
+			"to": {
+				"label": "Claim Status date started To",
+				"placeholder": "Enter the To",
+				"description": "Provide the To.",
+				"error": "To is required."
 			},
 			"billingProvider_id": {
 				"label": "Billing Provider Id",
@@ -881,13 +927,91 @@
 				"label": "Claim Status",
 				"placeholder": "Select the Claim Status",
 				"description": "Provide the Claim Status.",
-				"error": "Claim Status is required."
+				"error": "Claim Status is required.",
+				"options": {
+					"pending": "Pending",
+					"disputing": "Disputing",
+					"denied": "Denied",
+					"paid": "Paid"
+				}
 			},
 			"diagnosis_date": {
 				"label": "Diagnosis Date",
 				"placeholder": "Enter the Diagnosis Date",
 				"description": "Provide the Diagnosis Date.",
 				"error": "Diagnosis Date is required."
+			},
+			"member_first_name": {
+				"label": "Member First Name",
+				"placeholder": "Enter the Member First Name",
+				"description": "Provide the Member First Name.",
+				"error": "Member First Name is required."
+			},
+			"member_middle_name": {
+				"label": "Member Middle Name",
+				"placeholder": "Enter the Member Middle Name",
+				"description": "Provide the Member Middle Name.",
+				"error": "Member Middle Name is required."
+			},
+			"member_last_name": {
+				"label": "Member Last Name",
+				"placeholder": "Enter the Member Last Name",
+				"description": "Provide the Member Last Name.",
+				"error": "Member Last Name is required."
+			},
+			"plan_type": {
+				"label": "Plan Type",
+				"placeholder": "Select the Plan Type",
+				"description": "Provide the Plan Type.",
+				"error": "Plan Type is required."
+			},
+			"provider": {
+				"label": "Provider",
+				"placeholder": "Select the Provider",
+				"description": "Provide the Provider.",
+				"error": "Provider is required."
+			},
+			"billing_provider_npi": {
+				"label": "Billing Provider NPI",
+				"placeholder": "Enter the Billing Provider NPI",
+				"description": "Provide the Billing Provider NPI.",
+				"error": "Billing Provider NPI is required."
+			},
+			"provider_first_name": {
+				"label": "Provider First Name",
+				"placeholder": "Enter the Provider First Name",
+				"description": "Provide the Provider First Name.",
+				"error": "Provider First Name is required."
+			},
+			"provider_middle_name": {
+				"label": "Provider Middle Name",
+				"placeholder": "Enter the Provider Middle Name",
+				"description": "Provide the Provider Middle Name.",
+				"error": "Provider Middle Name is required."
+			},
+			"provider_last_name": {
+				"label": "Provider Last Name",
+				"placeholder": "Enter the Provider Last Name",
+				"description": "Provide the Provider Last Name.",
+				"error": "Provider Last Name is required."
+			},
+			"provider_npi": {
+				"label": "Provider NPI",
+				"placeholder": "Enter the Provider NPI",
+				"description": "Provide the Provider NPI.",
+				"error": "Provider NPI is required."
+			},
+			"referral_provider_name": {
+				"label": "Referral Provider Name",
+				"placeholder": "Enter the Referral Provider Name",
+				"description": "Provide the Referral Provider Name.",
+				"error": "Referral Provider Name is required."
+			},
+			"referral_provider_npi": {
+				"label": "Referral Provider NPI",
+				"placeholder": "Enter the Referral Provider NPI",
+				"description": "Provide the Referral Provider NPI.",
+				"error": "Referral Provider NPI is required."
 			}
 		}
 	}

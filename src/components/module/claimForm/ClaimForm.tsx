@@ -1,12 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { saveAs } from "file-saver";
 import debounce from "lodash/debounce";
 import { Eraser, Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 
-import { useSetClaim } from "@/actions/Query/claim-Query/request";
+import { useSetClaims } from "@/actions/Query/claim-Query/request";
+import { generateAndDownloadPDF } from "@/actions/claim/action";
+import { SuccessAlertDialog } from "@/components/shared/Dialog/Success-alert-dialog";
+// import { useSubmitClaim } from "@/actions/Query/claim-Query/request";
 import { ReusableDatePickerField } from "@/components/shared/Form/ReusableDateField";
 import ReusableFileUploadField from "@/components/shared/Form/ReusableFileField";
 import ReusableFormField from "@/components/shared/Form/ReusableFormField";
@@ -21,9 +25,9 @@ import { Separator } from "@/components/ui/separator";
 import { getAllDischargeStatus } from "@/constants/data/dischargeStatus";
 import { getAllInjuryCode } from "@/constants/data/injuryCode";
 import { getAllPos, getPosCode } from "@/constants/data/pos";
-import { getAllPrincipalProcedure } from "@/constants/data/principalProcedure";
 import {
 	getAllAdmission,
+	getAllClaimType,
 	getAllTypeOfAdmission,
 } from "@/constants/data/sourceOfAdmission";
 import { useAppSelector } from "@/hooks/storehooks";
@@ -48,18 +52,24 @@ export default function ClaimForm({
 	const claimInfoSchema = createClaimInfoSchema(t);
 	const dataProvider = useAppSelector((state) => state.users.currentUser);
 	const [showPriorAuth, setShowPriorAuth] = useState(false);
+	const [isAlertOpen, setIsAlertOpen] = useState(false);
+
 	const form = useForm<ClaimFormValues>({
 		resolver: zodResolver(claimInfoSchema),
 		defaultValues: {
 			// Provider Information
 			billing_provider_name: `${dataProvider.user.provider.provider_first_name || ""} ${dataProvider.user.provider.provider_middle_initial || ""} ${dataProvider.user.provider.provider_last_name || ""}`,
-			billing_provider_npi: `${dataProvider.user.provider.provider_id || ""}`,
+			billing_provider_npi: `${dataProvider.user.provider.provider_id || "123"}`,
 			revenue_code_tin_number: `${dataProvider.user.provider.tin_number}`,
 
 			attending_provider_name: "",
 			attending_provider_npi: "",
 			attending_provider_tin_number: "",
+
 			// !done
+			referral_provider_name: "",
+			referral_provider_npi: "",
+			referral_provider_tin_number: "",
 
 			place_of_service_description: "",
 			place_of_service_code: "",
@@ -73,7 +83,8 @@ export default function ClaimForm({
 			},
 			source_of_admission: "",
 			type_of_admission_visit: "",
-			other_provider_ids: "", //dfs
+			claim_type: "",
+
 			admitting_diagnosis: "",
 			patient_reason_for_visit: "",
 
@@ -112,8 +123,8 @@ export default function ClaimForm({
 			// treatment_details: "",
 			// operating_physician_name_npi_specialty_code: "",
 			// other_procedure_code_description: "",
-			// additional_notes: "",
-			// patient_discharge_status: "",
+			additional_notes: "",
+			patient_discharge_status: "",
 
 			discharge_date: "",
 			discharge_hour: {
@@ -129,6 +140,7 @@ export default function ClaimForm({
 			treatment_authorization_codes: "",
 		},
 	});
+
 	const [selectedPos, setSelectedPos] = useState<string>("");
 	const [posCode, setPosCode] = useState<string>("");
 
@@ -144,15 +156,16 @@ export default function ClaimForm({
 		return getAllTypeOfAdmission();
 	}, []);
 
+	const ClaimTypeOption = useMemo(() => {
+		return getAllClaimType();
+	}, []);
+
 	const InjuryCodeOptions = useMemo(() => {
 		return getAllInjuryCode();
 	}, []);
 
 	const DischageStatusOptions = useMemo(() => {
 		return getAllDischargeStatus();
-	}, []);
-	const PrincipalProcedureOptions = useMemo(() => {
-		return getAllPrincipalProcedure();
 	}, []);
 
 	const handlePOSValueChange = (value: string) => {
@@ -180,10 +193,10 @@ export default function ClaimForm({
 	const handleDischargeStatusValueChange = (value: string) => {
 		form.setValue("external_cause_of_injury_code", value);
 	};
-	// const handlePrincipalProcedureValueChange = (value: string) => {
-	// 	form.setValue("principal_procedure_code", value);
 
-	// };
+	const handleClaimTypeValueChange = (value: string) => {
+		form.setValue("claim_type", value);
+	};
 	const handleSelectedDiagnosis = (data: {
 		category: string;
 		source: "WHO" | "ETHIOPIA";
@@ -246,6 +259,9 @@ export default function ClaimForm({
 	const [amountToBeClaimed, setAmountToBeClaimed] = useState(0);
 
 	useEffect(() => {
+		const memberIsDeductable =
+			selectedMember?.deductible_type === "with_deductible" ? true : false; // HAVE TO BE CHANGED
+
 		const memberDuty = selectedMember?.member_payment_duty || 0; // member_payment_duty
 		const tillaDuty = 100 - memberDuty; // tilla_duty
 		const discountAgreement =
@@ -258,15 +274,14 @@ export default function ClaimForm({
 		const newTillaPaymentDuty = (total_reduce * tillaDuty) / 100;
 		const total_have_to_pay = total_reduce - newTillaPaymentDuty;
 
-		// Update the values
 		setPaymentDuty(memberDuty); // member duty
+
 		setTillaDuty(tillaDuty); // tilla duty
 		setProviderDiscount(providerDiscountAmount); //provider duty
 
 		setProviderDiscountAgreement(discountAgreement);
 		setTotalReduce(total_reduce);
 
-		// setPaymentWithDiscount(newPaymentWithDiscount);
 		setTillaPaymentDuty(newTillaPaymentDuty);
 		setAmountToBeClaimed(total_have_to_pay);
 	}, [serviceCharge, additionalCharge]);
@@ -320,207 +335,81 @@ export default function ClaimForm({
 		setReciptsFile(files);
 	};
 
-	const { mutate: setClaim } = useSetClaim();
+	const { mutate: onSubmitClaim } = useSetClaims();
 
-	async function onSubmit(data: ClaimFormValues) {
-		try {
-			setIsSubmitting(true);
+	const onSubmit = (data: ClaimFormValues) => {
+		const formData = new FormData();
 
-			// Format admission_hour and discharge_hour
-			const formatHour = (
-				hourData: "" | { hour: string; period?: "AM" | "PM" }
-			) => {
-				if (hourData === "") {
-					return { hour: "00", period: "AM" }; // or any default values you prefer
-				}
+		const { admission_hour, discharge_hour } = data;
+		const admission = JSON.stringify(admission_hour);
+		const discharge = JSON.stringify(discharge_hour);
+		const savedData = {
+			...data,
+			admission_hour: admission,
+			discharge_hour: discharge,
+			provider: dataProvider.user.provider.id,
+			individual_member: selectedMember.id,
+		};
 
-				const { hour, period = "AM" } = hourData; // default to "AM" if period is not provided
-				return { hour, period };
-			};
-
-			const formattedData = {
-				...data,
-				individual_member: Number(selectedMember.id),
-				provider: dataProvider.user.provider.id,
-				discharge_hour: formatHour(data.discharge_hour),
-				admission_hour: formatHour(data.admission_hour),
-			};
-
-			const submitData = new FormData();
-
-			// Append files if they exist
-			if (releaseOfInformationFiles && releaseOfInformationFiles.length > 0) {
-				releaseOfInformationFiles.forEach((file) => {
-					submitData.append("release_of_information_reciept", file);
-				});
+		Object.entries(savedData).forEach(([key, value]) => {
+			if (value !== null && value !== undefined) {
+				formData.append(key, value.toString());
 			}
-			if (
-				medicationPrescriptionFiles &&
-				medicationPrescriptionFiles.length > 0
-			) {
-				medicationPrescriptionFiles.forEach((file) => {
-					submitData.append("medication_prescription", file);
-				});
-			}
-			if (medicalImagingFiles && medicalImagingFiles.length > 0) {
-				medicalImagingFiles.forEach((file) => {
-					submitData.append("medical_imaging", file);
-				});
-			}
-			if (examAndLabFiles && examAndLabFiles.length > 0) {
-				examAndLabFiles.forEach((file) => {
-					submitData.append("exam_and_lab", file);
-				});
-			}
-			if (receiptsFile && receiptsFile.length > 0) {
-				receiptsFile.forEach((file) => {
-					submitData.append("receipts", file);
-				});
-			}
+		});
 
-			// Append non-file data (formattedData) to FormData
-
-			submitData.append(
-				"discharge_hour",
-				JSON.stringify(formattedData.discharge_hour || "")
-			);
-			submitData.append(
-				"admission_hour",
-				JSON.stringify(formattedData.admission_hour || "")
-			);
-
-			submitData.append(
-				"individual_member",
-				formattedData.individual_member.toString()
-			);
-			submitData.append("provider", formattedData.provider.toString());
-
-			// Append other form fields
-			submitData.append(
-				"place_of_service_description",
-				formattedData.place_of_service_description || ""
-			);
-			submitData.append(
-				"place_of_service_code",
-				formattedData.place_of_service_code || ""
-			);
-			submitData.append(
-				"billing_provider_npi",
-				formattedData.billing_provider_npi || ""
-			);
-			submitData.append(
-				"attending_provider_name_npi_specialty_code",
-				formattedData.attending_provider_name_npi_specialty_code || ""
-			);
-
-			submitData.append(
-				"other_provider_ids",
-				formattedData.other_provider_ids || ""
-			);
-			submitData.append("admission_date", formattedData.admission_date || "");
-			submitData.append(
-				"source_of_admission",
-				formattedData.source_of_admission || ""
-			);
-			submitData.append(
-				"type_of_admission_visit",
-				formattedData.type_of_admission_visit || ""
-			);
-			submitData.append(
-				"admitting_diagnosis",
-				formattedData.admitting_diagnosis || ""
-			);
-			submitData.append(
-				"patient_reason_for_visit",
-				formattedData.patient_reason_for_visit || ""
-			);
-			submitData.append("diagnosis_date", formattedData.diagnosis_date || "");
-			submitData.append(
-				"diagnosis_source",
-				formattedData.diagnosis_source || ""
-			);
-			submitData.append(
-				"diagnosis_category",
-				formattedData.diagnosis_category || ""
-			);
-			submitData.append(
-				"diagnosis_description",
-				formattedData.diagnosis_description || ""
-			);
-			submitData.append("diagnosis_code", formattedData.diagnosis_code || "");
-			submitData.append(
-				"external_cause_of_injury_code",
-				formattedData.external_cause_of_injury_code || ""
-			);
-
-			submitData.append(
-				"treatment_authorization_codes",
-				formattedData.treatment_authorization_codes || ""
-			);
-			submitData.append("lonic_category", formattedData.lonic_category || "");
-			submitData.append("lonic_code", formattedData.lonic_code || "");
-			submitData.append(
-				"lonic_description",
-				formattedData.lonic_description || ""
-			);
-			submitData.append("cpt_code", formattedData.cpt_code || "");
-			submitData.append("cpt_category", formattedData.cpt_category || "");
-			submitData.append("cpt_description", formattedData.cpt_description || "");
-
-			submitData.append(
-				"service_start_date",
-				formattedData.service_start_date || ""
-			);
-			submitData.append(
-				"service_end_date",
-				formattedData.service_end_date || ""
-			);
-
-			submitData.append(
-				"service_charge",
-				formattedData.service_charge.toString()
-			);
-			submitData.append(
-				"additional_charge",
-				formattedData.additional_charge.toString()
-			);
-			submitData.append(
-				"non_covered_charges",
-				formattedData.non_covered_charges.toString()
-			);
-			submitData.append("type_of_bill", formattedData.type_of_bill || "");
-			submitData.append("payer_name", formattedData.payer_name || "");
-			submitData.append(
-				"revenue_code_tin_number",
-				formattedData.revenue_code_tin_number || ""
-			);
-
-			// Log the FormData contents
-			console.log("FormData contents:");
-			submitData.forEach((value, key) => {
-				console.log(key, value);
+		// Append file arrays
+		const appendFiles = (files: File[], fieldName: string) => {
+			files.forEach((file) => {
+				formData.append(fieldName, file);
 			});
+		};
 
-			// Log the final submitData as JSON
-			console.log(
-				"Form submission successful:",
-				JSON.stringify(submitData, null, 2)
-			);
+		appendFiles(releaseOfInformationFiles, "release_of_information_reciept");
+		appendFiles(receiptsFile, "receipts");
+		appendFiles(medicationPrescriptionFiles, "medication_prescription");
+		appendFiles(medicalImagingFiles, "medical_imaging");
+		appendFiles(examAndLabFiles, "exam_and_lab");
 
-			// Simulate submission logic, e.g., using axios to send the data to an API
-			// const result = await axios.post("/api/claim", submitData);
-
-			console.log("Form submission successful:", submitData);
-			// setClaim(result); // Set the response data after submission
-		} catch (error) {
-			console.error("Error submitting form:", error);
-		} finally {
-			setIsSubmitting(false);
-		}
-	}
+		onSubmitClaim(formData, {
+			onSuccess: async () => {
+				setIsAlertOpen(true);
+				try {
+					const generatedPDfData = {
+						...data,
+						memberId: selectedMember.id?.toString(),
+						patientName: `${selectedMember.first_name.toString()} ${selectedMember.middle_name.toString()} ${selectedMember.last_name.toString()}`,
+					};
+					const base64PDF = await generateAndDownloadPDF(generatedPDfData);
+					const pdfBlob = new Blob([Buffer.from(base64PDF, "base64")], {
+						type: "application/pdf",
+					});
+					saveAs(pdfBlob, "claim_form.pdf");
+				} catch (error) {
+					console.error("Error generating PDF:", error);
+				}
+				formData.delete("release_of_information_reciept");
+				formData.delete("receipts");
+				formData.delete("medication_prescription");
+				formData.delete("medical_imaging");
+				formData.delete("exam_and_lab");
+				setReleaseOfInformationFiles([]);
+				setReciptsFile([]);
+				setMedicationPrescriptionFiles([]);
+				setMedicalImagingFiles([]);
+				setExamAndLabFiles([]);
+			},
+		});
+		console.log("formData", formData);
+	};
 
 	return (
 		<div className="grid gap-4 lg:grid-cols-4">
+			<SuccessAlertDialog
+				isOpen={isAlertOpen}
+				onClose={() => setIsAlertOpen(false)}
+				title="Claim Registration Successful"
+				description={`You have created a Claim successfully for ${selectedMember.first_name} ${selectedMember.middle_name}!`}
+			/>
 			<div className="lg:col-span-3 mb-24">
 				<div>
 					<h1 className="text-3xl mb-6 text-center font-bold">
@@ -567,7 +456,7 @@ export default function ClaimForm({
 								/>
 							</div>
 							<Separator />
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 mb-4">
+							<div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 mb-4">
 								<ReusableFormField
 									control={form.control}
 									name="attending_provider_name"
@@ -594,6 +483,36 @@ export default function ClaimForm({
 									labelKey="fields.attending_provider_tin_number.label"
 									placeholderKey="fields.attending_provider_tin_number.placeholder"
 									descriptionKey="fields.attending_provider_tin_number.description"
+								/>
+							</div>
+							<Separator />
+							<div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 mb-4">
+								<ReusableFormField
+									control={form.control}
+									name="referral_provider_name"
+									type="text"
+									local="claimForm"
+									labelKey="fields.referral_provider_name.label"
+									placeholderKey="fields.referral_provider_name.placeholder"
+									descriptionKey="fields.referral_provider_name.description"
+								/>
+								<ReusableFormField
+									control={form.control}
+									name="referral_provider_npi"
+									type="text"
+									local="claimForm"
+									labelKey="fields.referral_provider_npi.label"
+									placeholderKey="fields.referral_provider_npi.placeholder"
+									descriptionKey="fields.referral_provider_npi.description"
+								/>
+								<ReusableFormField
+									control={form.control}
+									name="referral_provider_tin_number"
+									type="text"
+									local="claimForm"
+									labelKey="fields.referral_provider_tin_number.label"
+									placeholderKey="fields.referral_provider_tin_number.placeholder"
+									descriptionKey="fields.referral_provider_tin_number.description"
 								/>
 							</div>
 						</fieldset>
@@ -689,6 +608,7 @@ export default function ClaimForm({
 									onValueChange={handleAdmissionValueChange}
 									local="claimForm"
 									required={true}
+									isBold={true}
 								/>
 							</div>
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 space-y-2">
@@ -701,7 +621,6 @@ export default function ClaimForm({
 									options={TypeAdmissionOptions}
 									onValueChange={handleTypeOfAdmissionValueChange}
 									local="claimForm"
-									required={true}
 								/>
 								<ReusableTeaxtAreaField
 									control={form.control}
@@ -722,16 +641,15 @@ export default function ClaimForm({
 									local="claimForm"
 									required={true}
 								/>
-							</div>
-							<div className="mt-4">
-								<ReusableTeaxtAreaField
+								<ReusableSelectField
 									control={form.control}
-									name="admitting_diagnosis"
-									type="text"
+									name="claim_type"
+									labelKey="fields.claim_type.label"
+									placeholderKey="fields.claim_type.placeholder"
+									descriptionKey="fields.claim_type.description"
+									options={ClaimTypeOption}
+									onValueChange={handleClaimTypeValueChange}
 									local="claimForm"
-									labelKey="fields.admitting_diagnosis.label"
-									placeholderKey="fields.admitting_diagnosis.placeholder"
-									descriptionKey="fields.admitting_diagnosis.description"
 								/>
 							</div>
 						</fieldset>
@@ -758,7 +676,6 @@ export default function ClaimForm({
 									placeholderKey="fields.other_diagnosis_codes_poc.placeholder"
 									descriptionKey="fields.other_diagnosis_codes_poc.description"
 									local="claimForm"
-									required={true}
 								/>
 								<ReusableSelectField
 									control={form.control}
@@ -769,7 +686,6 @@ export default function ClaimForm({
 									options={InjuryCodeOptions}
 									onValueChange={handleExternalCauseOfInjuryCodeChange}
 									local="claimForm"
-									required={true}
 								/>
 							</div>
 						</fieldset>
@@ -806,7 +722,7 @@ export default function ClaimForm({
 									local="claimForm"
 								/>
 							</div>
-							{/* <Separator />
+							<Separator />
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 space-y-2">
 								<ReusableSelectField
 									control={form.control}
@@ -827,9 +743,8 @@ export default function ClaimForm({
 									placeholderKey="fields.additional_notes.placeholder"
 									descriptionKey="fields.additional_notes.description"
 									local="claimForm"
-									required={true}
 								/>
-							</div> */}
+							</div>
 						</fieldset>
 						<fieldset className="border p-4 rounded-md bg-muted pb-6">
 							<legend className="text-lg font-semibold">
@@ -849,7 +764,6 @@ export default function ClaimForm({
 									labelKey="fields.medication_prescription.label"
 									descriptionKey="fields.medication_prescription.description"
 									local="claimForm"
-									required
 									control={form.control}
 									onFilesChange={handleMedicationPrescriptionFilesChange}
 								/>
@@ -858,7 +772,6 @@ export default function ClaimForm({
 									labelKey="fields.medical_imaging.label"
 									descriptionKey="fields.medical_imaging.description"
 									local="claimForm"
-									required
 									control={form.control}
 									onFilesChange={handleMedicalImagingFilesChange}
 								/>
@@ -867,7 +780,6 @@ export default function ClaimForm({
 									labelKey="fields.exam_and_lab.label"
 									descriptionKey="fields.exam_and_lab.description"
 									local="claimForm"
-									required
 									control={form.control}
 									onFilesChange={handleExamAndLabFilesChange}
 								/>
@@ -898,16 +810,6 @@ export default function ClaimForm({
 										labelKey="fields.payer_name.label"
 										placeholderKey="fields.payer_name.placeholder"
 										descriptionKey="fields.payer_name.description"
-										disabled={true}
-									/>
-									<ReusableFormField
-										control={form.control}
-										name="revenue_code_tin_number"
-										type="text"
-										local="claimForm"
-										labelKey="fields.revenue_code_tin_number.label"
-										placeholderKey="fields.revenue_code_tin_number.placeholder"
-										descriptionKey="fields.revenue_code_tin_number.description"
 										disabled={true}
 									/>
 								</div>
@@ -979,9 +881,6 @@ export default function ClaimForm({
 
 							{showPriorAuth && (
 								<fieldset className="border p-4 rounded-md bg-secondary/30 pb-6">
-									<legend className="text-lg font-semibold">
-										Prior Authorization Codes
-									</legend>
 									<div className="grid grid-cols-1 md:grid-cols-1 gap-4 pt-4 mb-4">
 										<ReusableFormField
 											control={form.control}

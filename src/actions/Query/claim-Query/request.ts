@@ -13,10 +13,14 @@ import {
 	getICD10WHORecords,
 	getLonic,
 	getLonicRecords,
+	getMyPaymentSummary,
+	searchClaims,
 	setClaim,
 } from "@/actions/claim/action";
+import { type ClaimStatusFormValues } from "@/components/screen/claims/StatusScreen";
 import useToastMutation from "@/hooks/useToastMutation";
 import { type ClaimType } from "@/types/claim/claim";
+import { PaymentSummary } from "@/types/payment/payment";
 
 interface ICD10Record {
 	category: string;
@@ -184,28 +188,6 @@ export const useLonicRecords = (category: string, enabled: boolean) => {
 	});
 };
 
-export const useSetClaim = () => {
-	return useToastMutation<Partial<ClaimType>>(
-		["setClaim"],
-		setClaim,
-		"Claim creating...",
-		{
-			onSuccess: (data, variables) => {
-				// 'data' contains the response from the server
-				// 'variables' contains the memeber data you passed in
-				console.log("Claim creating:", variables);
-				console.log("Claim created:", data);
-
-				// queryClient.invalidateQueries({ queryKey: ["Organizations"] });
-				// Example: Display a message with the Organization name
-			},
-			onError: (error) => {
-				console.error("Error creating Claim:", error);
-			},
-		}
-	);
-};
-
 export const useGetClaims = () => {
 	return useQuery<Array<ClaimType>>({
 		queryKey: ["getClaims"],
@@ -222,9 +204,25 @@ export const useGetClaims = () => {
 	});
 };
 
+export const useGetMyPaymentSummary = () => {
+	return useQuery<PaymentSummary>({
+		queryKey: ["getMyPaymentSummary"],
+		queryFn: async () => {
+			try {
+				const response = await getMyPaymentSummary();
+				return response.data;
+			} catch (error: any) {
+				toast.error(`Error fetching claims: ${error.message}`);
+				throw error;
+			}
+		},
+		retry: false,
+	});
+};
+
 export const useGetCLaimByID = (id: string) => {
-	return useQuery<Array<ClaimType>>({
-		queryKey: ["getClaims"],
+	return useQuery<ClaimType>({
+		queryKey: ["getClaimsById", id],
 		queryFn: async () => {
 			try {
 				const response = await getClaimsById(id);
@@ -234,6 +232,54 @@ export const useGetCLaimByID = (id: string) => {
 				throw error;
 			}
 		},
+		retry: false,
+	});
+};
+
+export const useSetClaims = () => {
+	return useToastMutation<FormData>(
+		["setClaim"],
+		setClaim,
+		"Claim creating...",
+		{
+			onSuccess: (data, variables) => {
+				console.log("Claim creation data:", data);
+				console.log("Submitted variables:", variables);
+
+				// Optionally invalidate queries or perform other actions here
+				// queryClient.invalidateQueries({ queryKey: ["Organizations"] });
+			},
+			onError: (error) => {
+				console.error("Error creating Claim:", error);
+			},
+		}
+	);
+};
+
+export const useSearchClaim = (sendData: Partial<ClaimStatusFormValues>) => {
+	return useQuery<ClaimType[]>({
+		queryKey: ["claimSearch", sendData],
+		queryFn: async () => {
+			// Check if sendData is empty and prevent unnecessary API calls
+			if (
+				!sendData ||
+				(Object.keys(sendData) as (keyof ClaimStatusFormValues)[]).every(
+					(key) => !sendData[key]
+				)
+			) {
+				return []; // Return an empty array if no valid data
+			}
+
+			// Proceed with the API call when sendData is valid
+			const response = await searchClaims(sendData);
+			return response.data || []; // Ensure response.data is not undefined
+		},
+		enabled: Boolean(
+			sendData &&
+				(Object.keys(sendData) as (keyof ClaimStatusFormValues)[]).some(
+					(key) => sendData[key]
+				)
+		), // Only enable query if there's valid input
 		retry: false,
 	});
 };

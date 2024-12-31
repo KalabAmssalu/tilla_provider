@@ -1,9 +1,11 @@
+import { useGetCLaimByID } from "@/actions/Query/claim-Query/request";
+import { getClaimsById } from "@/actions/claim/action";
 import ClaimDetailView from "@/components/module/claimStatus/ClaimStatusDetail";
 import { type ClaimType } from "@/types/claim/claim";
 
 async function getClaimData(id: string): Promise<Partial<ClaimType>> {
 	return {
-		claim_id: 101,
+		claim_number: 101,
 		individual_member: 4567,
 		provider: 7890,
 
@@ -70,7 +72,6 @@ async function getClaimData(id: string): Promise<Partial<ClaimType>> {
 		// exam_and_lab: [{ name: "blood_test_results.pdf", type: "application/pdf" }],
 
 		patient_control_number: "PCN456123",
-		claim_number: "CLM789654",
 		member_payment_amount: "200.00",
 		total_amount_payment_by_insurance: "14700.00",
 		grand_total: "15000.00",
@@ -83,6 +84,14 @@ export default async function ClaimDetailPage({
 }: {
 	params: { id: string };
 }) {
-	const claimData = await getClaimData("1");
-	return <ClaimDetailView claim={claimData} />;
+	const { id } = params;
+
+	try {
+		const response = await getClaimsById(id);
+		const claimData = response.data;
+
+		return <div>{claimData && <ClaimDetailView claim={claimData} />}</div>;
+	} catch (error: any) {
+		return <div>Error fetching claim details: {error.message}</div>;
+	}
 }

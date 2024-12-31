@@ -11,6 +11,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
 	Select,
 	SelectContent,
@@ -28,7 +29,9 @@ import {
 interface SelectOption {
 	value: string;
 	label?: string;
+	description?: string; // Add description for this option type
 }
+
 interface SelectFieldProps {
 	control: any; // Control object from react-hook-form or similar
 	name: string;
@@ -40,6 +43,7 @@ interface SelectFieldProps {
 	local?: string; // Optional namespace for localization
 	required?: boolean; // Indicates if the field is required
 	defaultValue?: string; // Default value for the select field
+	isBold?: boolean; // Whether to display the field in bold
 }
 
 const ReusableSelectField: React.FC<SelectFieldProps> = ({
@@ -53,6 +57,7 @@ const ReusableSelectField: React.FC<SelectFieldProps> = ({
 	local,
 	required = false,
 	defaultValue = "", // Default to an empty string if not provided
+	isBold = false,
 }) => {
 	const namespace = local || ""; // Optional namespace if needed
 	const t = useTranslations(namespace); // Hook to fetch translation strings
@@ -97,21 +102,32 @@ const ReusableSelectField: React.FC<SelectFieldProps> = ({
 								/>
 							</SelectTrigger>
 							<SelectContent>
-								{isObjectOptions
-									? (options as SelectOption[]).map((option) => (
-											<SelectItem key={option.value} value={option.value}>
-												<div className="flex items-start gap-3 text-muted-foreground">
-													<p>{option.label || option.value}</p>
-												</div>
-											</SelectItem>
-										))
-									: (options as string[]).map((option) => (
-											<SelectItem key={option} value={option}>
-												<div className="flex items-start gap-3 text-muted-foreground">
-													<p>{option}</p>
-												</div>
-											</SelectItem>
-										))}
+								<ScrollArea className="h-72 pr-2">
+									{isObjectOptions
+										? (options as SelectOption[]).map((option) => (
+												<SelectItem key={option.value} value={option.value}>
+													<div className="flex items-start gap-3 text-muted-foreground">
+														{isBold ? (
+															<>
+																<strong>{option.value}</strong> -{" "}
+																{option.description}
+															</>
+														) : (
+															<span>{option.label || option.value}</span>
+														)}
+													</div>
+												</SelectItem>
+											))
+										: (options as string[]).map((option) => {
+												return (
+													<SelectItem key={option} value={option}>
+														<div className="flex items-start gap-3 text-muted-foreground">
+															<span>{option}</span>
+														</div>
+													</SelectItem>
+												);
+											})}
+								</ScrollArea>
 							</SelectContent>
 						</Select>
 					</FormControl>

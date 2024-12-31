@@ -18,4 +18,5 @@ export interface PaymentSummary {
 	received: number;
 	denied: number;
 	disputed: number;
+	pending: number;
 }

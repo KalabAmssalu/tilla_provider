@@ -29,7 +29,7 @@ export default function ClaimDetailView({
 				<h1 className="text-3xl font-bold mb-6">Claim Details</h1>
 				<Card className="mb-6">
 					<CardHeader>
-						<CardTitle>Claim #{claim.claim_id}</CardTitle>
+						<CardTitle>Claim #{claim.claim_number}</CardTitle>
 						<CardDescription>Basic claim information</CardDescription>
 					</CardHeader>
 					<CardContent>
