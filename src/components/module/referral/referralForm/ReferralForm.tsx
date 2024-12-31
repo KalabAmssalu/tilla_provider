@@ -1,19 +1,17 @@
+import { useState } from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
 import { saveAs } from "file-saver";
 import { Eraser, Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
-import {
-	fetchProviders,
-	providersQueryKey,
-} from "@/actions/Query/provider-Query/provider-Query";
+import { useFetchProviders } from "@/actions/Query/provider-Query/provider-Query";
+import { useSetReferral } from "@/actions/Query/referal_Query/request";
 import { generateAndDownloadPDF } from "@/actions/claim/action";
+import { SuccessAlertDialog } from "@/components/shared/Dialog/Success-alert-dialog";
 import { ReusableDatePickerField } from "@/components/shared/Form/ReusableDateField";
 import ReusableFileUploadField from "@/components/shared/Form/ReusableFileField";
-import ReusableFormField from "@/components/shared/Form/ReusableFormField";
 import ReusableSelectField from "@/components/shared/Form/ReusableSelectField";
 import {
 	default as ReusableTeaxtAreaField,
@@ -21,8 +19,6 @@ import {
 } from "@/components/shared/Form/ReusableTextAreaField";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useAppSelector } from "@/hooks/storehooks";
-import { Provider } from "@/lib/store/redux/providerSlice";
 import { type memberType } from "@/types/member/memeberType";
 import {
 	type ReferralFormValues,
@@ -36,52 +32,110 @@ export default function ReferralForm({
 }) {
 	const t = useTranslations("referralForm");
 	const referralInfoSchema = createReferralInfoSchema(t);
-
-	// const dataProvider = useAppSelector((state) => state.users.currentUser);
-	const { data: providers } = useQuery<Provider[], Error>({
-		queryKey: providersQueryKey,
-		queryFn: fetchProviders,
-	});
+	const [supportingDoc1Files, setSupportingDoc1Files] = useState<File[]>([]);
+	const [supportingDoc2Files, setSupportingDoc2Files] = useState<File[]>([]);
+	const { data: providers } = useFetchProviders();
+	const [isAlertOpen, setIsAlertOpen] = useState(false);
 
 	const providerOptions =
-		providers?.map(
-			(provider) =>
-				`${provider.id.toString()} - ${provider.provider_first_name} ${provider.provider_last_name}`
-		) || [];
+		providers?.map((provider) => ({
+			value: provider.id.toString(),
+			label:
+				provider.provider_service_type === "inistiute"
+					? `${provider.institute_name}`
+					: provider.provider_service_type === "group"
+						? `${provider.institute_name}`
+						: `${provider.provider_first_name} ${provider.provider_last_name}`,
+		})) || [];
 
 	const form = useForm<ReferralFormValues>({
 		resolver: zodResolver(referralInfoSchema),
 		defaultValues: {
 			referral_date: "",
-			referral_number: "",
-			referral_status: "pending",
 			reason_for_referral: "",
 			additional_note: "",
-			supporting_doc1: "",
-			supporting_doc2: "",
-			referred_to: "",
+			referred_to: 0,
 		},
 	});
 	const handleReferredToValueChange = (value: string) => {
-		form.setValue("referred_to", value);
+		console.log("Referred To Value Changed:", Number(value));
+		form.setValue("referred_to", Number(value));
 	};
+
+	const { mutate: onSubmitReferral } = useSetReferral();
 	const handleSubmit = async (data: ReferralFormValues) => {
-		console.log("====================================");
-		console.log(data);
-		console.log("====================================");
-		toast.success("Referral Submitted Successfully");
-		try {
-			const base64PDF = await generateAndDownloadPDF(data);
-			const pdfBlob = new Blob([Buffer.from(base64PDF, "base64")], {
-				type: "application/pdf",
-			});
-			saveAs(pdfBlob, "referral_form.pdf");
-		} catch (error) {
-			console.error("Error generating PDF:", error);
+		const formData = new FormData();
+
+		// Append JSON data as a stringified object
+		// formData.append("jsonData", JSON.stringify(data));
+		if (selectedMember.id) {
+			formData.append("individual_member", selectedMember.id.toString());
 		}
+		formData.append("refferred_to", data.referred_to.toString());
+		formData.append("referral_date", data.referral_date);
+		formData.append("reason_for_refferal", data.reason_for_referral);
+		if (data.additional_note) {
+			formData.append("additional_note", data.additional_note.toString());
+		}
+
+		// Append file uploads to FormData
+		if (supportingDoc1Files[0]) {
+			formData.append("supporting_doc1", supportingDoc1Files[0]);
+		}
+		if (supportingDoc2Files[0]) {
+			formData.append("supporting_doc2", supportingDoc2Files[0]);
+		}
+
+		// Log form data without iteration
+		console.log("Form Data:");
+		console.log("JSON Data:", data);
+		console.log(
+			"Supporting Doc 1:",
+			supportingDoc1Files[0] ? supportingDoc1Files[0].name : "Not provided"
+		);
+		console.log(
+			"Supporting Doc 2:",
+			supportingDoc2Files[0] ? supportingDoc2Files[0].name : "Not provided"
+		);
+		onSubmitReferral(formData, {
+			onSuccess: async () => {
+				setIsAlertOpen(true);
+				try {
+					const base64PDF = await generateAndDownloadPDF(data);
+					const pdfBlob = new Blob([Buffer.from(base64PDF, "base64")], {
+						type: "application/pdf",
+					});
+					saveAs(pdfBlob, "referral_form.pdf");
+				} catch (error) {
+					console.error("Error generating PDF:", error);
+				}
+				formData.delete("referral_date");
+				formData.delete("referred_to");
+				formData.delete("reason_for_referral");
+				formData.delete("additional_note");
+				setSupportingDoc1Files([]);
+				setSupportingDoc2Files([]);
+			},
+		});
+	};
+
+	const handleSupportingDoc1Change = (files: File[]) => {
+		console.log("Supporting Doc1 files:", files);
+		setSupportingDoc1Files(files);
+	};
+	const handleSupportingDoc2Change = (files: File[]) => {
+		console.log("Supporting Doc2 files:", files);
+		setSupportingDoc2Files(files);
 	};
 	return (
 		<div className="lg:col-span-3 mb-24">
+			<SuccessAlertDialog
+				isOpen={isAlertOpen}
+				onClose={() => setIsAlertOpen(false)}
+				title="Referral Registration Successful"
+				description={`You have created a referral successfully for ${selectedMember.first_name} ${selectedMember.middle_name}!`}
+			/>
+
 			<div>
 				<h1 className="text-3xl mb-6 text-center font-bold">{t("title")}</h1>
 			</div>
@@ -102,22 +156,11 @@ export default function ReferralForm({
 								local="referralForm"
 								required={true}
 							/>
-							{/* Referral Number */}
-							<ReusableFormField
-								control={form.control}
-								name="referral_number"
-								type="text"
-								local="referralForm"
-								labelKey="fields.referral_number.label"
-								placeholderKey="fields.referral_number.placeholder"
-								descriptionKey="fields.referral_number.description"
-								required={true}
-							/>
+
 							{/* Referred To */}
 							<ReusableSelectField
 								control={form.control}
 								name="referred_to"
-								// type="number"
 								local="referralForm"
 								labelKey="fields.referred_to.label"
 								placeholderKey="fields.referred_to.placeholder"
@@ -126,36 +169,7 @@ export default function ReferralForm({
 								options={providerOptions}
 								required={true}
 							/>
-							{/* Referral Status */}
-							<ReusableSelectField
-								control={form.control}
-								name="referral_status"
-								labelKey="fields.referral_status.label"
-								local="referralForm"
-								placeholderKey="fields.referral_status.placeholder"
-								descriptionKey="fields.referral_status.description"
-								options={[
-									{
-										label: t("fields.referral_status.options.approved"),
-										value: "approved",
-									},
-									{
-										label: t("fields.referral_status.options.pending"),
-										value: "pending",
-									},
-									{
-										label: t("fields.referral_status.options.rejected"),
-										value: "rejected",
-									},
-								]}
-								onValueChange={(value) => {
-									form.setValue(
-										"referral_status",
-										value as "approved" | "pending" | "rejected"
-									);
-								}}
-								required
-							/>
+
 							{/* Reason for Referral */}
 							<ReusableTeaxtAreaField
 								control={form.control}
@@ -190,14 +204,17 @@ export default function ReferralForm({
 								labelKey="fields.supporting_doc1.label"
 								// placeholderKey="fields.supporting_doc1.placeholder"
 								descriptionKey="fields.supporting_doc1.description"
+								onFilesChange={handleSupportingDoc1Change}
 								// readOnly={true}
 							/>
+
 							{/* Supporting Document 2 */}
 							<ReusableFileUploadField
 								control={form.control}
 								name="supporting_doc2"
 								local="referralForm"
 								labelKey="fields.supporting_doc2.label"
+								onFilesChange={handleSupportingDoc2Change}
 								// placeholderKey="fields.supporting_doc2.placeholder"
 								descriptionKey="fields.supporting_doc2.description"
 								// readOnly={true}

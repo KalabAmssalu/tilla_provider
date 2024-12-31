@@ -10,7 +10,6 @@ import {
 	AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { type memberType } from "@/types/member/memeberType";
 
 const ReferralMember = ({ userDetail }: { userDetail: memberType }) => {
@@ -35,7 +34,7 @@ const ReferralMember = ({ userDetail }: { userDetail: memberType }) => {
 		region: userDetail?.region || "Addis Ababa",
 		city: userDetail?.city || "Addis Ababa",
 		benefit_plan: userDetail?.benefit_plan || "Basic",
-		member_payment_duty: userDetail?.member_payment_duty || "10%",
+		member_payment_duty: userDetail?.member_payment_duty?.toString() || "10%",
 		member_status: userDetail?.member_status || "Active",
 		totalInsuranceAmount: userDetail?.totalInsuranceAmount || 10000,
 		usedInsuranceAmount: userDetail?.usedInsuranceAmount || 1000,

@@ -15,6 +15,12 @@ const axiosInstance: AxiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
 	async (config) => {
+		// Check if the request contains FormData
+		if (config.data instanceof FormData) {
+			// Let Axios handle Content-Type for FormData
+			delete config.headers["Content-Type"];
+		}
+
 		// Handle session authorization
 		if (
 			!config.url?.includes("auth/sign-in/") &&
@@ -32,9 +38,7 @@ axiosInstance.interceptors.request.use(
 		}
 		return config;
 	},
-	(error) => {
-		return Promise.reject(error);
-	}
+	(error) => Promise.reject(error)
 );
 
 export default axiosInstance;

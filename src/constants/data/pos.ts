@@ -11,6 +11,18 @@ export function getPosCode(Description: string): string | undefined {
 
 export const PosData = [
 	{
+		Code: "21",
+		Description: "Inpatient Hospital",
+	},
+	{
+		Code: "22",
+		Description: "Outpatient Hospital",
+	},
+	{
+		Code: "11",
+		Description: "Doctor's Office",
+	},
+	{
 		Code: "1",
 		Description: "Pharmacy",
 	},
@@ -50,10 +62,7 @@ export const PosData = [
 		Code: "10",
 		Description: "Telehealth Provided in Patient's Home",
 	},
-	{
-		Code: "11",
-		Description: "Office",
-	},
+
 	{
 		Code: "12",
 		Description: "Home",
@@ -90,14 +99,7 @@ export const PosData = [
 		Code: "20",
 		Description: "Urgent Care Facility",
 	},
-	{
-		Code: "21",
-		Description: "Inpatient Hospital",
-	},
-	{
-		Code: "22",
-		Description: "On-campus Outpatient Hospital",
-	},
+
 	{
 		Code: "23",
 		Description: "Emergency Room - Hospital",

@@ -20,11 +20,13 @@ type DateSelectorProps = {
 	onDateChange: (date: Date | undefined) => void;
 	placeholder?: string;
 	buttonClassName?: string;
+	yearValidation?: { min: number; max: number };
 };
 
 export const DateSelector: React.FC<DateSelectorProps> = ({
 	selectedDate,
 	onDateChange,
+	yearValidation = { min: 1699, max: 2030 },
 	placeholder = "Pick a date",
 	buttonClassName,
 }) => {
@@ -63,8 +65,8 @@ export const DateSelector: React.FC<DateSelectorProps> = ({
 						onSelect={onDateChange}
 						initialFocus
 						captionLayout="dropdown-buttons"
-						fromYear={1699}
-						toYear={2030}
+						fromYear={yearValidation.min}
+						toYear={yearValidation.max}
 					/>
 				</div>
 			</PopoverContent>

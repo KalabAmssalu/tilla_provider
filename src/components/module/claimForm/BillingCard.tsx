@@ -1,28 +1,29 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { type memberType } from "@/types/member/memeberType";
 
 type BillingCardProps = {
-	selectedMember: memberType;
+	memberDuty: number;
+	providerDuty: number;
+	tillaDuty: number;
+	discountAgree: number;
 	serviceCharge: number;
 	AdditionalCharge: number;
 	totalCharge: number;
-	paymentWithDiscount: number;
 	tillaPaymentDuty: number;
 	amountToBeClaimed: number;
-	discountAve: number;
-	tillaDuty: number;
+	isDeductable: boolean;
 };
 
 const BillingCard = ({
-	selectedMember,
+	memberDuty,
+	providerDuty,
+	discountAgree,
+	tillaDuty,
 	serviceCharge,
 	AdditionalCharge,
 	totalCharge,
-	paymentWithDiscount,
 	tillaPaymentDuty,
 	amountToBeClaimed,
-	discountAve,
-	tillaDuty,
+	isDeductable,
 }: BillingCardProps) => {
 	return (
 		<Card className="sticky top-28 shadow z-10 rounded-lg bg-white">
@@ -43,19 +44,19 @@ const BillingCard = ({
 							{AdditionalCharge.toFixed(2)} ETB
 						</span>
 					</div>
-					<div className="flex justify-between">
-						<span className="text-gray-600">Total Charge</span>
-						<span className="font-medium text-sm text-gray-800">
-							{totalCharge.toFixed(2)} ETB
-						</span>
-					</div>
 
-					<div className="flex justify-between border-t pt-2 border-gray-200">
+					<div className="flex justify-between border-b pb-2 border-gray-200">
 						<span className="font-medium text-sm text-gray-700">
-							Provider Discount ({discountAve}%)
+							Provider Discount ({discountAgree}%)
 						</span>
 						<span className="font-medium text-sm text-emerald-600">
-							{paymentWithDiscount.toFixed(2)} ETB
+							{providerDuty.toFixed(2)} ETB
+						</span>
+					</div>
+					<div className="flex justify-between">
+						<span className="text-gray-600">Total Charge</span>
+						<span className="font-medium text-xl font-bold text-gray-800">
+							{totalCharge.toFixed(2)} ETB
 						</span>
 					</div>
 
@@ -68,14 +69,20 @@ const BillingCard = ({
 						</span>
 					</div>
 
-					<div className="flex flex-col justify-between border-t pt-2 border-gray-200">
+					<div className="flex flex-col justify-between border items-center text-center py-2 bg-green-200/30 border-gray-200">
 						<span className="font-medium text-sm text-gray-700">
-							Member&apos;s Responsibility (
-							{`${selectedMember.member_payment_duty}%`})
+							Member&apos;s Responsibility
 						</span>
-						<span className="font-medium text-lg text-end pt-2 text-emerald-600">
-							= {amountToBeClaimed.toFixed(2)} ETB
+						<span>({`${memberDuty}%`})</span>
+						<span className="font-medium text-xl pt-2 text-emerald-600">
+							{amountToBeClaimed.toFixed(2)} ETB
 						</span>
+						{amountToBeClaimed > 0 && (
+							<span className="text-xs text-gray-600">
+								Please ensure that the member pays{" "}
+								{amountToBeClaimed.toFixed(2)} ETB.
+							</span>
+						)}
 					</div>
 				</div>
 			</CardContent>

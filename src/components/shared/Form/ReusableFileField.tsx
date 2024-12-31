@@ -50,7 +50,7 @@ const ReusableFileUploadField: React.FC<ReusableFileUploadFieldProps> = ({
 			onFilesChange(files);
 		}
 
-		// Simulate file upload process
+		// // Simulate file upload process
 		for (let i = 0; i < 100; i++) {
 			await new Promise((resolve) => setTimeout(resolve, 50));
 		}

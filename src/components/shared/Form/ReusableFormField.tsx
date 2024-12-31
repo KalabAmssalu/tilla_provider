@@ -30,6 +30,8 @@ interface ReusableFormFieldProps {
 	control: any; // Control object from react-hook-form or similar
 	value?: string; // Optional value to control the field's value
 	disabled?: boolean; // Optional flag to disable the input field
+	isRequired?: boolean; // Optional flag to indicate if the field is required
+	onChange?: (value: string | number) => void; // Custom onChange handler, ensuring the value is a string
 }
 
 const ReusableFormField: React.FC<ReusableFormFieldProps> = ({
@@ -43,6 +45,8 @@ const ReusableFormField: React.FC<ReusableFormFieldProps> = ({
 	control,
 	value,
 	disabled = false,
+	isRequired = false,
+	onChange, // Added custom onChange prop
 }) => {
 	const namespace = local || ""; // Optional namespace if needed
 	const t = useTranslations(namespace); // Hook to fetch translation strings
@@ -77,9 +81,25 @@ const ReusableFormField: React.FC<ReusableFormFieldProps> = ({
 							value={value || field.value} // Use the provided value or the form's internal value
 							disabled={disabled} // Control the disabled state
 							placeholder={placeholderKey ? t(placeholderKey) : undefined}
-							// Spread all fields except for `value` and `disabled`
 							{...(field as any)} // Spread remaining necessary props like onChange, onBlur, etc.
 							className="bg-background"
+							required={isRequired}
+							onChange={(e) => {
+								// const value = e.target.value;
+								// // Convert to number if type is "number"
+								// field.onChange(type === "number" ? Number(value) : value);
+								const inputValue = e.target.value;
+								const stringValue =
+									type === "string"
+										? String(inputValue)
+										: type === "number"
+											? Number(inputValue)
+											: inputValue;
+								field.onChange(stringValue); // Update form value
+								if (onChange) {
+									onChange(stringValue); // Trigger custom onChange handler with a string value
+								}
+							}}
 						/>
 					</FormControl>
 					<FormMessage />

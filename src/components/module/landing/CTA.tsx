@@ -51,7 +51,7 @@ export default function CTA({
 						</span>
 					))}
 				</div>
-				<div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4">
+				<div className="flex justify-center space-x-4">
 					<Button
 						size="lg"
 						variant="secondary"
@@ -64,7 +64,7 @@ export default function CTA({
 						size="lg"
 						variant="ghost"
 						className="animate-fade-in bg-gray-500"
-						onClick={() => route.push(`/${slug}` as `/${string}`)}
+						onClick={() => route.push(`/blog/${slug}` as `/${string}`)}
 					>
 						{btn2Text}
 					</Button>

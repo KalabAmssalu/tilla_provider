@@ -26,11 +26,13 @@ export type memberType = {
 	dependent_last_name_amharic?: string;
 	dependent_date_of_birth?: string;
 	benefit_plan?: string;
-	member_payment_duty?: string;
+	member_payment_duty?: number;
 	member_status?: string;
 	totalInsuranceAmount?: number;
 	usedInsuranceAmount?: number;
 	deductible?: number;
+	deductible_type?: string;
+	maxOutOfPocketAmount?: number;
 	maxOutOfPocket?: number;
 	totalCoverage?: number;
 	currentSpending?: number;

@@ -27,7 +27,7 @@ const navData: { headers: string; icons: LucideIcon; items: NavItem[] } = {
 			url: "/dashboard/claims/status",
 		},
 		{
-			title: "Paymenet Information",
+			title: "Payment Information",
 			url: "/dashboard/claims/payment",
 		},
 		{

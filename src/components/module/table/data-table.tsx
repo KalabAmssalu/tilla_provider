@@ -5,6 +5,7 @@ import * as React from "react";
 import {
 	type ColumnDef,
 	type ColumnFiltersState,
+	type Row,
 	type SortingState,
 	type VisibilityState,
 	flexRender,
@@ -32,11 +33,13 @@ import { DataTableToolbar } from "./data-table-toolbar";
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[];
 	data: TData[];
+	render?: (row: Row<TData>) => React.HTMLAttributes<HTMLTableRowElement>;
 }
 
 export function DataTable<TData, TValue>({
 	columns,
 	data,
+	render,
 }: DataTableProps<TData, TValue>) {
 	const [rowSelection, setRowSelection] = React.useState({});
 	const [columnVisibility, setColumnVisibility] =
@@ -97,6 +100,7 @@ export function DataTable<TData, TValue>({
 								<TableRow
 									key={row.id}
 									data-state={row.getIsSelected() && "selected"}
+									{...(render?.(row) ?? {})}
 								>
 									{row.getVisibleCells().map((cell) => (
 										<TableCell key={cell.id}>

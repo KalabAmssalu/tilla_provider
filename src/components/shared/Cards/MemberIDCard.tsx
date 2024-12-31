@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 
 import { DeductableProgressBar } from "../Progress/DeductableProgressBar";
+import { InsuranceProgress } from "../Progress/InsuranceProgress";
 import { InsuranceProgressBar } from "../Progress/InsuranceProgressBar";
 
 interface MemberInfo {
@@ -61,10 +62,10 @@ export function MemberIDCard({ member }: { member: MemberInfo }) {
 								<h2 className="md:text-xl text-sm font-bold">
 									{member.first_name} {member.middle_name} {member.last_name}
 								</h2>
-								<p className="text-sm">
+								{/* <p className="text-sm">
 									{member.first_name_amharic} {member.middle_name_amharic}{" "}
 									{member.last_name_amharic}
-								</p>
+								</p> */}
 							</div>
 							<div className="flex-col mt-4 space-y-4 lg:space-y-0 flex w-full lg:flex-row justify-between">
 								{member.member_id && (
@@ -108,8 +109,8 @@ export function MemberIDCard({ member }: { member: MemberInfo }) {
 								>
 									Member Status:
 								</Label>
-								{member.member_status === "Active" ? (
-									<Button className=" bg-green-500 w-[50%] text-white hover:bg-green-700">
+								{member.member_status === "active" ? (
+									<Button className=" bg-green-500  text-white hover:bg-green-700">
 										<CheckCircle className="mr-2 h-4 w-4" />
 										Active
 									</Button>
@@ -128,23 +129,20 @@ export function MemberIDCard({ member }: { member: MemberInfo }) {
 								label="Member Payment Duty"
 								value={member.member_payment_duty || "N/A"}
 							/>
-
-							{/* <div className="">
-								<h1 className="text-2xl font-bold mb-4">Insurance Overview</h1>
-								<InsuranceProgressBar
-									totalAmount={member.totalInsuranceAmount}
-									usedAmount={member.usedInsuranceAmount}
-								/>
-							</div>  */}
 						</div>
 						<Separator className="my-4 bg-primary h-1" />
 						<div className="mt-4 space-y-8">
-							<DeductableProgressBar
+							<InsuranceProgress
+								deductible={member.deductible}
+								maxOutOfPocket={member.maxOutOfPocket}
+								currentSpending={member.currentSpending}
+							/>
+							{/* <DeductableProgressBar
 								deductible={member.deductible}
 								maxOutOfPocket={member.maxOutOfPocket}
 								currentSpending={member.currentSpending}
 								totalCoverage={member.totalCoverage}
-							/>
+							/> */}
 						</div>
 					</div>
 				</div>

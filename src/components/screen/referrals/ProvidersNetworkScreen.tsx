@@ -2,17 +2,12 @@
 
 import { useEffect } from "react";
 
-import { useQuery } from "@tanstack/react-query";
-
-import {
-	fetchProviders,
-	providersQueryKey,
-} from "@/actions/Query/provider-Query/provider-Query";
+import { useFetchProviders } from "@/actions/Query/provider-Query/provider-Query";
 import ProvidersList from "@/components/module/providerNetwork/ProvidersList";
 import SearchCard from "@/components/module/providerNetwork/SearchCard";
 import { DetailCards } from "@/components/shared/Cards/DetailCards";
 import { useAppDispatch, useAppSelector } from "@/hooks/storehooks";
-import { Provider, setProviders } from "@/lib/store/redux/providerSlice";
+import { setProviders } from "@/lib/store/redux/providerSlice";
 
 const notifications = [
 	{
@@ -34,10 +29,7 @@ const ProvidersNetworkScreen = () => {
 	const dispatch = useAppDispatch();
 	const providers = useAppSelector((state) => state.providers.providers);
 
-	const { data, isLoading, error } = useQuery<Provider[], Error>({
-		queryKey: providersQueryKey,
-		queryFn: fetchProviders,
-	});
+	const { data, isLoading, error } = useFetchProviders();
 
 	useEffect(() => {
 		if (data) {

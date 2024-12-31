@@ -34,7 +34,7 @@ const ClaimMember = ({ userDetail }: { userDetail: memberType }) => {
 		region: userDetail?.region || "Addis Ababa",
 		city: userDetail?.city || "Addis Ababa",
 		benefit_plan: userDetail?.benefit_plan || "Basic",
-		member_payment_duty: userDetail?.member_payment_duty || "10%",
+		member_payment_duty: userDetail?.member_payment_duty?.toString() || "10%",
 		member_status: userDetail?.member_status || "Active",
 		totalInsuranceAmount: userDetail?.totalInsuranceAmount || 10000,
 		usedInsuranceAmount: userDetail?.usedInsuranceAmount || 1000,
@@ -59,7 +59,7 @@ const ClaimMember = ({ userDetail }: { userDetail: memberType }) => {
 					</AccordionItem>
 				</Accordion>
 
-				{sampleMember.member_status === "Inactive" && (
+				{sampleMember.member_status === "inactive" && (
 					<Alert variant="destructive" className="mt-4">
 						<AlertCircle className="h-4 w-4" />
 						<AlertTitle className="font-bold">Memeber Terminated</AlertTitle>

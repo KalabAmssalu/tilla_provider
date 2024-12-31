@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { CloudUpload, Replace, Save } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,9 +51,30 @@ const SignatureUploadForm = () => {
 		},
 	});
 
-	const onSubmit = (data: FormData) => {
-		console.log("Form data submitted:", data);
-		// Handle form submission logic (e.g., API call)
+	const onSubmit = async (data: FormData) => {
+		try {
+			const formData = new FormData();
+			formData.append("signature", data.signature[0]);
+
+			const response = await fetch("/api/upload-signature", {
+				method: "POST",
+				body: formData,
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to upload signature");
+			}
+
+			const result = await response.json();
+			toast.success("Signature uploaded successfully");
+
+			// Optionally clear the form after successful upload
+			setImagePreview(null);
+			setValue("signature", null as any);
+		} catch (error) {
+			console.error("Error uploading signature:", error);
+			toast.error("Failed to upload signature. Please try again.");
+		}
 	};
 
 	useEffect(() => {

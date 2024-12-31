@@ -27,9 +27,11 @@ const ClaimSubmit = (props: Props) => {
 					{userDetail && <ClaimMember userDetail={userDetail} />}
 
 					<div className=" ">
-						<main className="">
-							{userDetail && <ClaimForm selectedMember={userDetail} />}
-						</main>
+						{userDetail && userDetail.member_status === "active" && (
+							<main className="">
+								{userDetail && <ClaimForm selectedMember={userDetail} />}
+							</main>
+						)}
 						{/* <BillingSidebar /> */}
 					</div>
 				</>

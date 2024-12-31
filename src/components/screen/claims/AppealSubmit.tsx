@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 
 import { useFetchMemeberDetail } from "@/actions/Query/member_Query/member_Query";
 import AppealForm from "@/components/module/appealForm/AppealForm";
-import { DisputeForm } from "@/components/module/disputeForm/dispute-form";
 
 type Props = {};
 
@@ -28,8 +27,7 @@ const AppealSubmit = (props: Props) => {
 
 					<div className=" ">
 						<main className="">
-							<DisputeForm />
-							{/* {userDetail && <AppealForm selectedMember={userDetail} />} */}
+							{userDetail && <AppealForm selectedMember={userDetail} />}
 						</main>
 						{/* <BillingSidebar /> */}
 					</div>

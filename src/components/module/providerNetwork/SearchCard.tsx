@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 
-import { useQueryClient } from "@tanstack/react-query";
 import { SearchIcon } from "lucide-react";
 
-import { providersQueryKey } from "@/actions/Query/provider-Query/provider-Query";
+import { useFetchProviders } from "@/actions/Query/provider-Query/provider-Query";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -21,21 +20,22 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { useAppDispatch } from "@/hooks/storehooks";
-import { Provider, setProviders } from "@/lib/store/redux/providerSlice";
+import { setProviders } from "@/lib/store/redux/providerSlice";
 
 const SearchCard: React.FC = () => {
 	const dispatch = useAppDispatch();
-	const queryClient = useQueryClient();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [searchType, setSearchType] = useState("name");
 
+	const { data: allProviders } = useFetchProviders();
 	const handleSearch = () => {
-		const allProviders =
-			queryClient.getQueryData<Provider[]>(providersQueryKey) || [];
+		// const allProviders =
+		// 	queryClient.getQueryData<Provider[]>(providersQueryKey) || [];
+
 		let filteredProviders = allProviders;
 
 		if (searchTerm) {
-			filteredProviders = allProviders.filter((provider) => {
+			filteredProviders = allProviders?.filter((provider) => {
 				switch (searchType) {
 					case "name":
 						return `${provider.provider_first_name} ${provider.provider_last_name}`
@@ -55,7 +55,7 @@ const SearchCard: React.FC = () => {
 			});
 		}
 
-		dispatch(setProviders(filteredProviders));
+		dispatch(setProviders(filteredProviders || []));
 	};
 
 	return (

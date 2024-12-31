@@ -1,6 +1,9 @@
 import SearchCard from "@/components/module/appealForm/SearchCard";
+import { DisputeForm } from "@/components/module/dispute/disputeForm/dispute-form";
+import DisputeView from "@/components/module/dispute/disputeView";
 import ReferralView from "@/components/module/referral/ReferralsView";
 import { DetailCards } from "@/components/shared/Cards/DetailCards";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type Props = {};
 
@@ -39,8 +42,24 @@ const AppealScreen = (props: Props) => {
 					className=""
 				/>
 			</div>
-			<SearchCard />
-			<ReferralView />
+			<Tabs defaultValue="appeals" className="w-full">
+				<TabsList className="w-[300px]">
+					<TabsTrigger value="appeals" className="w-full">
+						Appeals
+					</TabsTrigger>
+					<TabsTrigger value="disputes" className="w-full">
+						Disputes
+					</TabsTrigger>
+				</TabsList>
+				<TabsContent value="appeals">
+					<SearchCard />
+					<ReferralView />
+				</TabsContent>
+				<TabsContent value="disputes">
+					<DisputeForm />
+					{/* <DisputeView /> */}
+				</TabsContent>
+			</Tabs>
 		</div>
 	);
 };

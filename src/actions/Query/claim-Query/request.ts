@@ -5,14 +5,22 @@ import {
 	fetchJsonData,
 	getCPT,
 	getCPTRecords,
+	getClaims,
+	getClaimsById,
 	getICD10Ethiopia,
 	getICD10EthiopiaRecords,
 	getICD10WHO,
 	getICD10WHORecords,
 	getLonic,
 	getLonicRecords,
+	getMyPaymentSummary,
+	searchClaims,
+	setClaim,
 } from "@/actions/claim/action";
+import { type ClaimStatusFormValues } from "@/components/screen/claims/StatusScreen";
 import useToastMutation from "@/hooks/useToastMutation";
+import { type ClaimType } from "@/types/claim/claim";
+import { PaymentSummary } from "@/types/payment/payment";
 
 interface ICD10Record {
 	category: string;
@@ -45,46 +53,40 @@ export const useFindJSON = (url: string) => {
 	});
 };
 
-export const useCPT = () => {
-	return useQuery<string[]>({
+export const useCPT = (fetchMe: boolean) => {
+	return useQuery<Array<string>>({
 		queryKey: ["getCPT"],
 		queryFn: async () => {
 			try {
 				const response = await getCPT();
-				return response.data; // Assuming `response.data` contains the member array
+				return response.data.cpt_categories;
 			} catch (error: any) {
 				toast.error(`Error fetching members: ${error.message}`);
 				throw error;
 			}
 		},
-		// enabled: Boolean(),
+		enabled: Boolean(fetchMe),
+		retry: false,
+	});
+};
+export const useCPTRecords = (category: string, enabled: boolean) => {
+	return useQuery<ICD10Record[]>({
+		queryKey: ["findICD10Ethiopia", category],
+		queryFn: async () => {
+			try {
+				const response = await getCPTRecords(category);
+				return response.data;
+			} catch (error: any) {
+				toast.error(`Failed to fetch records: ${error.message}`);
+				throw error;
+			}
+		},
+		enabled: enabled,
 		retry: false,
 	});
 };
 
-export const useCPTRecords = (category: string) => {
-	return useToastMutation<string>(
-		["findCPTRecords", category],
-		getCPTRecords,
-		"CPT Code fetching...",
-		{
-			onSuccess: (data, variables) => {
-				// 'data' contains the response from the server
-				// 'variables' contains the memeber data you passed in
-				console.log("Searching CPT Code:", variables);
-				console.log("New CPT Data:", data);
-
-				// queryClient.invalidateQueries({ queryKey: ["Organizations"] });
-				// Example: Display a message with the Organization name
-			},
-			onError: (error) => {
-				console.error("Error creating Organization:", error);
-			},
-		}
-	);
-};
-
-export const useICD10Ethiopia = () => {
+export const useICD10Ethiopia = (diagnosisSource: string) => {
 	return useQuery<Array<string>>({
 		queryKey: ["findICD10Ethiopia"],
 		queryFn: async () => {
@@ -96,33 +98,12 @@ export const useICD10Ethiopia = () => {
 				throw error;
 			}
 		},
-		// enabled: Boolean(),
+		enabled: Boolean(diagnosisSource === "ETHIOPIA"),
 		retry: false,
 	});
 };
 
-// export const useICD10EthiopiaRecords = (category: string) => {
-// 	return useToastMutation<string>(
-// 		["findICD10Ethiopia", category],
-// 		getICD10EthiopiaRecords,
-// 		"ICD 10 Ethiopia fetching...",
-// 		{
-// 			onSuccess: (data, variables) => {
-// 				// 'data' contains the response from the server
-// 				// 'variables' contains the memeber data you passed in
-// 				console.log("Searching ICD10 Code:", variables);
-// 				console.log("New ICD10 Data:", data);
-
-// 				// queryClient.invalidateQueries({ queryKey: ["Organizations"] });
-// 				// Example: Display a message with the Organization name
-// 			},
-// 			onError: (error) => {
-// 				console.error("Error creating Organization:", error);
-// 			},
-// 		}
-// 	);
-// };
-export const useICD10EthiopiaRecords = (category: string) => {
+export const useICD10EthiopiaRecords = (category: string, enabled: boolean) => {
 	return useQuery<ICD10Record[]>({
 		queryKey: ["findICD10Ethiopia", category],
 		queryFn: async () => {
@@ -134,28 +115,30 @@ export const useICD10EthiopiaRecords = (category: string) => {
 				throw error;
 			}
 		},
-		// enabled: Boolean(),
+		enabled: enabled,
 		retry: false,
 	});
 };
 
-export const useICD10WHO = () => {
+export const useICD10WHO = (diagnosisSource: string) => {
 	return useQuery<Array<string>>({
 		queryKey: ["findICD10WHO"],
 		queryFn: async () => {
 			try {
 				const response = await getICD10WHO();
-				return response.data.icd__10_categories;
+
+				return response.data.icd_10_categories;
 			} catch (error: any) {
 				toast.error(`Error fetching members: ${error.message}`);
 				throw error;
 			}
 		},
-		// enabled: Boolean(),
+		enabled: Boolean(diagnosisSource === "WHO"),
 		retry: false,
 	});
 };
-export const useICD10WHORecords = (category: string) => {
+
+export const useICD10WHORecords = (category: string, enabled: boolean) => {
 	return useQuery<ICD10Record[]>({
 		queryKey: ["findICD10WHO", category],
 		queryFn: async () => {
@@ -167,74 +150,136 @@ export const useICD10WHORecords = (category: string) => {
 				throw error;
 			}
 		},
-		// enabled: Boolean(),
+		enabled: enabled,
 		retry: false,
 	});
 };
 
-// export const useICD10WHORecords = (category: string) => {
-// 	return useToastMutation<string>(
-// 		["findICD10WHO", category],
-// 		getICD10WHORecords,
-// 		"ICD 10 WHO fetching...",
-// 		{
-// 			onSuccess: (data, variables) => {
-// 				// 'data' contains the response from the server
-// 				// 'variables' contains the member data you passed in
-
-// 				console.log("Searching ICD10 Code:", variables);
-// 				console.log("New ICD10 Records Data:", data);
-
-// 				if (data?.ok) {
-// 					// You can handle successful response here, such as showing a success toast
-// 					console.log("Successfully fetched ICD10 WHO Records:", data.data);
-// 				} else {
-// 					console.error("Failed to fetch records:", data?.message);
-// 				}
-// 			},
-// 			onError: (error) => {
-// 				console.error("Error fetching ICD10 WHO Records:", error);
-// 				// Optionally show an error toast here
-// 			},
-// 		}
-// 	);
-// };
-
-export const useLonic = () => {
-	return useQuery<string[]>({
+export const useLonic = (fecheMe: boolean) => {
+	return useQuery<Array<string>>({
 		queryKey: ["findLonic"],
 		queryFn: async () => {
 			try {
 				const response = await getLonic();
-				return response.data; // Assuming `response.data` contains the member array
+				return response.data.lonic_categories;
 			} catch (error: any) {
-				toast.error(`Error fetching members: ${error.message}`);
+				toast.error(`Error fetching lonic: ${error.message}`);
 				throw error;
 			}
 		},
-		// enabled: Boolean(),
+		enabled: Boolean(fecheMe),
+		retry: false,
+	});
+};
+export const useLonicRecords = (category: string, enabled: boolean) => {
+	return useQuery<ICD10Record[]>({
+		queryKey: ["findLonic", category],
+		queryFn: async () => {
+			try {
+				const response = await getLonicRecords(category);
+				return response.data;
+			} catch (error: any) {
+				toast.error(`Failed to fetch records: ${error.message}`);
+				throw error;
+			}
+		},
+		enabled: enabled,
 		retry: false,
 	});
 };
 
-export const useLonicRecords = (category: string) => {
-	return useToastMutation<string>(
-		["findLonic", category],
-		getLonicRecords,
-		"Lonic Code fetching...",
+export const useGetClaims = () => {
+	return useQuery<Array<ClaimType>>({
+		queryKey: ["getClaims"],
+		queryFn: async () => {
+			try {
+				const response = await getClaims();
+				return response.data;
+			} catch (error: any) {
+				toast.error(`Error fetching claims: ${error.message}`);
+				throw error;
+			}
+		},
+		retry: false,
+	});
+};
+
+export const useGetMyPaymentSummary = () => {
+	return useQuery<PaymentSummary>({
+		queryKey: ["getMyPaymentSummary"],
+		queryFn: async () => {
+			try {
+				const response = await getMyPaymentSummary();
+				return response.data;
+			} catch (error: any) {
+				toast.error(`Error fetching claims: ${error.message}`);
+				throw error;
+			}
+		},
+		retry: false,
+	});
+};
+
+export const useGetCLaimByID = (id: string) => {
+	return useQuery<ClaimType>({
+		queryKey: ["getClaimsById", id],
+		queryFn: async () => {
+			try {
+				const response = await getClaimsById(id);
+				return response.data;
+			} catch (error: any) {
+				toast.error(`Error fetching claims: ${error.message}`);
+				throw error;
+			}
+		},
+		retry: false,
+	});
+};
+
+export const useSetClaims = () => {
+	return useToastMutation<FormData>(
+		["setClaim"],
+		setClaim,
+		"Claim creating...",
 		{
 			onSuccess: (data, variables) => {
-				// 'data' contains the response from the server
-				// 'variables' contains the memeber data you passed in
-				console.log("Searching Lonic code Code:", variables);
-				console.log("New Lonic code Data:", data);
+				console.log("Claim creation data:", data);
+				console.log("Submitted variables:", variables);
 
+				// Optionally invalidate queries or perform other actions here
 				// queryClient.invalidateQueries({ queryKey: ["Organizations"] });
-				// Example: Display a message with the Organization name
 			},
 			onError: (error) => {
-				console.error("Error creating Organization:", error);
+				console.error("Error creating Claim:", error);
 			},
 		}
 	);
+};
+
+export const useSearchClaim = (sendData: Partial<ClaimStatusFormValues>) => {
+	return useQuery<ClaimType[]>({
+		queryKey: ["claimSearch", sendData],
+		queryFn: async () => {
+			// Check if sendData is empty and prevent unnecessary API calls
+			if (
+				!sendData ||
+				(Object.keys(sendData) as (keyof ClaimStatusFormValues)[]).every(
+					(key) => !sendData[key]
+				)
+			) {
+				return []; // Return an empty array if no valid data
+			}
+
+			// Proceed with the API call when sendData is valid
+			const response = await searchClaims(sendData);
+			return response.data || []; // Ensure response.data is not undefined
+		},
+		enabled: Boolean(
+			sendData &&
+				(Object.keys(sendData) as (keyof ClaimStatusFormValues)[]).some(
+					(key) => sendData[key]
+				)
+		), // Only enable query if there's valid input
+		retry: false,
+	});
 };
