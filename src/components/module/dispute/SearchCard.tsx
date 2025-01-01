@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { CirclePlus, SearchIcon, UserX } from "lucide-react";
 
 import { useSearchMember } from "@/actions/Query/member_Query/member_Query";
+import SearchForm from "@/components/module/appealForm/SearchForm";
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -16,7 +17,6 @@ import { type memberType } from "@/types/member/memeberType";
 
 import { columns } from "../table/columns";
 import { DataTable } from "../table/data-table";
-import SearchForm from "./SearchForm";
 
 type Props = {};
 
@@ -28,6 +28,9 @@ const SearchCard = (props: Props) => {
 		first_name: "",
 		middle_name: "",
 		last_name: "",
+		// first_name_amharic: "",
+		// middle_name_amharic: "",
+		// last_name_amharic: "",
 		date_of_birth: "",
 		phone_number: "",
 		family_id: "",
@@ -53,6 +56,15 @@ const SearchCard = (props: Props) => {
 		newData.last_name = newData.dependent_last_name
 			? newData.dependent_last_name
 			: newData.last_name;
+		// newData.first_name_amharic = newData.dependent_first_name_amharic
+		// 	? newData.dependent_first_name_amharic
+		// 	: newData.first_name_amharic;
+		// newData.middle_name_amharic = newData.dependent_middle_name_amharic
+		// 	? newData.dependent_middle_name_amharic
+		// 	: newData.middle_name_amharic;
+		// newData.last_name_amharic = newData.dependent_last_name_amharic
+		// 	? newData.dependent_last_name_amharic
+		// 	: newData.last_name_amharic;
 		newData.date_of_birth = newData.dependent_date_of_birth
 			? newData.dependent_date_of_birth
 			: newData.date_of_birth;
@@ -90,7 +102,7 @@ const SearchCard = (props: Props) => {
 			<Card className="bg-secondary/40 h-[100px] flex justify-around px-32 items-center">
 				<CardHeader>
 					<CardTitle className="text-xl font-bold">
-						Sumbit an Appeal for a Claim
+						File a Dispute Against a Claim
 					</CardTitle>
 					<CardDescription className="text-black">
 						Please Search the Claim first
@@ -113,7 +125,7 @@ const SearchCard = (props: Props) => {
 					) : (
 						<>
 							<CirclePlus className="text-white mr-5" size={20} />
-							Sumbit an Appeal
+							File an Dispute
 						</>
 					)}
 				</Button>

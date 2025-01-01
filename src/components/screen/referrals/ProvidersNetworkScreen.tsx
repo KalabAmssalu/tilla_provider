@@ -41,8 +41,8 @@ const ProvidersNetworkScreen = () => {
 	if (error) return <div>An error occurred: {(error as Error).message}</div>;
 
 	return (
-		<div className="w-full h-[calc(100vh-10rem)] relative">
-			<div className="absolute bottom-0 right-0">
+		<div className="w-full relative">
+			<div className="absolute bottom-0 right-0 z-10">
 				<DetailCards
 					title="Information on Connecting with Providers"
 					description="Follow the steps below to connect with a provider."

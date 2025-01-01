@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 
 import { useFetchMemeberDetail } from "@/actions/Query/member_Query/member_Query";
 import AppealForm from "@/components/module/appealForm/AppealForm";
+import ClaimMember from "@/components/module/claimForm/ClaimMember";
 import AppointmentForm from "@/components/module/tool/AppointmentForm";
 
 type Props = {};
@@ -24,10 +25,12 @@ const AppointmentSubmit = (props: Props) => {
 				<div>Loading...</div>
 			) : (
 				<>
-					{/* {userDetail && <ClaimMember userDetail={userDetail} />} */}
+					{userDetail && <ClaimMember userDetail={userDetail} />}
 
 					<div className=" ">
-						<main className="">{userDetail && <AppointmentForm />}</main>
+						<main className="">
+							{userDetail && <AppointmentForm selectedMember={userDetail} />}
+						</main>
 						{/* <BillingSidebar /> */}
 					</div>
 				</>

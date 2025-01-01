@@ -1,4 +1,4 @@
-import AppointmentsScreen from "@/components/screen/tools/AppointmentScreen";
+import AppointmentsScreen from "@/components/screen/tools/appointment/AppointmentScreen";
 
 type Props = {};
 

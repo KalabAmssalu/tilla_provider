@@ -2,29 +2,40 @@
 
 import * as React from "react";
 
-import { format } from "date-fns";
 import { CalendarIcon, TableIcon } from "lucide-react";
 
+import { useFetchAppointment } from "@/actions/Query/appointment_Query/requests";
 import { Button } from "@/components/ui/button";
-import { appointments } from "@/types/appointment/appointment";
+import { Appointment, appointments } from "@/types/appointment/appointment";
 
 import { CalendarView } from "./AppointmentCalander";
-import { AppointmentTable } from "./AppointmentTable";
+import { columns } from "./columns";
+import { AppointmentDataTable } from "./data-table";
 
 export default function AppointmentView() {
 	const [date, setDate] = React.useState<Date>(new Date());
 
 	const [view, setView] = React.useState<"table" | "calendar">("calendar"); // Set default to calendar view
 
-	// Convert appointments to calendar events and ensure dates are properly parsed
-	const events = appointments.map((apt) => ({
-		date: new Date(apt.appointmentDate),
-		title: apt.memberName,
-		provider: apt.providerName,
-		status: apt.status,
-		time: apt.appointmentTime,
-	}));
+	const { data, isLoading, error } = useFetchAppointment();
+	const [members, setMembers] = React.useState<Appointment[]>([]);
 
+	React.useEffect(() => {
+		if (data) {
+			setMembers(data);
+		}
+	}, [data]);
+
+	if (isLoading) return <div>Loading Appointments...</div>;
+	if (error) return <div>Error fetching Appointments: {error.message}</div>;
+
+	// const events = appointments.map((apt) => ({
+	// 	date: new Date(apt.appointmentDate),
+	// 	title: apt.memberName,
+	// 	provider: apt.providerName,
+	// 	status: apt.status,
+	// 	time: apt.appointmentTime,
+	// }));
 	return (
 		// <div></div>
 		<div className="container max-w-screen pt-10">
@@ -49,8 +60,10 @@ export default function AppointmentView() {
 			</div>
 
 			{view === "table" ? (
-				<AppointmentTable appointments={appointments} />
+				// <AppointmentTable appointments={appointments} />
+				<AppointmentDataTable columns={columns} data={members} />
 			) : (
+				// <ClaimPaymentDataTable columns={columns} data={data} />
 				<div className="border rounded-lg p-6 bg-white justify-center items-center ">
 					<div className="mb-4 flex items-center gap-4 text-sm">
 						<div className="flex items-center gap-2">
@@ -70,7 +83,7 @@ export default function AppointmentView() {
 							<span>No Show</span>
 						</div>
 					</div>
-					<CalendarView events={events} />
+					{/* <CalendarView events={events} /> */}
 				</div>
 			)}
 		</div>

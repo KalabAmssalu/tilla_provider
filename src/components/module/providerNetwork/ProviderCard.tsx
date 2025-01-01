@@ -3,10 +3,13 @@ import React from "react";
 import { Mail, MapPin, Phone, Star, Syringe } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+	Card,
+	CardContent,
+	CardFooter,
+	CardHeader,
+} from "@/components/ui/card";
 import { Provider } from "@/lib/store/redux/providerSlice";
-
-// Importing icons
 
 type ProviderCardProps = {
 	provider: Provider;
@@ -76,9 +79,11 @@ const ProviderCard: React.FC<ProviderCardProps> = ({ provider }) => {
 					</p>
 				</div>
 			</CardContent>
-			<div className="flex items-center justify-evenly">
-				<Button className="">Write Referral</Button>
-			</div>
+			<CardFooter>
+				<div className="flex items-center justify-evenly">
+					<Button className="">Write Referral</Button>
+				</div>
+			</CardFooter>
 		</Card>
 	);
 };
