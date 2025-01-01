@@ -1,11 +1,11 @@
-import AppealSubmit from "@/components/screen/claims/AppealSubmit";
+import DisputeSubmit from "@/components/screen/claims/DisputeSubmit";
 
 type Props = {};
 
 const Disputpage = (props: Props) => {
 	return (
 		<div>
-			<AppealSubmit />
+			<DisputeSubmit />
 		</div>
 	);
 };

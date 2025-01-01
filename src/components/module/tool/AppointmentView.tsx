@@ -2,44 +2,40 @@
 
 import * as React from "react";
 
-import { format } from "date-fns";
 import { CalendarIcon, TableIcon } from "lucide-react";
 
+import { useFetchAppointment } from "@/actions/Query/appointment_Query/requests";
 import { Button } from "@/components/ui/button";
-import { appointments } from "@/types/appointment/appointment";
+import { Appointment, appointments } from "@/types/appointment/appointment";
 
-import { AppointmentTable } from "./AppointmentTable";
+import { CalendarView } from "./AppointmentCalander";
+import { columns } from "./columns";
+import { AppointmentDataTable } from "./data-table";
 
 export default function AppointmentView() {
-	const [view, setView] = React.useState<"table" | "calendar">("table");
 	const [date, setDate] = React.useState<Date>(new Date());
 
-	// Convert appointments to calendar events
-	const events = appointments.map((apt) => ({
-		date: new Date(apt.appointmentDate),
-		title: apt.memberName,
-		provider: apt.providerName,
-		status: apt.status,
-		time: apt.appointmentTime,
-	}));
+	const [view, setView] = React.useState<"table" | "calendar">("calendar"); // Set default to calendar view
 
-	// Get status for a specific date
-	const getDateStatus = (date: Date) => {
-		const dayEvents = events.filter(
-			(event) => format(event.date, "yyyy-MM-dd") === format(date, "yyyy-MM-dd")
-		);
-		if (dayEvents.length === 0) return null;
+	const { data, isLoading, error } = useFetchAppointment();
+	const [members, setMembers] = React.useState<Appointment[]>([]);
 
-		// If any appointment is scheduled, show as scheduled
-		if (dayEvents.some((e) => e.status === "scheduled")) return "scheduled";
-		// If all completed, show as completed
-		if (dayEvents.every((e) => e.status === "completed")) return "completed";
-		// If any cancelled, show as cancelled
-		if (dayEvents.some((e) => e.status === "cancelled")) return "cancelled";
-		// Otherwise show as no-show
-		return "no-show";
-	};
+	React.useEffect(() => {
+		if (data) {
+			setMembers(data);
+		}
+	}, [data]);
 
+	if (isLoading) return <div>Loading Appointments...</div>;
+	if (error) return <div>Error fetching Appointments: {error.message}</div>;
+
+	// const events = appointments.map((apt) => ({
+	// 	date: new Date(apt.appointmentDate),
+	// 	title: apt.memberName,
+	// 	provider: apt.providerName,
+	// 	status: apt.status,
+	// 	time: apt.appointmentTime,
+	// }));
 	return (
 		// <div></div>
 		<div className="container max-w-screen pt-10">
@@ -64,8 +60,10 @@ export default function AppointmentView() {
 			</div>
 
 			{view === "table" ? (
-				<AppointmentTable appointments={appointments} />
+				// <AppointmentTable appointments={appointments} />
+				<AppointmentDataTable columns={columns} data={members} />
 			) : (
+				// <ClaimPaymentDataTable columns={columns} data={data} />
 				<div className="border rounded-lg p-6 bg-white justify-center items-center ">
 					<div className="mb-4 flex items-center gap-4 text-sm">
 						<div className="flex items-center gap-2">
@@ -85,6 +83,7 @@ export default function AppointmentView() {
 							<span>No Show</span>
 						</div>
 					</div>
+					{/* <CalendarView events={events} /> */}
 				</div>
 			)}
 		</div>

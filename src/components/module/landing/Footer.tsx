@@ -19,7 +19,7 @@ export function Footer() {
 					{/* Logo Section */}
 					<div className="flex items-center justify-center md:justify-start w-full md:w-1/4">
 						<Image
-							src={IMAGES.logoOnly}
+							src={IMAGES.blueLogo}
 							alt="Logo"
 							className="h-auto"
 							width={200}
@@ -39,7 +39,7 @@ export function Footer() {
 							Email: <span className="text-primary">info@tillaHealth.com</span>
 						</p>
 						<p className="text-sm mb-2">
-							Phone: <span className="text-primary">(123) 456-7890</span>
+							Phone: <span className="text-primary">+251 (900) 034-848</span>
 						</p>
 					</div>
 

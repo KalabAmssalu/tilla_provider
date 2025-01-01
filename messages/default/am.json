@@ -15,6 +15,9 @@
 		"amharic": "አማርኛ"
 	},
 	"Login": {
+		"warning": "ማስጠንቀቂያ",
+		"warningDescription1": "ይህ ድህረ ገጽ ለጥላ የጤና ኢንሹራንስ ተሳታፊ አቅራቢዎች ብቻ ነው።",
+		"warningDescription2": "እባክዎ፣ እርስዎ የተመዘገቡ የጤና አገልግሎት አቅራቢ ካልሆኑ ወደዚህ ጣቢያ ለመግባት አይሞክሩ።",
 		"loginTitle": "የጤና አገልግሎት አቅራቢ መግቢያ",
 		"loginPrompt": "ወደ መለያህ ለመግባት ኢሜልህን/ሽን ከታች አስገባ/ቢ",
 		"email": "ኢሜል",
@@ -174,14 +177,19 @@
 				"description": "የLOINC ኮድ ዝርዝር መግለጫ ያቅርቡ።",
 				"error": "LOINC መግለጫ ያስፈልጋል።"
 			},
-
-			"other_diagnosis_codes_poc_code": {
+			"principal_diagnosis_code_poa_code": {
+				"label": "ዋና የምርመራ ኮድ POC ኮድ",
+				"placeholder": "ዋናውን የምርመራ POC ኮድ ያስገቡ",
+				"description": "ለዋናው ምርመራ የPOC ኮድ ይግለጹ።",
+				"error": "ዋና የምርመራ POC ኮድ ያስፈልጋል።"
+			},
+			"other_diagnosis_codes_poa_code": {
 				"label": "ሌሎች የምርመራ ኮዶች POC ኮድ",
 				"placeholder": "ሌላ የምርመራ POC ኮድ ያስገቡ",
 				"description": "ለተጨማሪ ምርመራዎች የ POC ኮድ ያቅርቡ።",
 				"error": "ሌሎች የምርመራ POC ኮዶች ትክክለኛ መሆን አለባቸው።"
 			},
-			"admitting_diagnosis": {
+			"admitting_diagnosis_code": {
 				"label": "የመቀበል ምርመራ መግለጫ",
 				"placeholder": "የመቀበያ ምርመራ መግለጫውን ያስገቡ",
 				"description": "ሲገቡ የምርመራውን መግለጫ ይግለጹ.",
@@ -284,7 +292,7 @@
 				"description": "Provide the control number assigned to the patient.",
 				"error": "Patient control number is required."
 			},
-			"patient_reason_for_visit": {
+			"patient_reason_for_visit_code": {
 				"label": "የታካሚ ጉብኝት ምክንያት",
 				"placeholder": "Enter the reason for visit ",
 				"description": "Provide the indicating the reason for the visit.",
@@ -338,7 +346,7 @@
 				"description": "Provide the name, NPI, and specialty code of the operating physician.",
 				"error": "Operating physician details are required."
 			},
-			"other_provider_name_npi_specialty": {
+			"other_provider_name_npi_specialty_code": {
 				"label": "ሌላ የአቅራቢ ስም ወይም NPI",
 				"placeholder": "Enter other provider details",
 				"description": "Provide the name, NPI, and specialty code of other providers.",

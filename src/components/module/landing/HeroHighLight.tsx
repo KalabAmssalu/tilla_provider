@@ -66,6 +66,7 @@ export function HeroHighlightDemo({
 					{/* <Image src={IMAGES.logoOnly} alt="doctors" width={1000} /> */}
 				</div>
 			</HeroHighlight>
+			{/* <div className="pointer-events-none absolute inset-x-0 -bottom-10 z-40 h-20 w-full select-none bg-gradient-to-b from-primary to-background" /> */}
 		</div>
 	);
 }

@@ -5,9 +5,9 @@ export type memberType = {
 	middle_name: string;
 	first_name: string;
 	last_name: string;
-	first_name_amharic: string;
-	middle_name_amharic: string;
-	last_name_amharic: string;
+	// first_name_amharic: string;
+	// middle_name_amharic: string;
+	// last_name_amharic: string;
 	phone_number: string;
 	email_address: string;
 	gender?: string;

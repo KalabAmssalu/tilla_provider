@@ -1,33 +1,38 @@
-export type AppointmentStatus =
-	| "scheduled"
-	| "completed"
-	| "cancelled"
-	| "no-show";
-
 export type Appointment = {
-	memberId: string;
-	memberName: string;
-	appointmentDate: string;
-	appointmentTime: string;
-	providerName: string;
-	status: AppointmentStatus;
+	// individual_member: number;
+	provider: number;
+	// doctor_name: string;
+	appointment_date: string;
+	appointment_hour: {
+		hour: string;
+		period?: "AM" | "PM";
+	};
+	// status: "scheduled"| "completed" | "cancelled"| "no-show";
+	appointment_location: "in_person" | "tele_health";
+	// contact_type: "phone" | "email" | "text_message" | "other";
+	service_type:
+		| "consultation"
+		| "general_checkup"
+		| "follow_up"
+		| "specialist_appointment"
+		| "tele_health";
+	// additional_note?: string;
 };
 
 export const appointments: Appointment[] = [
 	{
-		memberId: "M001",
-		memberName: "John Smith",
-		appointmentDate: "2024-02-09",
-		appointmentTime: "09:00",
-		providerName: "Dr. Sarah Wilson",
-		status: "scheduled",
-	},
-	{
-		memberId: "M006",
-		memberName: "Lisa Anderson",
-		appointmentDate: "2024-02-23",
-		appointmentTime: "13:30",
-		providerName: "Dr. Emily Davis",
-		status: "no-show",
+		// individual_member: 1,
+		provider: 12,
+		// doctor_name: "Dr. Sarah Wilson",
+		appointment_date: "2024-02-09",
+		appointment_hour: {
+			hour: "09:00",
+			period: "AM",
+		},
+		// status: "scheduled",
+		appointment_location: "in_person",
+		// contact_type: "phone",
+		service_type: "consultation",
+		// additional_note: "string",
 	},
 ];

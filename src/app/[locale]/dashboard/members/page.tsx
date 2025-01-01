@@ -1,7 +1,9 @@
+import { redirect } from "next/navigation";
+
 type Props = {};
 
 const Memberpage = (props: Props) => {
-	return <div className=" h-screen w-full">Memberpage</div>;
+	return redirect("/dashboard/members/search");
 };
 
 export default Memberpage;

@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { getMemeberIndividual, searchMembers } from "@/actions/member/action";
+import { fetchMyMembers } from "@/actions/mymember/action";
 import { type memberType } from "@/types/member/memeberType";
 
 export const useFetchMemeberDetail = (id: string) => {
@@ -45,6 +46,24 @@ export const useSearchMember = (sendData: Partial<memberType>) => {
 					(key) => sendData[key]
 				)
 		), // Only enable query if there's valid input
+		retry: false,
+	});
+};
+
+export const useFetchMyMembers = () => {
+	return useQuery<Array<memberType>>({
+		queryKey: ["fetchMyMembers"],
+		queryFn: async () => {
+			try {
+				const response = await fetchMyMembers();
+				console.log("response of all members", response);
+				return response.data; // Ensure this matches the data structure returned by the API
+			} catch (error: any) {
+				toast.error(`Error fetching members: ${error.message}`);
+				throw error;
+			}
+		},
+		enabled: true,
 		retry: false,
 	});
 };

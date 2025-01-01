@@ -12,7 +12,7 @@ interface PartnerSliderProps {
 
 export const PartnerSlider: React.FC<PartnerSliderProps> = ({ partners }) => {
 	return (
-		<div className="w-full overflow-hidden py-10">
+		<div className="w-full overflow-hidden py-4">
 			<div className="flex">
 				<motion.div
 					className="flex gap-8"

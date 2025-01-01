@@ -1,3 +1,7 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 import SearchCard from "@/components/module/appealForm/SearchCard";
 import { DisputeForm } from "@/components/module/dispute/disputeForm/dispute-form";
 import DisputeView from "@/components/module/dispute/disputeView";
@@ -32,6 +36,16 @@ const notifications = [
 ];
 
 const AppealScreen = (props: Props) => {
+	const router = useRouter();
+
+	const handleTabChange = (value: string) => {
+		if (value === "appeals") {
+			router.push("/appeals");
+		} else if (value === "disputes") {
+			router.push("/dashboard/claims/dispute" as any);
+		}
+	};
+
 	return (
 		<div className="w-full h-[calc(100vh-10rem)] relative">
 			<div className="absolute bottom-0 right-0">
@@ -42,7 +56,11 @@ const AppealScreen = (props: Props) => {
 					className=""
 				/>
 			</div>
-			<Tabs defaultValue="appeals" className="w-full">
+			<Tabs
+				defaultValue="appeals"
+				onValueChange={handleTabChange}
+				className="w-full"
+			>
 				<TabsList className="w-[300px]">
 					<TabsTrigger value="appeals" className="w-full">
 						Appeals
@@ -56,7 +74,8 @@ const AppealScreen = (props: Props) => {
 					<ReferralView />
 				</TabsContent>
 				<TabsContent value="disputes">
-					<DisputeForm />
+					<SearchCard />
+					{/* <DisputeForm /> */}
 					{/* <DisputeView /> */}
 				</TabsContent>
 			</Tabs>

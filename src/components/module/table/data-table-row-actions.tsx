@@ -25,11 +25,13 @@ export function DataTableRowActions<TData>({
 			? "dashboard/claims/submission"
 			: pathname.includes("claims/appeals")
 				? "dashboard/claims/appeals"
-				: pathname.includes("referrals/authorization")
-					? "dashboard/referrals/authorization"
-					: pathname.includes("tools/appointment")
-						? "dashboard/tools/appointment"
-						: "";
+				: pathname.includes("claims/dispute")
+					? "dashboard/claims/dispute"
+					: pathname.includes("referrals/authorization")
+						? "dashboard/referrals/authorization"
+						: pathname.includes("tools/appointment")
+							? "dashboard/tools/appointment"
+							: "";
 
 	return (
 		<Button
@@ -42,11 +44,13 @@ export function DataTableRowActions<TData>({
 					? "Add Claim"
 					: baseRoute === "dashboard/claims/appeals"
 						? "Add Appeal"
-						: baseRoute === "dashboard/referrals/authorization"
-							? "Request Authorization"
-							: baseRoute === "dashboard/tools/appointment"
-								? "Schedule"
-								: "Unknown Action"}
+						: baseRoute === "dashboard/claims/dispute"
+							? "Add Dispute"
+							: baseRoute === "dashboard/referrals/authorization"
+								? "Request Authorization"
+								: baseRoute === "dashboard/tools/appointment"
+									? "Schedule"
+									: "Unknown Action"}
 		</Button>
 	);
 }

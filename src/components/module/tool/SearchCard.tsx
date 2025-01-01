@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { SearchIcon, UserX } from "lucide-react";
+import { CirclePlus, SearchIcon, UserX } from "lucide-react";
 
 import { useSearchMember } from "@/actions/Query/member_Query/member_Query";
 import { Button } from "@/components/ui/button";
@@ -28,9 +28,9 @@ const SearchCard = (props: Props) => {
 		first_name: "",
 		middle_name: "",
 		last_name: "",
-		first_name_amharic: "",
-		middle_name_amharic: "",
-		last_name_amharic: "",
+		// first_name_amharic: "",
+		// middle_name_amharic: "",
+		// last_name_amharic: "",
 		date_of_birth: "",
 		phone_number: "",
 		family_id: "",
@@ -56,15 +56,15 @@ const SearchCard = (props: Props) => {
 		newData.last_name = newData.dependent_last_name
 			? newData.dependent_last_name
 			: newData.last_name;
-		newData.first_name_amharic = newData.dependent_first_name_amharic
-			? newData.dependent_first_name_amharic
-			: newData.first_name_amharic;
-		newData.middle_name_amharic = newData.dependent_middle_name_amharic
-			? newData.dependent_middle_name_amharic
-			: newData.middle_name_amharic;
-		newData.last_name_amharic = newData.dependent_last_name_amharic
-			? newData.dependent_last_name_amharic
-			: newData.last_name_amharic;
+		// newData.first_name_amharic = newData.dependent_first_name_amharic
+		// 	? newData.dependent_first_name_amharic
+		// 	: newData.first_name_amharic;
+		// newData.middle_name_amharic = newData.dependent_middle_name_amharic
+		// 	? newData.dependent_middle_name_amharic
+		// 	: newData.middle_name_amharic;
+		// newData.last_name_amharic = newData.dependent_last_name_amharic
+		// 	? newData.dependent_last_name_amharic
+		// 	: newData.last_name_amharic;
 		newData.date_of_birth = newData.dependent_date_of_birth
 			? newData.dependent_date_of_birth
 			: newData.date_of_birth;
@@ -124,8 +124,8 @@ const SearchCard = (props: Props) => {
 						</>
 					) : (
 						<>
-							<SearchIcon className="text-white mr-5" size={20} />
-							Search
+							<CirclePlus className="text-white mr-5" size={20} />
+							Add Appointment
 						</>
 					)}
 				</Button>

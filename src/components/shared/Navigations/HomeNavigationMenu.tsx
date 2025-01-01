@@ -14,9 +14,9 @@ import { cn } from "@/lib/utils";
 
 const navigationMap = [
 	{
-		label: "Tele Medicine",
-		route: "/tele-service",
-		alternateRoutes: ["/en-US/tele-service", "/am/tele-service"],
+		label: "TeleMedicine",
+		route: "/telemedicine",
+		alternateRoutes: ["/en-US/telemedicine", "/am/telemedicine"],
 	},
 	{
 		label: "Provider Online",
@@ -35,13 +35,16 @@ const navigationMap = [
 	},
 	{
 		label: "Referrals, Appeals, and Disputes",
-		route: "/referrals-appeals",
-		alternateRoutes: ["/en-US/referrals-appeals", "/am/referrals-appeals"],
+		route: "/referrals-appeals-disputes",
+		alternateRoutes: [
+			"/en-US/referrals-appeals-disputes",
+			"/am/referrals-appeals-disputes",
+		],
 	},
 	{
-		label: "Carriers",
-		route: "/carriers",
-		alternateRoutes: ["/en-US/carriers", "/am/carriers"],
+		label: "Contact Us",
+		route: "/contact-us",
+		alternateRoutes: ["/en-US/contact-us", "/am/contact-us"],
 	},
 ];
 
@@ -52,7 +55,7 @@ export function HomeNavigationMenuConf() {
 		path?.startsWith(route) || alternateRoutes.some((r) => path?.startsWith(r));
 
 	return (
-		<NavigationMenu>
+		<NavigationMenu className="hidden lg:block">
 			<NavigationMenuList>
 				{navigationMap.map(({ label, route, alternateRoutes }) => (
 					<NavigationMenuItem key={route}>
@@ -61,7 +64,7 @@ export function HomeNavigationMenuConf() {
 								<Button
 									className={cn(
 										isActive(route, alternateRoutes) &&
-											"border-b-4  border-white text-black",
+											"border-b-4 border-white text-black",
 										"hover:border-b-4 hover:border-white hover:bg-transparent hover:text-white hover rounded-none text-white"
 									)}
 									variant={"ghost"}
@@ -76,3 +79,5 @@ export function HomeNavigationMenuConf() {
 		</NavigationMenu>
 	);
 }
+
+export { navigationMap };

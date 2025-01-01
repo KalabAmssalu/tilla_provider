@@ -55,7 +55,7 @@ const BillingCard = ({
 					</div>
 					<div className="flex justify-between">
 						<span className="text-gray-600">Total Charge</span>
-						<span className="font-medium text-xl font-bold text-gray-800">
+						<span className="text-xl font-bold text-gray-800">
 							{totalCharge.toFixed(2)} ETB
 						</span>
 					</div>

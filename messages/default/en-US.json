@@ -17,6 +17,9 @@
 		"amharic": "Amharic"
 	},
 	"Login": {
+		"warning": "Warning",
+		"warningDescription1": "This site is for Tilla Health participating providers only.",
+		"warningDescription2": "Please, DO NOT try to log in on this site if you are not a registered Provider.",
 		"loginTitle": "Provider Login",
 		"loginPrompt": "Enter your email below to login to your account",
 		"email": "Email",
@@ -646,7 +649,6 @@
 	"referralForm": {
 		"title": "Referral Form",
 		"description": "Please fill out the form below to refer a memmber.",
-		"fieldRequired": "This field is required",
 		"fields": {
 			"referral_date": {
 				"label": "Referral Date",
@@ -787,6 +789,80 @@
 			}
 		}
 	},
+	"disputeForm": {
+		"title": "Appeal Form",
+		"description": "Please fill out the form below to appeal your free health care.",
+		"fields": {
+			"member_id": {
+				"label": "Member Id",
+				"placeholder": "Enter the Member Id",
+				"description": "Provide the Member Id.",
+				"error": "Member Id is required."
+			},
+			"memberName": {
+				"label": "Member Full Name",
+				"placeholder": "Enter the Member Id",
+				"description": "Provide the Member Id.",
+				"error": "Member Id is required."
+			},
+			"date_of_birth": {
+				"label": "Date of Birth",
+				"placeholder": "Select your date of birth",
+				"description": "Enter your birth date in the format MM-DD-YYYY.",
+				"error": "Date of birth must be in the format MM-DD-YYYY."
+			},
+
+			"phone_number": {
+				"label": "Phone Number",
+				"placeholder": "Enter your phone number",
+				"description": "Provide a valid phone number.",
+				"error": "Phone number must be numeric and at least 10 digits long."
+			},
+			"email_address": {
+				"label": "Email Address",
+				"placeholder": "Enter your email address",
+				"description": "Provide a valid email address.",
+				"error": "Please enter a valid email address."
+			},
+			"relationship_to_member": {
+				"label": "Relationship to Member",
+				"placeholder": "Enter your relationship to member",
+				"description": "Please enter your relationship to member.",
+				"error": "Relationship to member must be at least 2 characters long."
+			},
+
+			"representative_full_name": {
+				"label": "Representative Name",
+				"placeholder": "Enter representative full name",
+				"description": "Representative's full name.",
+				"error": "Representative full name must be at least 2 characters long."
+			},
+			"appeal_description": {
+				"label": "Description of your Dispute",
+				"placeholder": "Enter a detailed description of your dispute",
+				"description": "Please provide a detailed description of your dispute",
+				"error": "Reason for Appeal is required."
+			},
+			"additional_note": {
+				"label": "Additional Note",
+				"placeholder": "Enter additional notes",
+				"description": "Provide any additional information.",
+				"error": "Additional notes must be concise."
+			},
+			"supporting_doc1": {
+				"label": "Supporting Documents",
+				"placeholder": "Upload Supporting Document",
+				"description": "Attach Supporting Document as proof.",
+				"error": "Supporting Document 1 is required."
+			},
+			"supporting_doc2": {
+				"label": "Other Supporting Documents",
+				"placeholder": "Upload Supporting Document",
+				"description": "Attach Supporting Document as proof.",
+				"error": "Supporting Document 2 is required."
+			}
+		}
+	},
 	"appointmentForm": {
 		"title": "Appointment Booking Form",
 		"description": "Please fill out the form below to appeal your free health care.",
@@ -838,6 +914,18 @@
 				"description": "Provide a detailed description of the Appointment.",
 				"error": "Reason for Appointment is required."
 			},
+			"appointment_date": {
+				"label": "Preferred Appointment Date",
+				"placeholder": "Enter the appointment date",
+				"description": "Provide the date when the appointment is due to.",
+				"error": "Appointment date is required."
+			},
+			"appointment_hour": {
+				"label": "Appointment Hour",
+				"placeholder": "Enter the appointment hour",
+				"description": "Specify the hour of appointment.",
+				"error": "Appointment hour is required."
+			},
 			"contact_type": {
 				"label": "Preferred Contact Method",
 				"placeholder": "Select the type of Preferred Contact Method",
@@ -880,6 +968,26 @@
 				"placeholder": "Enter the Member Id",
 				"description": "Provide the Member Id.",
 				"error": "Member Id is required."
+			},
+
+			"date_of_birth": {
+				"label": "Date of Birth",
+				"placeholder": "Select your date of birth",
+				"description": "Enter your birth date in the format MM-DD-YYYY.",
+				"error": "Date of birth must be in the format MM-DD-YYYY."
+			},
+
+			"phone_number": {
+				"label": "Phone Number",
+				"placeholder": "Enter your phone number",
+				"description": "Provide a valid phone number.",
+				"error": "Phone number must be numeric and at least 10 digits long."
+			},
+			"email_address": {
+				"label": "Email Address",
+				"placeholder": "Enter your email address",
+				"description": "Provide a valid email address.",
+				"error": "Please enter a valid email address."
 			},
 			"from": {
 				"label": "Claim Status date started From",

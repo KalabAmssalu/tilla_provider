@@ -81,7 +81,7 @@ const SearchCard: React.FC = () => {
 					value={searchType}
 					onValueChange={setSearchType}
 				>
-					<SelectTrigger>
+					<SelectTrigger className="bg-white">
 						<SelectValue placeholder="Select search type" />
 					</SelectTrigger>
 					<SelectContent>
