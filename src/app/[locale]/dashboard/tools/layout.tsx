@@ -24,15 +24,11 @@ const navData: { headers: string; icons: LucideIcon; items: NavItem[] } = {
 		},
 		{
 			title: "Messages & Communication",
-			url: "/dashboard/tools/message",
+			url: "/dashboard/tools/communication",
 		},
 		{
 			title: "Telehealth Integration",
 			url: "/dashboard/tools/telehealth",
-		},
-		{
-			title: "Member Notifications",
-			url: "/dashboard/tools/notifications",
 		},
 	],
 };

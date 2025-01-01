@@ -2,10 +2,9 @@
 
 import axios from "axios";
 
-import { ClaimStatusFormValues } from "@/components/screen/claims/StatusScreen";
+import { type ClaimStatusFormValues } from "@/components/screen/claims/StatusScreen";
 import { type APIResponseType } from "@/hooks/useToastMutation";
 import { generatePDF } from "@/lib/utils/generatePDF";
-import { type ClaimType } from "@/types/claim/claim";
 
 import axiosInstance from "../axiosInstance";
 import getErrorMessage from "../getErrorMessage";
@@ -177,7 +176,8 @@ export async function generateAndDownloadPDF(data: any) {
 
 export async function getClaims() {
 	try {
-		const response = await axiosInstance.get("claims/get-claims");
+		const response = await axiosInstance.get("claims/myclaims");
+		console.log("response", response.data);
 		return response.data;
 	} catch (error) {
 		return { ok: false, message: getErrorMessage(error) };
@@ -185,9 +185,18 @@ export async function getClaims() {
 }
 export async function getMyPaymentSummary() {
 	try {
-		const response = await axiosInstance.get("claims/my-claim-payment-summary");
-		console.log("Payment Summary:", response.data);
+		const response = await axiosInstance.get("claims/my-claim-summary");
+
 		return response.data;
+	} catch (error) {
+		return { ok: false, message: getErrorMessage(error) };
+	}
+}
+export async function getMyStatusSummary() {
+	try {
+		const response = await axiosInstance.get("claims/my-claim-summary");
+		console.log("Payment Summary:", response.data.claim_status_summary);
+		return response.data.claim_status_summary;
 	} catch (error) {
 		return { ok: false, message: getErrorMessage(error) };
 	}
@@ -195,7 +204,8 @@ export async function getMyPaymentSummary() {
 
 export async function getClaimsById(id: string) {
 	try {
-		const response = await axiosInstance.get(`claims/get-claim/${id}`);
+		const response = await axiosInstance.get(`claims/myclaims/${id}`);
+		console.log("response", response.data);
 		return response.data;
 	} catch (error) {
 		return { ok: false, message: getErrorMessage(error) };

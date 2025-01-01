@@ -11,8 +11,8 @@ export const createProviderInfoSchema = (t: (key: string) => string) =>
 			z.literal(""),
 			z.string().min(2, { message: t("fields.institute_name.error") }),
 		]),
-		provider_id: z.string().min(2, {
-			message: t("fields.provider_id.error"),
+		provider_npi_id: z.string().min(2, {
+			message: t("fields.provider_npi_id.error"),
 		}),
 		provider_first_name: z.union([
 			z.literal(""),

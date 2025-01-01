@@ -26,7 +26,7 @@ const initialState = {
 		discharge_hour: "",
 		admission_hour: "",
 		revenue_center_description: "",
-		other_provider_ids: "",
+		other_provider_npi_ids: "",
 		treatment_authorization_codes: "",
 		additional_notes: "",
 		patient_discharge_status: "",

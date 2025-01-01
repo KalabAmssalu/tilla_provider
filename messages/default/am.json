@@ -241,7 +241,7 @@
 				"description": "The revenue code belongs to the associated provider.",
 				"error": "Revenue center description is required."
 			},
-			"other_provider_ids": {
+			"other_provider_npi_ids": {
 				"label": "ሌሎች የአቅራቢ መታወቂያዎች",
 				"placeholder": "Enter other provider IDs",
 				"description": "Provide the IDs of other associated providers.",

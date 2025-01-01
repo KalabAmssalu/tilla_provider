@@ -24,9 +24,14 @@ export function SummaryCard({
 			</CardHeader>
 			<CardContent>
 				<div className="text-2xl font-bold">
-					{new Intl.NumberFormat("en-US", {
+					{/* {new Intl.NumberFormat("en-US", {
 						style: "currency",
 						currency: "USD",
+					}).format(value)} */}
+
+					{new Intl.NumberFormat("en-ET", {
+						style: "currency",
+						currency: "ETB",
 					}).format(value)}
 				</div>
 			</CardContent>

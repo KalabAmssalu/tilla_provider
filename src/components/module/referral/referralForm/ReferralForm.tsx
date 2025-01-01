@@ -101,11 +101,11 @@ export default function ReferralForm({
 			onSuccess: async () => {
 				setIsAlertOpen(true);
 				try {
-					const base64PDF = await generateAndDownloadPDF(data);
-					const pdfBlob = new Blob([Buffer.from(base64PDF, "base64")], {
-						type: "application/pdf",
-					});
-					saveAs(pdfBlob, "referral_form.pdf");
+					// const base64PDF = await generateAndDownloadPDF(data);
+					// const pdfBlob = new Blob([Buffer.from(base64PDF, "base64")], {
+					// 	type: "application/pdf",
+					// });
+					// saveAs(pdfBlob, "referral_form.pdf");
 				} catch (error) {
 					console.error("Error generating PDF:", error);
 				}

@@ -1,6 +1,6 @@
 export interface ProviderType {
 	tin_number: string;
-	provider_id: string;
+	provider_npi_id: string;
 	institute_name: string;
 	provider_last_name: string;
 	provider_first_name: string;

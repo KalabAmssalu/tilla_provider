@@ -22,8 +22,6 @@ export const createPriorAuthorizationInfoSchema = (
 				message: t("fields.additional_note.error"),
 			})
 			.optional(), // Nullable
-		supporting_doc1: z.string().optional(), // URI or file path
-		supporting_doc2: z.string().optional(), // URI or file path
 		cpt_code: z.string().optional(),
 		cpt_category: z.string().optional(), // Nullable
 		cpt_description: z.string().optional(), // Nullable

@@ -7,7 +7,7 @@ const initialState = {
 			id: 0,
 			provider: {
 				id: 0,
-				provider_id: "",
+				provider_npi_id: "",
 				tin_number: "",
 				provider_last_name: "",
 				provider_first_name: "",

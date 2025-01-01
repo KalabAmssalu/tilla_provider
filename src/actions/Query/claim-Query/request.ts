@@ -19,8 +19,8 @@ import {
 } from "@/actions/claim/action";
 import { type ClaimStatusFormValues } from "@/components/screen/claims/StatusScreen";
 import useToastMutation from "@/hooks/useToastMutation";
-import { type ClaimType } from "@/types/claim/claim";
-import { PaymentSummary } from "@/types/payment/payment";
+import { type ClaimType, ClaimdetailType } from "@/types/claim/claim";
+import { type PaymentSummary } from "@/types/payment/payment";
 
 interface ICD10Record {
 	category: string;
@@ -190,9 +190,25 @@ export const useLonicRecords = (category: string, enabled: boolean) => {
 
 export const useGetClaims = () => {
 	return useQuery<Array<ClaimType>>({
-		queryKey: ["getClaims"],
+		queryKey: ["getMyClaims"],
 		queryFn: async () => {
 			try {
+				const response = await getClaims();
+				return response;
+			} catch (error: any) {
+				toast.error(`Error fetching claims: ${error.message}`);
+				throw error;
+			}
+		},
+		retry: false,
+	});
+};
+export const useGetAllInfoClaims = () => {
+	return useQuery<Array<ClaimdetailType>>({
+		queryKey: ["getAllInfoClaims"],
+		queryFn: async () => {
+			try {
+				console.log("getClaims");
 				const response = await getClaims();
 				return response.data;
 			} catch (error: any) {
@@ -210,7 +226,7 @@ export const useGetMyPaymentSummary = () => {
 		queryFn: async () => {
 			try {
 				const response = await getMyPaymentSummary();
-				return response.data;
+				return response.claim_payment_summary;
 			} catch (error: any) {
 				toast.error(`Error fetching claims: ${error.message}`);
 				throw error;
@@ -221,12 +237,12 @@ export const useGetMyPaymentSummary = () => {
 };
 
 export const useGetCLaimByID = (id: string) => {
-	return useQuery<ClaimType>({
+	return useQuery<ClaimdetailType>({
 		queryKey: ["getClaimsById", id],
 		queryFn: async () => {
 			try {
 				const response = await getClaimsById(id);
-				return response.data;
+				return response;
 			} catch (error: any) {
 				toast.error(`Error fetching claims: ${error.message}`);
 				throw error;

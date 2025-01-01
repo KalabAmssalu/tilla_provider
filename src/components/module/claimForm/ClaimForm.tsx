@@ -59,7 +59,7 @@ export default function ClaimForm({
 		defaultValues: {
 			// Provider Information
 			billing_provider_name: `${dataProvider.user.provider.provider_first_name || ""} ${dataProvider.user.provider.provider_middle_initial || ""} ${dataProvider.user.provider.provider_last_name || ""}`,
-			billing_provider_npi: `${dataProvider.user.provider.provider_id || "123"}`,
+			billing_provider_npi: `${dataProvider.user.provider.provider_npi_id || "123"}`,
 			revenue_code_tin_number: `${dataProvider.user.provider.tin_number}`,
 
 			attending_provider_name: "",
@@ -134,7 +134,7 @@ export default function ClaimForm({
 
 			service_charge: 0,
 			additional_charge: 0,
-			non_covered_charges: 0,
+			non_covered_charge: 0,
 			type_of_bill: "MEDICAL",
 			payer_name: "Tilla Health Insurane",
 			treatment_authorization_codes: "",
@@ -364,7 +364,7 @@ export default function ClaimForm({
 			});
 		};
 
-		appendFiles(releaseOfInformationFiles, "release_of_information_reciept");
+		appendFiles(releaseOfInformationFiles, "release_of_information_receipt");
 		appendFiles(receiptsFile, "receipts");
 		appendFiles(medicationPrescriptionFiles, "medication_prescription");
 		appendFiles(medicalImagingFiles, "medical_imaging");
@@ -836,7 +836,7 @@ export default function ClaimForm({
 									/>
 									<ReusableFormField
 										control={form.control}
-										name="non_covered_charges"
+										name="non_covered_charge"
 										type="number"
 										local="claimForm"
 										labelKey="fields.non_covered_charges.label"

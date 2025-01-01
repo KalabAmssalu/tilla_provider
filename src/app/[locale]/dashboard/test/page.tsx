@@ -1,166 +1,271 @@
-// "use client";
+"use client";
 
-// import { useState } from "react";
+import React from "react";
 
-// import { format } from "date-fns";
-// import { Calendar, ChevronDown, DollarSign, Search } from "lucide-react";
-// import { DateRange, DayPicker } from "react-day-picker";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
 
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-// import {
-// 	Popover,
-// 	PopoverContent,
-// 	PopoverTrigger,
-// } from "@/components/ui/popover";
-// import {
-// 	Select,
-// 	SelectContent,
-// 	SelectItem,
-// 	SelectTrigger,
-// 	SelectValue,
-// } from "@/components/ui/select";
-// import { Slider } from "@/components/ui/slider";
+import { useSetPriorAuth } from "@/actions/Query/referal_Query/request";
 
-// export default function page() {
-// 	const [dateRange, setDateRange] = useState<DateRange | undefined>();
-// 	const [amountRange, setAmountRange] = useState([0, 1000]);
+// Define Zod schema for form validation
+const formSchema = z.object({
+	date_of_service: z.string().min(1, "Date of Service is required"),
+	requested_service: z.string().min(1, "Requested Service is required"),
+	reason_for_request: z.string().min(1, "Reason for Request is required"),
+	additional_note: z.string().optional(),
+	cpt_code: z.string().min(1, "CPT Code is required"),
+	cpt_category: z.string().min(1, "CPT Category is required"),
+	cpt_description: z.string().min(1, "CPT Description is required"),
+	diagnosis_date: z.string().min(1, "Diagnosis Date is required"),
+	diagnosis_source: z.string().min(1, "Diagnosis Source is required"),
+	diagnosis_category: z.string().min(1, "Diagnosis Category is required"),
+	diagnosis_description: z.string().min(1, "Diagnosis Description is required"),
+	diagnosis_code: z.string().min(1, "Diagnosis Code is required"),
+});
 
-// 	return (
-// 		<form className="space-y-8 p-6 bg-white rounded-lg shadow-lg">
-// 			<h2 className="text-2xl font-bold text-gray-900 mb-6">
-// 				Member and Claims Report Filters
-// 			</h2>
+type FormData = z.infer<typeof formSchema>;
 
-// 			{/* Date Range Picker */}
-// 			<div className="space-y-2">
-// 				<Label htmlFor="date-range">Date Range</Label>
-// 				<Popover>
-// 					<PopoverTrigger asChild>
-// 						<Button
-// 							id="date-range"
-// 							variant="outline"
-// 							className="w-full justify-start text-left font-normal"
-// 						>
-// 							<Calendar className="mr-2 h-4 w-4" />
-// 							{dateRange?.from ? (
-// 								dateRange.to ? (
-// 									<>
-// 										{format(dateRange.from, "LLL dd, y")} -{" "}
-// 										{format(dateRange.to, "LLL dd, y")}
-// 									</>
-// 								) : (
-// 									format(dateRange.from, "LLL dd, y")
-// 								)
-// 							) : (
-// 								<span>Pick a date range</span>
-// 							)}
-// 						</Button>
-// 					</PopoverTrigger>
-// 					<PopoverContent className="w-auto p-0" align="start">
-// 						<DayPicker
-// 							mode="range"
-// 							selected={dateRange}
-// 							onSelect={setDateRange}
-// 							numberOfMonths={2}
-// 						/>
-// 					</PopoverContent>
-// 				</Popover>
-// 			</div>
+const SimpleForm: React.FC = () => {
+	// Use the Zod schema with React Hook Form
+	const {
+		control,
+		handleSubmit,
+		formState: { errors },
+	} = useForm<FormData>({
+		resolver: zodResolver(formSchema), // Use Zod resolver for validation
+		defaultValues: {
+			date_of_service: "",
+			requested_service: "",
+			reason_for_request: "",
+			additional_note: "",
+			cpt_code: "",
+			cpt_category: "",
+			cpt_description: "",
+			diagnosis_date: "",
+			diagnosis_source: "",
+			diagnosis_category: "",
+			diagnosis_description: "",
+			diagnosis_code: "",
+		},
+	});
+	const { mutate: onSubmitPriorAuth } = useSetPriorAuth();
+	const onSubmit: SubmitHandler<FormData> = (data) => {
+		console.log(data);
+		const formData = new FormData();
+		try {
+			const savedData = {
+				...data,
+				member: "3",
+			};
+			Object.entries(savedData).forEach(([key, value]) => {
+				if (value !== null && value !== undefined) {
+					formData.append(key, value.toString());
+				}
+			});
 
-// 			{/* Claim Status */}
-// 			<div className="space-y-2">
-// 				<Label htmlFor="claim-status">Claim Status</Label>
-// 				<Select>
-// 					<SelectTrigger id="claim-status">
-// 						<SelectValue placeholder="Select status" />
-// 					</SelectTrigger>
-// 					<SelectContent>
-// 						<SelectItem value="approved">Approved</SelectItem>
-// 						<SelectItem value="denied">Denied</SelectItem>
-// 						<SelectItem value="pending">Pending</SelectItem>
-// 					</SelectContent>
-// 				</Select>
-// 			</div>
+			// Append file arrays
+			// const appendFiles = (files: File[], fieldName: string) => {
+			// 	files.forEach((file) => {
+			// 		formData.append(fieldName, file);
+			// 	});
+			// };
+			// appendFiles(supporting_doc1, "supporting_doc1");
+			// appendFiles(supporting_doc2, "supporting_doc2");
 
-// 			{/* Member Information */}
-// 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-// 				<div className="space-y-2">
-// 					<Label htmlFor="member-id">Member ID</Label>
-// 					<Input id="member-id" placeholder="Enter Member ID" />
-// 				</div>
-// 				<div className="space-y-2">
-// 					<Label htmlFor="member-name">Member Name</Label>
-// 					<Input id="member-name" placeholder="Enter Member Name" />
-// 				</div>
-// 				<div className="space-y-2">
-// 					<Label htmlFor="plan-type">Plan Type</Label>
-// 					<Select>
-// 						<SelectTrigger id="plan-type">
-// 							<SelectValue placeholder="Select plan type" />
-// 						</SelectTrigger>
-// 						<SelectContent>
-// 							<SelectItem value="family">Family</SelectItem>
-// 							<SelectItem value="individual">Individual</SelectItem>
-// 						</SelectContent>
-// 					</Select>
-// 				</div>
-// 				<div className="space-y-2">
-// 					<Label htmlFor="provider-name">Provider Name</Label>
-// 					<Input id="provider-name" placeholder="Enter Provider Name" />
-// 				</div>
-// 			</div>
+			onSubmitPriorAuth(formData);
+		} catch (error) {
+			console.error("Error:", error);
+		}
+	};
 
-// 			{/* Service Date */}
-// 			<div className="space-y-2">
-// 				<Label htmlFor="service-date">Service Date</Label>
-// 				<Input id="service-date" type="date" />
-// 			</div>
-
-// 			{/* Diagnosis Code / Procedure Code */}
-// 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-// 				<div className="space-y-2">
-// 					<Label htmlFor="diagnosis-code">Diagnosis Code</Label>
-// 					<Input id="diagnosis-code" placeholder="Enter Diagnosis Code" />
-// 				</div>
-// 				<div className="space-y-2">
-// 					<Label htmlFor="procedure-code">Procedure Code</Label>
-// 					<Input id="procedure-code" placeholder="Enter Procedure Code" />
-// 				</div>
-// 			</div>
-
-// 			{/* Amount Range */}
-// 			<div className="space-y-4">
-// 				<Label>Amount Range</Label>
-// 				<div className="flex items-center space-x-4">
-// 					<DollarSign className="text-gray-500" />
-// 					<Slider
-// 						value={amountRange}
-// 						onValueChange={setAmountRange}
-// 						max={10000}
-// 						step={100}
-// 						className="flex-grow"
-// 					/>
-// 				</div>
-// 				<div className="flex justify-between text-sm text-gray-500">
-// 					<span>${amountRange[0]}</span>
-// 					<span>${amountRange[1]}</span>
-// 				</div>
-// 			</div>
-
-// 			{/* Submit Button */}
-// 			<Button type="submit" className="w-full">
-// 				<Search className="mr-2 h-4 w-4" /> Search Reports
-// 			</Button>
-// 		</form>
-// 	);
-// }
-
-type Props = {};
-
-const page = (props: Props) => {
-	return <div>page</div>;
+	return (
+		<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+			<div>
+				<label htmlFor="date_of_service" className="block">
+					Date of Service
+				</label>
+				<Controller
+					name="date_of_service"
+					control={control}
+					render={({ field }) => (
+						<input type="date" {...field} className="input" />
+					)}
+				/>
+				{errors.date_of_service && (
+					<p className="text-red-500">{errors.date_of_service.message}</p>
+				)}
+			</div>
+			<div>
+				<label htmlFor="requested_service" className="block">
+					Requested Service
+				</label>
+				<Controller
+					name="requested_service"
+					control={control}
+					render={({ field }) => (
+						<input type="text" {...field} className="input" />
+					)}
+				/>
+				{errors.requested_service && (
+					<p className="text-red-500">{errors.requested_service.message}</p>
+				)}
+			</div>
+			<div>
+				<label htmlFor="reason_for_request" className="block">
+					Reason for Request
+				</label>
+				<Controller
+					name="reason_for_request"
+					control={control}
+					render={({ field }) => (
+						<input type="text" {...field} className="input" />
+					)}
+				/>
+				{errors.reason_for_request && (
+					<p className="text-red-500">{errors.reason_for_request.message}</p>
+				)}
+			</div>
+			<div>
+				<label htmlFor="additional_note" className="block">
+					Additional Note
+				</label>
+				<Controller
+					name="additional_note"
+					control={control}
+					render={({ field }) => <textarea {...field} className="input" />}
+				/>
+				{errors.additional_note && (
+					<p className="text-red-500">{errors.additional_note.message}</p>
+				)}
+			</div>
+			<div>
+				<label htmlFor="cpt_code" className="block">
+					CPT Code
+				</label>
+				<Controller
+					name="cpt_code"
+					control={control}
+					render={({ field }) => (
+						<input type="text" {...field} className="input" />
+					)}
+				/>
+				{errors.cpt_code && (
+					<p className="text-red-500">{errors.cpt_code.message}</p>
+				)}
+			</div>
+			<div>
+				<label htmlFor="cpt_category" className="block">
+					CPT Category
+				</label>
+				<Controller
+					name="cpt_category"
+					control={control}
+					render={({ field }) => (
+						<input type="text" {...field} className="input" />
+					)}
+				/>
+				{errors.cpt_category && (
+					<p className="text-red-500">{errors.cpt_category.message}</p>
+				)}
+			</div>
+			<div>
+				<label htmlFor="cpt_description" className="block">
+					CPT Description
+				</label>
+				<Controller
+					name="cpt_description"
+					control={control}
+					render={({ field }) => (
+						<input type="text" {...field} className="input" />
+					)}
+				/>
+				{errors.cpt_description && (
+					<p className="text-red-500">{errors.cpt_description.message}</p>
+				)}
+			</div>
+			<div>
+				<label htmlFor="diagnosis_date" className="block">
+					Diagnosis Date
+				</label>
+				<Controller
+					name="diagnosis_date"
+					control={control}
+					render={({ field }) => (
+						<input type="date" {...field} className="input" />
+					)}
+				/>
+				{errors.diagnosis_date && (
+					<p className="text-red-500">{errors.diagnosis_date.message}</p>
+				)}
+			</div>
+			<div>
+				<label htmlFor="diagnosis_source" className="block">
+					Diagnosis Source
+				</label>
+				<Controller
+					name="diagnosis_source"
+					control={control}
+					render={({ field }) => (
+						<input type="text" {...field} className="input" />
+					)}
+				/>
+				{errors.diagnosis_source && (
+					<p className="text-red-500">{errors.diagnosis_source.message}</p>
+				)}
+			</div>
+			<div>
+				<label htmlFor="diagnosis_category" className="block">
+					Diagnosis Category
+				</label>
+				<Controller
+					name="diagnosis_category"
+					control={control}
+					render={({ field }) => (
+						<input type="text" {...field} className="input" />
+					)}
+				/>
+				{errors.diagnosis_category && (
+					<p className="text-red-500">{errors.diagnosis_category.message}</p>
+				)}
+			</div>
+			<div>
+				<label htmlFor="diagnosis_description" className="block">
+					Diagnosis Description
+				</label>
+				<Controller
+					name="diagnosis_description"
+					control={control}
+					render={({ field }) => (
+						<input type="text" {...field} className="input" />
+					)}
+				/>
+				{errors.diagnosis_description && (
+					<p className="text-red-500">{errors.diagnosis_description.message}</p>
+				)}
+			</div>
+			<div>
+				<label htmlFor="diagnosis_code" className="block">
+					Diagnosis Code
+				</label>
+				<Controller
+					name="diagnosis_code"
+					control={control}
+					render={({ field }) => (
+						<input type="text" {...field} className="input" />
+					)}
+				/>
+				{errors.diagnosis_code && (
+					<p className="text-red-500">{errors.diagnosis_code.message}</p>
+				)}
+			</div>
+			<div>
+				<button type="submit" className="btn">
+					Submit
+				</button>
+			</div>
+		</form>
+	);
 };
 
-export default page;
+export default SimpleForm;

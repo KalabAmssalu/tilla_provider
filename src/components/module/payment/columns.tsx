@@ -8,14 +8,13 @@ import {
 	ShieldAlert,
 } from "lucide-react";
 
-import { type ClaimPaymentType } from "@/components/screen/claims/PaymentScreen";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { type ClaimType } from "@/types/claim/claim";
 
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 
-// // Example statuses based on account status
 export const statuses = [
 	{
 		value: "completed",
@@ -39,7 +38,7 @@ export const statuses = [
 	},
 ];
 
-export const columns: ColumnDef<ClaimPaymentType>[] = [
+export const ClaimPaymentColumns: ColumnDef<ClaimType>[] = [
 	{
 		id: "select",
 		header: ({ table }) => (
@@ -65,7 +64,7 @@ export const columns: ColumnDef<ClaimPaymentType>[] = [
 		enableHiding: false,
 	},
 	{
-		accessorKey: "claimId",
+		accessorKey: "claim_number",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Claim ID" />
 		),
@@ -73,14 +72,14 @@ export const columns: ColumnDef<ClaimPaymentType>[] = [
 			return (
 				<div className="flex space-x-2">
 					<span className="max-w-[100px] truncate font-medium">
-						{row.getValue("claimId")}
+						{row.getValue("claim_number")}
 					</span>
 				</div>
 			);
 		},
 	},
 	{
-		accessorKey: "memberId",
+		accessorKey: "individual_member",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Member ID" />
 		),
@@ -88,34 +87,38 @@ export const columns: ColumnDef<ClaimPaymentType>[] = [
 			return (
 				<div className="flex space-x-2">
 					<span className="max-w-[100px] truncate font-medium">
-						{row.getValue("memberId")}
+						{row.getValue("individual_member")}
 					</span>
 				</div>
 			);
 		},
 	},
 	{
-		accessorKey: "dateOfService",
+		accessorKey: "diagnosis_date",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Date of Service" />
 		),
 		cell: ({ row }) => {
-			const date = row.getValue("dateOfService") as string;
+			const date = row.getValue("diagnosis_date") as string;
 			// return format(new Date(date), "MM/dd/yyyy");
 			return date;
 		},
 	},
 	{
-		accessorKey: "amountBilled",
+		accessorKey: "grand_total",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Amount Billed" />
 		),
 		cell: ({ row }) => {
-			const amount = parseFloat(row.getValue("amountBilled"));
-			const formatted = new Intl.NumberFormat("en-US", {
+			const amount = parseFloat(row.getValue("grand_total"));
+			const formatted = new Intl.NumberFormat("en-ET", {
 				style: "currency",
-				currency: "USD",
+				currency: "ETB",
 			}).format(amount);
+			// new Intl.NumberFormat("en-US", {
+			// 	style: "currency",
+			// 	currency: "USD",
+			// }).format(amount);
 			return formatted;
 		},
 	},
@@ -134,26 +137,48 @@ export const columns: ColumnDef<ClaimPaymentType>[] = [
 		},
 	},
 	{
-		accessorKey: "amountPaid",
+		accessorKey: "member_payment_amount",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Amount Paid" />
 		),
 		cell: ({ row }) => {
-			const amount = parseFloat(row.getValue("amountPaid"));
-			const formatted = new Intl.NumberFormat("en-US", {
+			const amount = parseFloat(row.getValue("member_payment_amount"));
+			const formatted = new Intl.NumberFormat("en-ET", {
 				style: "currency",
-				currency: "USD",
+				currency: "ETB",
 			}).format(amount);
 			return formatted;
 		},
 	},
 	{
-		accessorKey: "status",
+		accessorKey: "payment_date",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Payment Date" />
+		),
+		cell: ({ row }) => {
+			const date = row.getValue("payment_date") as string;
+			// return format(new Date(date), "MM/dd/yyyy");
+			return date;
+		},
+	},
+	{
+		accessorKey: "resolution_date",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Resolution Date" />
+		),
+		cell: ({ row }) => {
+			const date = row.getValue("resolution_date") as string;
+			// return format(new Date(date), "MM/dd/yyyy");
+			return date;
+		},
+	},
+	{
+		accessorKey: "claim_status",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Status" />
 		),
 		cell: ({ row }) => {
-			const status = row.getValue("status") as string;
+			const status = row.getValue("claim_status") as string;
 			return (
 				<Badge
 					variant={

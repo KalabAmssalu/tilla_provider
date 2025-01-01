@@ -1,20 +1,21 @@
+import ClaimStatusHistory from "@/components/screen/claims/ClaimStatusHistory";
 import StatusScreen from "@/components/screen/claims/StatusScreen";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const statusPage = () => {
 	return (
 		<div>
-			<Tabs defaultValue="history" className="w-full">
+			<Tabs defaultValue="history" className="">
 				<TabsList className="w-[50%]">
-					<TabsTrigger value="history" className="w-[100%]">
+					<TabsTrigger value="history" className="w-full">
 						Claim History
 					</TabsTrigger>
-					<TabsTrigger value="search" className="w-[100%]">
+					<TabsTrigger value="search" className="w-full">
 						Claim Search
 					</TabsTrigger>
 				</TabsList>
-				<TabsContent value="history">
-					Make changes to your account here.
+				<TabsContent value="history" className="w-full">
+					<ClaimStatusHistory />
 				</TabsContent>
 				<TabsContent value="search">
 					<StatusScreen />

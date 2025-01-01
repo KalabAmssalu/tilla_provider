@@ -188,9 +188,9 @@ export default function StatusScreen() {
 												name="billing_provider_npi"
 												type="text"
 												local="claimStatusForm"
-												labelKey="fields.billingProvider_id.label"
-												placeholderKey="fields.billingProvider_id.placeholder"
-												descriptionKey="fields.billingProvider_id.description"
+												labelKey="fields.billingprovider_npi_id.label"
+												placeholderKey="fields.billingprovider_npi_id.placeholder"
+												descriptionKey="fields.billingprovider_npi_id.description"
 											/>
 											<ReusableDatePickerField
 												control={form.control}

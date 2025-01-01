@@ -1,4 +1,3 @@
-import { useGetCLaimByID } from "@/actions/Query/claim-Query/request";
 import { getClaimsById } from "@/actions/claim/action";
 import ClaimDetailView from "@/components/module/claimStatus/ClaimStatusDetail";
 import { type ClaimType } from "@/types/claim/claim";
@@ -14,7 +13,7 @@ async function getClaimData(id: string): Promise<Partial<ClaimType>> {
 		billing_provider_npi: "1234567890",
 		attending_provider_name_npi_specialty_code:
 			"Dr. John Doe | NPI: 0987654321 | Cardiology",
-		other_provider_ids: "56789, 67890",
+		other_provider_npi_ids: "56789, 67890",
 		admission_date: "2024-12-20",
 		admission_hour: {
 			hour: "08:30",
@@ -56,7 +55,7 @@ async function getClaimData(id: string): Promise<Partial<ClaimType>> {
 
 		service_charge: 15000.0,
 		additional_charge: 500.0,
-		non_covered_charges: 300.0,
+		non_covered_charge: 300.0,
 
 		// release_of_information_reciept: [
 		// 	{ name: "roi_receipt.pdf", type: "application/pdf" },
@@ -88,7 +87,7 @@ export default async function ClaimDetailPage({
 
 	try {
 		const response = await getClaimsById(id);
-		const claimData = response.data;
+		const claimData = response;
 
 		return <div>{claimData && <ClaimDetailView claim={claimData} />}</div>;
 	} catch (error: any) {

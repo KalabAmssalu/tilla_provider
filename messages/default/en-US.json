@@ -417,7 +417,7 @@
 				"description": "The revenue code belongs to the associated provider.",
 				"error": "Revenue center description is required."
 			},
-			"other_provider_ids": {
+			"other_provider_npi_ids": {
 				"label": "Other Provider IDs",
 				"placeholder": "Enter other provider IDs",
 				"description": "Provide the IDs of other associated providers.",
@@ -893,7 +893,7 @@
 				"description": "Provide the To.",
 				"error": "To is required."
 			},
-			"billingProvider_id": {
+			"billingprovider_npi_id": {
 				"label": "Billing Provider Id",
 				"placeholder": "Enter the Billing Provider Id",
 				"description": "Provide the Billing Provider Id.",
@@ -923,6 +923,7 @@
 				"description": "Provide the Claim Type.",
 				"error": "Claim Type is required."
 			},
+
 			"claim_status": {
 				"label": "Claim Status",
 				"placeholder": "Select the Claim Status",
@@ -963,7 +964,19 @@
 				"label": "Plan Type",
 				"placeholder": "Select the Plan Type",
 				"description": "Provide the Plan Type.",
-				"error": "Plan Type is required."
+				"error": "Plan Type is required.",
+				"options": {
+					"basic": "Basic",
+					"standard": "Standard",
+					"comprehensive": "Comprehensive",
+					"family": "Family"
+				}
+			},
+			"loinc_category": {
+				"label": "LOINC Category",
+				"placeholder": "Enter the LOINC category",
+				"description": "Provide the LOINC category associated with the diagnosis.",
+				"error": "LOINC category is required."
 			},
 			"provider": {
 				"label": "Provider",
@@ -1012,6 +1025,79 @@
 				"placeholder": "Enter the Referral Provider NPI",
 				"description": "Provide the Referral Provider NPI.",
 				"error": "Referral Provider NPI is required."
+			},
+			"mailing_address_line1": {
+				"label": "Street Address Line 2",
+				"placeholder": "Enter street address line 2",
+				"description": "Choose a street address.",
+				"error": "City name must be at least 2 characters long."
+			},
+			"city": {
+				"label": "City",
+				"placeholder": "Enter a city",
+				"description": "Choose a city .",
+				"error": "City name must be at least 2 characters long."
+			},
+			"region": {
+				"label": "Region / State",
+				"placeholder": "Enter region or state name",
+				"description": "Choose a region from the list.",
+				"error": "region name must be at least 2 characters long."
+			},
+			"street_address": {
+				"label": "Street Address Line 1",
+				"placeholder": "Enter street address line 1",
+				"description": "Choose a street address.",
+				"error": "street address name must be at least 2 characters long."
+			},
+
+			"kifle_ketema": {
+				"label": "Sub-city / Kifle Ketema",
+				"placeholder": "Enter a sub-city",
+				"description": "Choose a sub-city from the list.",
+				"error": "street address name must be at least 2 characters long."
+			},
+			"country": {
+				"label": "Country",
+				"placeholder": "country",
+				"description": "Choose a country from the list.",
+				"error": "Country name must be at least 2 characters long."
+			},
+			"zip_code": {
+				"label": " ZIP Code / Woreda",
+				"placeholder": "Enter  ZIP code or Woreda name",
+				"description": "ZIP code or Woreda name for 's address.",
+				"error": "ZIP code or Woreda name must be valid."
+			},
+			"payment_status": {
+				"label": "Payment Status",
+				"placeholder": "payment status",
+				"description": "Choose a payment status from the list.",
+				"error": "Payment status must be at least 2 characters long."
+			},
+			"payment_method": {
+				"label": "Payment Method",
+				"placeholder": "payment method",
+				"description": "Choose a payment method from the list.",
+				"error": "Payment method must be at least 2 characters long."
+			},
+			"payment_date": {
+				"label": "Payment Date",
+				"placeholder": "payment date",
+				"description": "Choose a payment date from the list.",
+				"error": "Payment date must be at least 2 characters long."
+			},
+			"payment_amount": {
+				"label": "Payment Amount",
+				"placeholder": "payment amount",
+				"description": "Choose a payment amount from the list.",
+				"error": "Payment amount must be at least 2 characters long."
+			},
+			"denied_reason": {
+				"label": "Denied Reason",
+				"placeholder": "Denied Reason",
+				"description": "Choose the denied reason from the list",
+				"error": "Denied list must be at least 2 characters long"
 			}
 		}
 	}

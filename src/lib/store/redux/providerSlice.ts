@@ -4,7 +4,7 @@ export interface Provider {
 	id: number;
 	provider_date_of_birth: string;
 	tin_number: string;
-	provider_id: string;
+	provider_npi_id: string;
 	provider_last_name: string;
 	provider_first_name: string;
 	provider_middle_initial: string;

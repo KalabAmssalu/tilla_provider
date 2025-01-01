@@ -7,9 +7,12 @@ import { AlertCircle, CheckCircle2, FileSearch, XCircle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { useGetMyPaymentSummary } from "@/actions/Query/claim-Query/request";
+import {
+	useGetClaims,
+	useGetMyPaymentSummary,
+} from "@/actions/Query/claim-Query/request";
 import { SummaryCard } from "@/components/module/payment/Summary-card";
-import { columns } from "@/components/module/payment/columns";
+import { ClaimPaymentColumns } from "@/components/module/payment/columns";
 import { ClaimPaymentDataTable } from "@/components/module/payment/data-table";
 import { ReusableDateRangePickerField } from "@/components/shared/Form/ReusableDataRangePicker";
 import { ReusableDatePickerField } from "@/components/shared/Form/ReusableDateField";
@@ -31,107 +34,13 @@ import {
 import { Form } from "@/components/ui/form";
 import { formatToMMDDYYYY } from "@/lib/utils/dateUtils";
 
-export interface ClaimPaymentType {
-	claimId: string;
-	memberId: string;
-	dateOfService: string;
-	amountBilled: number;
-	adjustments: number;
-	amountPaid: number;
-	status: "completed" | "denied" | "disputed" | "pending";
-	paymentMethod: "Credit Card" | "Debit Card" | "Bank Transfer" | "Cash";
-}
-const data: ClaimPaymentType[] = [
-	{
-		claimId: "CLM001",
-		memberId: "MEM123",
-		dateOfService: "12/25/2024",
-		amountBilled: 500.0,
-		adjustments: 50.0,
-		amountPaid: 450.0,
-		status: "completed",
-		paymentMethod: "Credit Card",
-	},
-	{
-		claimId: "CLM002",
-		memberId: "MEM124",
-		dateOfService: "12/20/2024",
-		amountBilled: 1000.0,
-		adjustments: 100.0,
-		amountPaid: 900.0,
-		status: "denied",
-		paymentMethod: "Bank Transfer",
-	},
-	{
-		claimId: "CLM003",
-		memberId: "MEM125",
-		dateOfService: "12/15/2024",
-		amountBilled: 2000.0,
-		adjustments: 150.0,
-		amountPaid: 1850.0,
-		status: "disputed",
-		paymentMethod: "Cash",
-	},
-	{
-		claimId: "CLM004",
-		memberId: "MEM126",
-		dateOfService: "12/10/2024",
-		amountBilled: 1500.0,
-		adjustments: 200.0,
-		amountPaid: 1300.0,
-		status: "pending",
-		paymentMethod: "Debit Card",
-	},
-	{
-		claimId: "CLM005",
-		memberId: "MEM127",
-		dateOfService: "12/05/2024",
-		amountBilled: 750.0,
-		adjustments: 50.0,
-		amountPaid: 700.0,
-		status: "completed",
-		paymentMethod: "Cash",
-	},
-];
-
-// const cardData = [
-// 	{
-// 		title: "Received Payments",
-// 		value: 25000.0, // value for received payments
-// 		icon: <CheckCircle2 />,
-// 		iconColor: "text-green-500",
-// 		received: 25000.0, // including received value directly in the object
-// 	},
-// 	{
-// 		title: "Denied Payments",
-// 		value: 5000.0, // value for denied payments
-// 		icon: <XCircle />,
-// 		iconColor: "text-red-500",
-// 		denied: 5000.0, // including denied value directly in the object
-// 	},
-// 	{
-// 		title: "Disputed Payments",
-// 		value: 3000.0, // value for disputed payments
-// 		icon: <AlertCircle />,
-// 		iconColor: "text-yellow-500",
-// 		disputed: 3000.0, // including disputed value directly in the object
-// 	},
-// 	{
-// 		title: "Pending Payments",
-// 		value: 2000.0, // value for pending payments
-// 		icon: <AlertCircle />,
-// 		iconColor: "text-blue-500", // assuming a different color for pending
-// 		pending: 2000.0, // including pending value directly in the object
-// 	},
-// ];
-
 export default function PaymentsPage() {
 	const claimStatusSchema = z.object({
 		claim_id: z.string().optional(),
 		claim_status: z.string().optional(),
 		claim_type: z.string().optional(),
 		member_id: z.string().optional(),
-		billingProvider_id: z.string().optional(),
+		billingprovider_npi_id: z.string().optional(),
 		service_start_date: z.string().optional(),
 		service_end_date: z.string().optional(),
 		dateRange: z
@@ -151,7 +60,7 @@ export default function PaymentsPage() {
 			claim_status: "",
 			claim_type: "",
 			member_id: "",
-			billingProvider_id: "",
+			billingprovider_npi_id: "",
 			service_start_date: "",
 			service_end_date: "",
 			dateRange: {
@@ -161,7 +70,29 @@ export default function PaymentsPage() {
 		},
 	});
 
-	const { data: MyclaimPaymentData, isLoading } = useGetMyPaymentSummary();
+	const {
+		data: MyclaimPaymentData,
+		isLoading: isLoadingPayment,
+		error: paymentError,
+	} = useGetMyPaymentSummary();
+	const {
+		data: claimData,
+		isLoading: isLoadingClaimData,
+		error: claimError,
+	} = useGetClaims();
+
+	// Combined loading state
+	if (isLoadingPayment || isLoadingClaimData) {
+		return <div>Loading...</div>;
+	}
+
+	// Handle no claims data
+	if (!claimData || claimData.length === 0) {
+		return <div>No Claims Found</div>;
+	}
+	if (paymentError || claimError) {
+		return <div>Error loading data</div>;
+	}
 	const cardData = [
 		{
 			title: "Received Payments",
@@ -206,11 +137,6 @@ export default function PaymentsPage() {
 		console.log("Submitted Data:", savedData);
 	}
 
-	const { data: myPaymentSummary } = useGetMyPaymentSummary();
-	useEffect(() => {
-		console.log("useEffect");
-		console.log("myPaymentSummary", myPaymentSummary);
-	}, []);
 	return (
 		<div className="mb-20">
 			<Card className="mb-4 bg-secondary/40">
@@ -290,12 +216,12 @@ export default function PaymentsPage() {
 											/>
 											<ReusableFormField
 												control={form.control}
-												name="billingProvider_id"
+												name="billingprovider_npi_id"
 												type="text"
 												local="claimStatusForm"
-												labelKey="fields.billingProvider_id.label"
-												placeholderKey="fields.billingProvider_id.placeholder"
-												descriptionKey="fields.billingProvider_id.description"
+												labelKey="fields.billingprovider_npi_id.label"
+												placeholderKey="fields.billingprovider_npi_id.placeholder"
+												descriptionKey="fields.billingprovider_npi_id.description"
 											/>
 											<ReusableDatePickerField
 												control={form.control}
@@ -346,7 +272,14 @@ export default function PaymentsPage() {
 				))}
 			</div>
 
-			<ClaimPaymentDataTable columns={columns} data={data} />
+			{claimData && (
+				<div className="max-w-[78rem] overflow-x-auto">
+					<ClaimPaymentDataTable
+						columns={ClaimPaymentColumns}
+						data={claimData}
+					/>
+				</div>
+			)}
 		</div>
 	);
 }

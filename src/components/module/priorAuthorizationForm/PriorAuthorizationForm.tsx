@@ -1,11 +1,12 @@
+import { useState } from "react";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { saveAs } from "file-saver";
 import { Eraser, Send } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
-import { toast } from "sonner";
 
-import { generateAndDownloadPDF } from "@/actions/claim/action";
+import { useSetPriorAuth } from "@/actions/Query/referal_Query/request";
+import { SuccessAlertDialog } from "@/components/shared/Dialog/Success-alert-dialog";
 import { ReusableDatePickerField } from "@/components/shared/Form/ReusableDateField";
 import ReusableFileUploadField from "@/components/shared/Form/ReusableFileField";
 import ReusableFormField from "@/components/shared/Form/ReusableFormField";
@@ -15,9 +16,8 @@ import {
 } from "@/components/shared/Form/ReusableTextAreaField";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useAppSelector } from "@/hooks/storehooks";
 import {
-	PriorAuthorizationFormValues,
+	type PriorAuthorizationFormValues,
 	createPriorAuthorizationInfoSchema,
 } from "@/types/authorization/PriorAuthorizationValidation";
 import { type memberType } from "@/types/member/memeberType";
@@ -32,7 +32,10 @@ export default function PriorAuthorizationForm({
 }) {
 	const t = useTranslations("priorAuthForm");
 	const priorAuthorizationSchema = createPriorAuthorizationInfoSchema(t);
-	const dataProvider = useAppSelector((state) => state.users.currentUser);
+	// const dataProvider = useAppSelector((state) => state.users.currentUser);
+	const [supporting_doc1, setSupportingDoc1] = useState<File[]>([]);
+	const [supporting_doc2, setSupportingDoc2] = useState<File[]>([]);
+	const [isAlertOpen, setIsAlertOpen] = useState(false);
 	const form = useForm<PriorAuthorizationFormValues>({
 		resolver: zodResolver(priorAuthorizationSchema),
 		defaultValues: {
@@ -40,8 +43,6 @@ export default function PriorAuthorizationForm({
 			requested_service: "",
 			reason_for_request: "",
 			additional_note: "",
-			supporting_doc1: "",
-			supporting_doc2: "",
 			cpt_code: "",
 			cpt_category: "",
 			cpt_description: "",
@@ -53,16 +54,28 @@ export default function PriorAuthorizationForm({
 		},
 	});
 
+	const handleSupportingDoc1 = (files: File[]) => {
+		console.log("Supporting Doc 1:", files);
+		setSupportingDoc1(files);
+	};
+
+	const handleSupportingDoc2 = (files: File[]) => {
+		console.log("Supporting Doc 2:", files);
+		setSupportingDoc2(files);
+	};
+
 	const handleSelectedDiagnosis = (data: {
 		category: string;
 		description: string;
 		code: string;
 		date: string;
+		source: string;
 	}) => {
 		form.setValue("diagnosis_category", data.category);
 		form.setValue("diagnosis_description", data.description);
 		form.setValue("diagnosis_code", data.code);
 		form.setValue("diagnosis_date", data.date);
+		form.setValue("diagnosis_source", data.source);
 	};
 	const handleCPTValueChange = (data: {
 		category: string;
@@ -73,21 +86,47 @@ export default function PriorAuthorizationForm({
 		form.setValue("cpt_description", data.description);
 		form.setValue("cpt_code", data.code);
 	};
+	const { mutate: onSubmitPriorAuth } = useSetPriorAuth();
 	const handleSubmit = async (data: PriorAuthorizationFormValues) => {
 		// Handle form submission
-		toast.success("Request Submitted Successfully");
+		const formData = new FormData();
 		try {
-			const base64PDF = await generateAndDownloadPDF(data);
-			const pdfBlob = new Blob([Buffer.from(base64PDF, "base64")], {
-				type: "application/pdf",
+			const savedData = {
+				...data,
+				member: selectedMember.id?.toString(),
+			};
+			Object.entries(savedData).forEach(([key, value]) => {
+				if (value !== null && value !== undefined) {
+					formData.append(key, value.toString());
+				}
 			});
-			saveAs(pdfBlob, "prior_authorization_request_form.pdf");
+
+			// Append file arrays
+			const appendFiles = (files: File[], fieldName: string) => {
+				files.forEach((file) => {
+					formData.append(fieldName, file);
+				});
+			};
+			appendFiles(supporting_doc1, "supporting_doc1");
+			appendFiles(supporting_doc2, "supporting_doc2");
+
+			onSubmitPriorAuth(formData, {
+				onSuccess: async () => {
+					setIsAlertOpen(true);
+				},
+			});
 		} catch (error) {
-			console.error("Error generating PDF:", error);
+			console.error("Error:", error);
 		}
 	};
 	return (
 		<div className="lg:col-span-3 mb-24">
+			<SuccessAlertDialog
+				isOpen={isAlertOpen}
+				onClose={() => setIsAlertOpen(false)}
+				title="Prior Authorization Registration Successful"
+				description={`You have created a Prior Authorization Registration Successful" successfully for ${selectedMember.first_name} ${selectedMember.middle_name}!`}
+			/>
 			<div>
 				<h1 className="text-3xl mb-6 text-center font-bold">{t("title")}</h1>
 			</div>
@@ -156,36 +195,35 @@ export default function PriorAuthorizationForm({
 							/>
 						</div>
 					</fieldset>
-					<CPTSelectionForm onDataChange={handleCPTValueChange} />
+
 					<DiagnosisSelectionForm
 						control={form.control}
 						setValue={form.setValue}
 						onDataChange={handleSelectedDiagnosis}
 					/>
+					<CPTSelectionForm onDataChange={handleCPTValueChange} />
 					<fieldset className="border p-4 rounded-md bg-muted pb-6">
 						<legend className="text-lg font-semibold">
 							Supporting Documents
 						</legend>
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 mb-4">
 							{/* Supporting Document 1 */}
+
 							<ReusableFileUploadField
-								control={form.control}
 								name="supporting_doc1"
 								local="priorAuthForm"
 								labelKey="fields.supporting_doc1.label"
-								// placeholderKey="fields.supporting_doc1.placeholder"
 								descriptionKey="fields.supporting_doc1.description"
-								// readOnly={true}
+								control={form.control}
+								onFilesChange={handleSupportingDoc1}
 							/>
-							{/* Supporting Document 2 */}
 							<ReusableFileUploadField
 								control={form.control}
 								name="supporting_doc2"
 								local="priorAuthForm"
 								labelKey="fields.supporting_doc2.label"
-								// placeholderKey="fields.supporting_doc2.placeholder"
 								descriptionKey="fields.supporting_doc2.description"
-								// readOnly={true}
+								onFilesChange={handleSupportingDoc2}
 							/>
 						</div>
 					</fieldset>

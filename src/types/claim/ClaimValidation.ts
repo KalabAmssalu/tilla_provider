@@ -96,10 +96,10 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 		// 		message: t("fields.other_provider_name_npi_specialty.error"),
 		// 	}),
 		// ]),
-		// other_provider_ids: z.union([
+		// other_provider_npi_ids: z.union([
 		// 	z.literal(""),
 		// 	z.string().min(1, {
-		// 		message: t("fields.other_provider_ids.error"),
+		// 		message: t("fields.other_provider_npi_ids.error"),
 		// 	}),
 		// ]),
 
@@ -304,7 +304,7 @@ export const createClaimInfoSchema = (t: (key: string) => string) =>
 		additional_charge: z.number().min(0, {
 			message: t("fields.additional_charge.error"),
 		}),
-		non_covered_charges: z.union([
+		non_covered_charge: z.union([
 			z.number(),
 			z.number().min(1, {
 				message: t("fields.additional_charge.error"),
