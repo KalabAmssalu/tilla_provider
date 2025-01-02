@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 
 interface CalendarEvent {
 	date: Date;
-	title: string;
+	// title: string;
 	provider: string;
 	status: string;
 	time: string;
@@ -121,7 +121,7 @@ export function CalendarView({ events }: CalendarViewProps) {
 												height: "3rem",
 											}}
 										>
-											<div className="font-medium truncate">{event.title}</div>
+											{/* <div className="font-medium truncate">{event.title}</div> */}
 											<div className="truncate">{event.provider}</div>
 										</div>
 									))}

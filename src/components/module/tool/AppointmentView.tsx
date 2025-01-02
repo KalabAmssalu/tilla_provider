@@ -15,7 +15,7 @@ import { AppointmentDataTable } from "./data-table";
 export default function AppointmentView() {
 	const [date, setDate] = React.useState<Date>(new Date());
 
-	const [view, setView] = React.useState<"table" | "calendar">("calendar"); // Set default to calendar view
+	const [view, setView] = React.useState<"table" | "calendar">("calendar");
 
 	const { data, isLoading, error } = useFetchAppointment();
 	const [members, setMembers] = React.useState<Appointment[]>([]);
@@ -29,13 +29,13 @@ export default function AppointmentView() {
 	if (isLoading) return <div>Loading Appointments...</div>;
 	if (error) return <div>Error fetching Appointments: {error.message}</div>;
 
-	// const events = appointments.map((apt) => ({
-	// 	date: new Date(apt.appointmentDate),
-	// 	title: apt.memberName,
-	// 	provider: apt.providerName,
-	// 	status: apt.status,
-	// 	time: apt.appointmentTime,
-	// }));
+	const events = appointments.map((apt) => ({
+		date: new Date(apt.appointment_date),
+		// title: apt.individual_member,
+		provider: apt.doctor_name,
+		status: apt.status,
+		time: apt.appointment_hour.hour,
+	}));
 	return (
 		// <div></div>
 		<div className="container max-w-screen pt-10">
@@ -83,7 +83,7 @@ export default function AppointmentView() {
 							<span>No Show</span>
 						</div>
 					</div>
-					{/* <CalendarView events={events} /> */}
+					<CalendarView events={events} />
 				</div>
 			)}
 		</div>

@@ -21,12 +21,12 @@ export const createAppointmentSchema = (t: (key: string) => string) =>
 				period: z.enum(["AM", "PM"]).optional(),
 			}),
 		]),
-		// doctor_name: z.string().nonempty({
-		// 	message: t("fields.doctor_name.error"),
-		// }),
-		// contact_type: z.enum(["phone", "email", "text_message", "other"], {
-		// 	invalid_type_error: t("fields.contact_type.error"),
-		// }),
+		doctor_name: z.string().nonempty({
+			message: t("fields.doctor_name.error"),
+		}),
+		contact_type: z.enum(["phone", "email", "text_message", "other"], {
+			invalid_type_error: t("fields.contact_type.error"),
+		}),
 		appointment_location: z.enum(["in_person", "tele_health"], {
 			invalid_type_error: t("fields.appointment_location.error"),
 		}),

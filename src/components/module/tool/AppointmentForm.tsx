@@ -41,8 +41,8 @@ export default function AppointmentForm({
 		resolver: zodResolver(appointmetSchema),
 		defaultValues: {
 			appointment_date: "",
-			// doctor_name: "",
-			// contact_type: "phone",
+			doctor_name: "",
+			contact_type: "phone",
 			appointment_location: "in_person",
 			// status: "scheduled",
 			service_type: "general_checkup",
@@ -63,7 +63,7 @@ export default function AppointmentForm({
 			...data,
 			appointment_hour: appointmenth,
 			provider: dataProvider.user.provider.id,
-			// individual_member: selectedMember.id,
+			individual_member: selectedMember.id,
 		};
 
 		Object.entries(savedData).forEach(([key, value]) => {
@@ -118,7 +118,7 @@ export default function AppointmentForm({
 							<ReusableFormField
 								control={form.control}
 								name="doctor_name"
-								// type="number"
+								type="text"
 								local="appointmentForm"
 								labelKey="fields.doctor_name.label"
 								placeholderKey="fields.doctor_name.placeholder"
@@ -208,7 +208,7 @@ export default function AppointmentForm({
 								required={true}
 							/>
 							{/* Preferred Contact Method */}
-							{/* <ReusableSelectField
+							<ReusableSelectField
 								control={form.control}
 								name="contact_type"
 								labelKey="fields.contact_type.label"
@@ -240,7 +240,7 @@ export default function AppointmentForm({
 									);
 								}}
 								required
-							/> */}
+							/>
 
 							{/* Additional Note */}
 							<ReusableTeaxtAreaField

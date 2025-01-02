@@ -1,43 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
 
 import { type Row } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
 import { memberType } from "@/types/member/memeberType";
 
-import MemberInfoDetails from "./member-details";
-
-interface DataTableRowActionsProps<TData extends memberType> {
-	// Add constraint here
-	row: Row<TData>;
-}
-
 export function DataTableRowActions<TData extends memberType>({
-	// Add constraint here
 	row,
-}: DataTableRowActionsProps<TData>) {
-	const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+}: {
+	row: Row<TData>;
+}) {
+	const memberId = row.original.member_id;
 
 	const handleViewDetail = () => {
-		setIsDetailsOpen(true); // Open the details modal
+		localStorage.setItem("member", JSON.stringify(row.original));
 	};
+
 	return (
 		<>
-			<Button
-				size="sm"
-				className="bg-secondary/40 hover:bg-secondary/60 text-black"
-				onClick={handleViewDetail} // Open the details modal
-			>
-				View Detail
-			</Button>
-
-			<MemberInfoDetails
-				member={row.original}
-				open={isDetailsOpen}
-				onOpenChange={setIsDetailsOpen}
-			/>
+			<Link href={`/dashboard/members/${memberId}` as any} passHref>
+				<Button
+					size="sm"
+					className="bg-secondary/40 hover:bg-secondary/60 text-black"
+					onClick={handleViewDetail}
+				>
+					View Detail
+				</Button>
+			</Link>
 		</>
 	);
 }

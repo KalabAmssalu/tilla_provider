@@ -12,7 +12,6 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Appointment } from "@/types/appointment/appointment";
 
-import statusPage from "../../../app/[locale]/dashboard/claims/status/page";
 import { DataTableColumnHeader } from "./data-table-column-header";
 import { DataTableRowActions } from "./data-table-row-actions";
 
@@ -66,7 +65,7 @@ export const columns: ColumnDef<Appointment>[] = [
 		enableHiding: false,
 	},
 	{
-		accessorKey: "memberId",
+		accessorKey: "individual_member",
 		header: ({ column }) => (
 			<DataTableColumnHeader column={column} title="Member ID" />
 		),
@@ -74,27 +73,27 @@ export const columns: ColumnDef<Appointment>[] = [
 			return (
 				<div className="flex space-x-2">
 					<span className="max-w-[100px] truncate font-medium">
-						{row.getValue("memberId")}
+						{row.getValue("individual_member")}
 					</span>
 				</div>
 			);
 		},
 	},
-	{
-		accessorKey: "name",
-		header: ({ column }) => (
-			<DataTableColumnHeader column={column} title="Member Full Name" />
-		),
-		cell: ({ row }) => {
-			return (
-				<div className="flex space-x-2">
-					<span className="max-w-[100px] truncate font-medium">
-						{row.getValue("name")}
-					</span>
-				</div>
-			);
-		},
-	},
+	// {
+	// 	accessorKey: "name",
+	// 	header: ({ column }) => (
+	// 		<DataTableColumnHeader column={column} title="Member Full Name" />
+	// 	),
+	// 	cell: ({ row }) => {
+	// 		return (
+	// 			<div className="flex space-x-2">
+	// 				<span className="max-w-[100px] truncate font-medium">
+	// 					{row.getValue("name")}
+	// 				</span>
+	// 			</div>
+	// 		);
+	// 	},
+	// },
 	{
 		accessorKey: "appointment_date",
 		header: ({ column }) => (
@@ -156,28 +155,32 @@ export const columns: ColumnDef<Appointment>[] = [
 		},
 	},
 
-	// {
-	// 	accessorKey: "status",
-	// 	header: ({ column }) => (
-	// 		<DataTableColumnHeader column={column} title="Status" />
-	// 	),
-	// 	cell: ({ row }) => {
-	// 		const status = row.getValue("member_status") as string;
-	// 		return (
-	// 			<Badge
-	// 				variant={
-	// 					status === "Active"
-	// 						? "default"
-	// 						: status === "Inactive"
-	// 							? "destructive"
-	// 							: "default"
-	// 				}
-	// 			>
-	// 				{status}
-	// 			</Badge>
-	// 		);
-	// 	},
-	// },
+	{
+		accessorKey: "status",
+		header: ({ column }) => (
+			<DataTableColumnHeader column={column} title="Status" />
+		),
+		cell: ({ row }) => {
+			const status = row.getValue("status") as string;
+			return (
+				<Badge
+					variant={
+						status === "scheduled"
+							? "default"
+							: status === "completed"
+								? "secondary"
+								: status === "cancelled"
+									? "destructive"
+									: status === "no-show"
+										? "outline"
+										: "default"
+					}
+				>
+					{status}
+				</Badge>
+			);
+		},
+	},
 
 	{
 		id: "actions",

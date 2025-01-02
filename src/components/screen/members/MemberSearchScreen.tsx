@@ -1,13 +1,20 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { useFetchMyMembers } from "@/actions/Query/member_Query/member_Query";
 import SearchCard from "@/components/module/member/SearchCard";
-import { columns } from "@/components/module/member/columns";
+import {
+	columns,
+	eligibilityColumns,
+	memberInfoColumns,
+} from "@/components/module/member/columns";
 import { MyMembersDataTable } from "@/components/module/member/data-table";
 import { DetailCards } from "@/components/shared/Cards/DetailCards";
 import { memberType } from "@/types/member/memeberType";
+
+import eligibilityPage from "../../../app/[locale]/dashboard/members/eligibility/page";
 
 type Props = {};
 const notifications = [
@@ -36,6 +43,14 @@ const notifications = [
 ];
 
 const MemberSearch = (props: Props) => {
+	const pathname = usePathname();
+
+	// Determine the columns based on the route
+	const columns = pathname.includes("/search")
+		? memberInfoColumns
+		: pathname.includes("/eligibility")
+			? eligibilityColumns
+			: [];
 	const { data, isLoading, error } = useFetchMyMembers();
 	const [members, setMembers] = useState<memberType[]>([]);
 
