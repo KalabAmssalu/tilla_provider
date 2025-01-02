@@ -210,7 +210,7 @@ export const useGetAllInfoClaims = () => {
 			try {
 				console.log("getClaims");
 				const response = await getClaims();
-				return response.data;
+				return response;
 			} catch (error: any) {
 				toast.error(`Error fetching claims: ${error.message}`);
 				throw error;

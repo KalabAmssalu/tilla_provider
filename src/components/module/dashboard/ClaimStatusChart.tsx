@@ -19,6 +19,10 @@ const ClaimsStatusChart = () => {
 							{ name: "Apr 2024", Approved: 25, Denied: 30 },
 							{ name: "May 2024", Approved: 32, Denied: 22 },
 							{ name: "Jun 2024", Approved: 28, Denied: 20 },
+							{ name: "Mar 2024", Approved: 35, Denied: 26 },
+							{ name: "Apr 2024", Approved: 25, Denied: 30 },
+							{ name: "May 2024", Approved: 32, Denied: 22 },
+							{ name: "Jun 2024", Approved: 28, Denied: 20 },
 						]}
 					/>
 				</div>

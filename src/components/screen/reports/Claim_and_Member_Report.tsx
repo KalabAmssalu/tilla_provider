@@ -58,9 +58,14 @@ const claimReportSchema = z.object({
 	plan_type: z.string().optional(),
 	service_start_date: z.string().optional(),
 	service_end_date: z.string().optional(),
-	from: z.string().nullable(),
-	to: z.string().nullable(),
-	amountRange: z.string().optional(),
+	from: z.string().nullable().optional(),
+	to: z.string().nullable().optional(),
+	amountRange: z
+		.array(z.number())
+		.refine((value) => value.length === 2, {
+			message: "Amount range must contain exactly two numbers",
+		})
+		.optional(),
 	diagnosis_category: z.string().optional(),
 	loinc_category: z.string().optional(),
 	cpt_category: z.string().optional(),
@@ -81,18 +86,19 @@ const claimReportSchema = z.object({
 	ageRange: z
 		.array(z.number())
 		.refine((value) => value.length === 2, {
-			message: "Age range must have two values",
+			message: "Age range must contain exactly two numbers",
 		})
 		.optional(),
-	ageFilterEnabled: z.boolean().optional(),
+	ageFilterEnabled: z.boolean().optional().default(false),
 	street_address: z.string().optional(),
 	country: z.string().optional(),
 	mailing_address_line1: z.string().optional(),
-	kifle_ketema: z.string().optional(),
+	kifleKetema: z.string().optional(), // Changed to camelCase
 	city: z.string().optional(),
 	region: z.string().optional(),
 	zip_code: z.string().optional(),
 	encounter_type: z.string().optional(),
+	kifle_ketema: z.string().optional(), // Changed to snake_case
 });
 
 export type ClaimReportFormValues = z.infer<typeof claimReportSchema>;

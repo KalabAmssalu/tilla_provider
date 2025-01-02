@@ -65,12 +65,8 @@ const paymentReportSchema = z.object({
 	plan_type: z.string().optional(),
 	service_start_date: z.string().optional(),
 	service_end_date: z.string().optional(),
-	from: z.string().nullable(),
-	to: z.string().nullable(),
-	// diagnosis_category: z.string().optional(),
-	// loinc_category: z.string().optional(),
-	// cpt_category: z.string().optional(),
-	// diagnosis_source: z.string().optional(),
+	from: z.string().optional().nullable(),
+	to: z.string().optional().nullable(),
 	procedure_code: z.string().optional(),
 	cpt_code: z.string().optional(),
 	provider: z.string().optional(),
@@ -87,20 +83,20 @@ const paymentReportSchema = z.object({
 	ageRange: z
 		.array(z.number())
 		.refine((value) => value.length === 2, {
-			message: "Age range must have two values",
+			message: "Age range must contain exactly two numbers",
 		})
 		.optional(),
 	amountRange: z
 		.array(z.number())
 		.refine((value) => value.length === 2, {
-			message: "Age range must have two values",
+			message: "Amount range must contain exactly two numbers",
 		})
 		.optional(),
 	payment_date: z.string().optional(),
 	denied_reason: z.string().optional(),
 	payment_status: z.string().optional(),
-	ageFilterEnabled: z.boolean().optional(),
-	paymentFilterEnabled: z.boolean().optional(),
+	ageFilterEnabled: z.boolean().optional().default(false),
+	paymentFilterEnabled: z.boolean().optional().default(false),
 	street_address: z.string().optional(),
 	country: z.string().optional(),
 	mailing_address_line1: z.string().optional(),
@@ -109,6 +105,10 @@ const paymentReportSchema = z.object({
 	region: z.string().optional(),
 	zip_code: z.string().optional(),
 	encounter_type: z.string().optional(),
+	diagnosis_category: z.string().optional(),
+	loinc_category: z.string().optional(),
+	cpt_category: z.string().optional(),
+	diagnosis_source: z.string().optional(),
 });
 
 export type PayementReportFormValues = z.infer<typeof paymentReportSchema>;
@@ -311,6 +311,7 @@ export default function FinancialReport({ onSubmitReport }: MemberReportProps) {
 
 	const ageFilterEnabled = form.watch("ageFilterEnabled");
 	const paymentFilterEnabled = form.watch("paymentFilterEnabled");
+
 	function handleConfirmSearch() {
 		setIsModalOpen(false);
 
